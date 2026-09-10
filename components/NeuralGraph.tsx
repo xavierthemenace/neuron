@@ -18,6 +18,8 @@ import {
   buildNodes,
   indexBy,
   matchingNodeIds,
+  neighborsOf,
+  positionOf,
   type ConceptFlowNode,
   type ConceptNodeData,
 } from "@/lib/graph";
@@ -36,14 +38,17 @@ const nodeTypes = { concept: ConceptNode };
 const edgeTypes = { synapse: SynapseEdge };
 
 const MINIMAP_STYLE = {
-  backgroundColor: "oklch(0.12 0.015 265)",
-  border: "1px solid oklch(1 0 0 / 0.08)",
-  borderRadius: 12,
+  backgroundColor: "oklch(0.12 0.015 265 / 0.92)",
+  border: "1px solid oklch(1 0 0 / 0.09)",
+  borderRadius: 14,
+  boxShadow: "0 12px 36px oklch(0 0 0 / 0.22)",
 } as const;
+
+const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
 function Graph() {
   const { xpByNodeId, hydrated } = useProgress();
-  const { fitView } = useReactFlow();
+  const { fitView, getZoom, setCenter } = useReactFlow<ConceptFlowNode>();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -59,26 +64,57 @@ function Graph() {
     [search, activeCategories],
   );
 
-  // Only the touched node's data object changes identity here, so React Flow's
-  // shallow compare re-renders one orb per log rather than all hundred.
+  const focusIds = useMemo(() => {
+    if (!selectedId) return null;
+    const ids = new Set<string>([selectedId]);
+    for (const neighbor of neighborsOf(data, selectedId)) ids.add(neighbor.id);
+    return ids;
+  }, [selectedId]);
+
   const nodes = useMemo(
-    () => buildNodes(data, xpByNodeId, categories, visible),
-    [xpByNodeId, categories, visible],
+    () =>
+      buildNodes(
+        data,
+        xpByNodeId,
+        categories,
+        visible,
+        selectedId,
+        focusIds,
+      ),
+    [xpByNodeId, categories, visible, selectedId, focusIds],
   );
 
   const edges = useMemo(
-    () => buildEdges(data, xpByNodeId, categories, nodesById, visible),
-    [xpByNodeId, categories, nodesById, visible],
+    () =>
+      buildEdges(
+        data,
+        xpByNodeId,
+        categories,
+        nodesById,
+        visible,
+        selectedId,
+      ),
+    [xpByNodeId, categories, nodesById, visible, selectedId],
   );
 
   const focusNode = useCallback(
     (id: string) => {
       setSelectedId(id);
-      // fitView must be in the dep array — it is a no-op until the viewport
-      // has initialised.
-      void fitView({ nodes: [{ id }], duration: 500, maxZoom: 1.3, padding: 3 });
+
+      const point = positionOf(id);
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const targetZoom = Math.max(getZoom(), 1.55);
+
+      void setCenter(point.x, point.y, {
+        zoom: targetZoom,
+        duration: reducedMotion ? 0 : 720,
+        ease: focusEase,
+        interpolate: "smooth",
+      });
     },
-    [fitView],
+    [getZoom, setCenter],
   );
 
   const onNodeClick = useCallback<NodeMouseHandler<ConceptFlowNode>>(
@@ -125,9 +161,9 @@ function Graph() {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={34}
-          size={1}
-          color="oklch(0.34 0.03 265)"
+          gap={32}
+          size={1.15}
+          color="oklch(0.38 0.035 265)"
         />
         <Controls
           showInteractive={false}
@@ -137,7 +173,7 @@ function Graph() {
           pannable
           zoomable
           style={MINIMAP_STYLE}
-          maskColor="oklch(0.1 0.01 265 / 0.75)"
+          maskColor="oklch(0.1 0.01 265 / 0.72)"
           nodeColor={(node) => {
             const d = node.data as ConceptNodeData;
             return `oklch(${d.lightness} ${d.chroma} ${d.hue})`;
@@ -154,6 +190,14 @@ function Graph() {
         onToggleCategory={toggleCategory}
         onClearFilters={() => setActiveCategories(new Set())}
       />
+
+      <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] text-neutral-500 shadow-lg backdrop-blur-xl lg:flex">
+        <span>Click a faculty to focus</span>
+        <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
+        <span>Drag to pan</span>
+        <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
+        <span>Scroll to zoom</span>
+      </div>
 
       <SidePanel
         data={data}
