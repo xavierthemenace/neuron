@@ -10,7 +10,12 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import { decayStateForLogs, xpByNode, type DecayState } from "@/lib/mastery";
+import {
+  decayStateForLogs,
+  exerciseResetState,
+  xpByNode,
+  type DecayState,
+} from "@/lib/mastery";
 import {
   STORAGE_KEY,
   emptyProgress,
@@ -69,6 +74,21 @@ function reducer(state: State, action: Action): State {
     case "replace":
       return { ...state, progress: action.progress, lastLogSignal: null };
     case "log": {
+      const nodeLogs = state.progress.logs.filter(
+        (log) => log.nodeId === action.nodeId,
+      );
+      // This is the authoritative anti-spam gate. UI controls also disable, but
+      // the reducer prevents racing double clicks or alternate logging surfaces.
+      if (
+        !exerciseResetState(
+          nodeLogs,
+          action.exercise.id,
+          action.exercise.cadence,
+        ).available
+      ) {
+        return state;
+      }
+
       const multiplier = Math.max(1, action.options?.multiplier ?? 1);
       const id = newId();
       const entry: LogEntry = {
@@ -94,7 +114,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         progress: {
           ...state.progress,
-          logs: state.progress.logs.filter((l) => l.id !== action.logId),
+          logs: state.progress.logs.filter((log) => log.id !== action.logId),
         },
       };
     case "reset":
@@ -141,10 +161,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     dispatch({ kind: "hydrate", progress: loadProgress() });
   }, []);
 
-  // Decay is wall-clock based. Refresh it hourly without turning the graph into
-  // an animation loop or making practice events wait for a reload.
   useEffect(() => {
-    const timer = window.setInterval(() => dispatch({ kind: "tick" }), 60 * 60 * 1000);
+    const timer = window.setInterval(
+      () => dispatch({ kind: "tick" }),
+      60 * 60 * 1000,
+    );
     return () => window.clearInterval(timer);
   }, []);
 
@@ -204,7 +225,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const rawXpByNodeId = useMemo(() => xpByNode(progress.logs), [progress.logs]);
 
   const decayByNodeId = useMemo(() => {
-    // decayTick deliberately participates so an open tab tracks wall-clock decay.
     void decayTick;
     const now = new Date();
     const states: Record<string, DecayState> = {};
