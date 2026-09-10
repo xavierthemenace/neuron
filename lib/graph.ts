@@ -2,7 +2,14 @@ import type { Edge, Node } from "@xyflow/react";
 import bakedLayout from "@/data/layout.json";
 import type { Point } from "./layout";
 import { radiusForXp, tierForXp } from "./mastery";
-import type { Category, ConceptNode, IntelligenceData } from "./types";
+import type {
+  Category,
+  ConceptNode,
+  EvidenceConfidence,
+  IntelligenceData,
+  LinkRelation,
+  LinkType,
+} from "./types";
 
 export interface ConceptNodeData extends Record<string, unknown> {
   label: string;
@@ -234,21 +241,33 @@ export function buildEdges(
   });
 }
 
-export function neighborsOf(
-  data: IntelligenceData,
-  nodeId: string,
-): { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] {
-  const out: {
-    id: string;
-    type: "prereq" | "synergy";
-    direction: "in" | "out";
-  }[] = [];
+export interface Neighbor {
+  id: string;
+  type: LinkType;
+  relation: LinkRelation;
+  direction: "in" | "out";
+  strength: number;
+  confidence: EvidenceConfidence;
+  mechanism?: string;
+  conditional?: string;
+}
+
+export function neighborsOf(data: IntelligenceData, nodeId: string): Neighbor[] {
+  const out: Neighbor[] = [];
   for (const link of data.links) {
-    if (link.source === nodeId) {
-      out.push({ id: link.target, type: link.type, direction: "out" });
-    } else if (link.target === nodeId) {
-      out.push({ id: link.source, type: link.type, direction: "in" });
-    }
+    const direction =
+      link.source === nodeId ? "out" : link.target === nodeId ? "in" : null;
+    if (!direction) continue;
+    out.push({
+      id: direction === "out" ? link.target : link.source,
+      type: link.type,
+      relation: link.relation ?? (link.type === "prereq" ? "prerequisite" : "synergy"),
+      direction,
+      strength: link.strength ?? (link.type === "prereq" ? 0.6 : 0.35),
+      confidence: link.confidence ?? "emerging",
+      mechanism: link.mechanism,
+      conditional: link.conditional,
+    });
   }
   return out;
 }

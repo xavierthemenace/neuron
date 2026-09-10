@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { neighborsOf } from "@/lib/graph";
+import { neighborsOf, type Neighbor } from "@/lib/graph";
 import type { ConceptNode, IntelligenceData } from "@/lib/types";
 
 export function GraphNavigator({
@@ -25,8 +25,13 @@ export function GraphNavigator({
 }) {
   const [open, setOpen] = useState(false);
 
-  const pathways = useMemo(() => {
-    if (!selectedNode) return { prerequisites: [], downstream: [], synergies: [] };
+  const pathways = useMemo((): Record<
+    "prerequisites" | "downstream" | "synergies" | "tradeoffs",
+    Neighbor[]
+  > => {
+    if (!selectedNode) {
+      return { prerequisites: [], downstream: [], synergies: [], tradeoffs: [] };
+    }
     const neighbors = neighborsOf(data, selectedNode.id);
     return {
       prerequisites: neighbors.filter(
@@ -36,6 +41,7 @@ export function GraphNavigator({
         (neighbor) => neighbor.type === "prereq" && neighbor.direction === "out",
       ),
       synergies: neighbors.filter((neighbor) => neighbor.type === "synergy"),
+      tradeoffs: neighbors.filter((neighbor) => neighbor.type === "inhibition"),
     };
   }, [data, selectedNode]);
 
@@ -43,7 +49,7 @@ export function GraphNavigator({
 
   const pathwaySection = (
     title: string,
-    items: { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[],
+    items: Neighbor[],
     symbol: string,
   ) => {
     if (items.length === 0) return null;
@@ -107,7 +113,8 @@ export function GraphNavigator({
               {pathwaySection("Prerequisites", pathways.prerequisites, "←")}
               {pathwaySection("Builds toward", pathways.downstream, "→")}
               {pathwaySection("Synergy links", pathways.synergies, "↔")}
-              {pathways.prerequisites.length + pathways.downstream.length + pathways.synergies.length === 0 && (
+              {pathwaySection("Trade-offs", pathways.tradeoffs, "⊣")}
+              {pathways.prerequisites.length + pathways.downstream.length + pathways.synergies.length + pathways.tradeoffs.length === 0 && (
                 <p className="text-[10px] text-neutral-600">This faculty currently has no direct pathway links.</p>
               )}
             </div>

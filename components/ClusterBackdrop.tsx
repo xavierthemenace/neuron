@@ -11,6 +11,10 @@ const DOMAIN_HUE: Record<Domain, number> = {
   eq: 35,
   fluid: 160,
   crystallized: 110,
+  executive: 20,
+  epistemic: 175,
+  generative: 330,
+  strategic: 96,
 };
 
 const DOMAIN_LABEL: Record<Domain, string> = {
@@ -18,6 +22,10 @@ const DOMAIN_LABEL: Record<Domain, string> = {
   eq: "Emotional intelligence",
   fluid: "Fluid intelligence",
   crystallized: "Crystallized knowledge",
+  executive: "Executive & learning control",
+  epistemic: "Epistemic & decision intelligence",
+  generative: "Generative & augmented cognition",
+  strategic: "Long-horizon cognition",
 };
 
 export function ClusterBackdrop({ data }: { data: IntelligenceData }) {

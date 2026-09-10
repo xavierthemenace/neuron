@@ -23,7 +23,7 @@ interface SimNode extends SimulationNodeDatum {
 interface SimLink {
   source: string | SimNode;
   target: string | SimNode;
-  type: "prereq" | "synergy";
+  type: "prereq" | "synergy" | "inhibition";
 }
 
 /**
@@ -31,12 +31,21 @@ interface SimLink {
  * general factors sit at the core and the specific intelligences radiate out
  * from them. A single shared radius put every cluster on one annulus and left a
  * dead hole in the middle.
+ *
+ * Every domain gets its own radius rather than sharing one. Two domains on the
+ * same annulus can only be separated by their angular offset, which stops
+ * working the moment their category counts differ — the offsets drift back into
+ * collision and two unrelated clusters end up drawn on top of each other.
  */
 const DOMAIN_RING: Record<Domain, { radius: number; offset: number }> = {
   crystallized: { radius: 0, offset: 0 },
   fluid: { radius: 520, offset: 0.5 },
-  eq: { radius: 980, offset: 0.12 },
-  gardner: { radius: 1420, offset: 0 },
+  executive: { radius: 810, offset: 0.15 },
+  eq: { radius: 1090, offset: 0.12 },
+  epistemic: { radius: 1370, offset: 0.34 },
+  generative: { radius: 1640, offset: 0.62 },
+  strategic: { radius: 1910, offset: 0.08 },
+  gardner: { radius: 2180, offset: 0 },
 };
 
 /** Spread of the deterministic seed cloud around each centre. */
@@ -119,9 +128,15 @@ export function computeLayout(data: IntelligenceData): Map<string, Point> {
       forceLink<SimNode, SimLink>(simLinks)
         .id((d) => d.id)
         // Synergy links span clusters, so they rest long and pull weakly —
-        // otherwise they'd drag the lobes into each other.
-        .distance((l) => (l.type === "prereq" ? 95 : 260))
-        .strength((l) => (l.type === "prereq" ? 0.5 : 0.06)),
+        // otherwise they'd drag the lobes into each other. Inhibition edges
+        // describe a trade-off rather than an affinity and must not pull at
+        // all, so they rest longer still at effectively zero strength.
+        .distance((l) =>
+          l.type === "prereq" ? 95 : l.type === "inhibition" ? 420 : 260,
+        )
+        .strength((l) =>
+          l.type === "prereq" ? 0.5 : l.type === "inhibition" ? 0.01 : 0.06,
+        ),
     )
     .force("charge", forceManyBody<SimNode>().strength(-620))
     // These keep each node near its own cluster centre — without them the
