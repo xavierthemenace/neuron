@@ -20,14 +20,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Use Node.js 22
+      # Node 24: the unit tests import lib/*.ts directly and rely on Node's
+      # built-in TypeScript type stripping, as scripts/bake-layout.mjs does.
+      - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - name: Install dependencies
         run: npm ci
       - name: Lint
         run: npm run lint
+      - name: Types
+        run: npx tsc --noEmit
+      - name: Curriculum and layout integrity
+        run: npm run check:data
+      - name: Unit tests
+        run: npm test
       - name: Production build
         run: npm run build

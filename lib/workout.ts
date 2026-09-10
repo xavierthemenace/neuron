@@ -2,8 +2,8 @@ import {
   MAX_XP,
   exerciseResetState,
   type DecayState,
-} from "./mastery";
-import { synergyMultiplierForNode } from "./training";
+} from "./mastery.ts";
+import { synergyMultiplierForNode } from "./training.ts";
 import type { Exercise, IntelligenceData, LogEntry } from "./types";
 
 export interface WorkoutItem {

@@ -1,13 +1,21 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { MAX_XP, dayKey, estimateExerciseMinutes } from "@/lib/mastery";
 import type { IntelligenceData } from "@/lib/types";
+import { useDismissable } from "./useDismissable";
 import { useProgress } from "./ProgressProvider";
 
 const RADAR_SIZE = 520;
 const RADAR_CENTER = RADAR_SIZE / 2;
 const RADAR_RADIUS = 176;
+/**
+ * Axis labels sit 34px outside the outer ring and are anchored end/start, so
+ * the longest of them ("Working Memory") reaches roughly 110px beyond the
+ * plotted circle. Without this horizontal bleed the viewBox cropped it to
+ * "orking Memory".
+ */
+const RADAR_LABEL_PAD = 112;
 
 function polarPoint(index: number, count: number, radius: number) {
   const angle = -Math.PI / 2 + (Math.PI * 2 * index) / count;
@@ -64,18 +72,9 @@ export function AnalyticsDashboard({
   onClose: () => void;
 }) {
   const { progress, xpByNodeId } = useProgress();
+  const dialogRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      onClose();
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [open, onClose]);
+  useDismissable({ open, onClose, modal: true, container: dialogRef });
 
   const categoryStats = useMemo(
     () =>
@@ -156,6 +155,7 @@ export function AnalyticsDashboard({
       }}
     >
       <section
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Cognitive analytics dashboard"
@@ -188,9 +188,11 @@ export function AnalyticsDashboard({
               </div>
             </div>
 
-            <div className="mx-auto max-w-[560px] overflow-hidden">
+            {/* Wider than the plot itself: the viewBox carries horizontal bleed
+                for the axis labels, so a narrow box would shrink the chart. */}
+            <div className="mx-auto max-w-[720px] overflow-hidden">
               <svg
-                viewBox={`0 0 ${RADAR_SIZE} ${RADAR_SIZE}`}
+                viewBox={`${-RADAR_LABEL_PAD} 0 ${RADAR_SIZE + RADAR_LABEL_PAD * 2} ${RADAR_SIZE}`}
                 className="h-auto w-full"
                 role="img"
                 aria-label="Radar chart of category mastery"

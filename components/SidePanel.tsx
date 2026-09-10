@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { nextTier, tierForXp, tierProgress } from "@/lib/mastery";
 import { neighborsOf } from "@/lib/graph";
 import type {
@@ -10,6 +9,7 @@ import type {
   ResourceType,
 } from "@/lib/types";
 import { HabitChecklist } from "./HabitChecklist";
+import { useDismissable } from "./useDismissable";
 import { MarkdownJournal } from "./MarkdownJournal";
 import { useProgress } from "./ProgressProvider";
 
@@ -61,16 +61,13 @@ export function SidePanel({
     undoLog,
   } = useProgress();
 
-  useEffect(() => {
-    if (!node) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [node, onClose]);
-
   const open = Boolean(node);
+
+  // Non-modal: the panel sits alongside the graph rather than over it, so it
+  // takes part in Escape ordering but does not trap focus. Any modal opened
+  // afterwards lands above it in the stack and gets Escape first.
+  useDismissable({ open, onClose });
+
   const hue = category?.hue ?? 260;
   const xp = node ? (xpByNodeId[node.id] ?? 0) : 0;
   const rawXp = node ? (rawXpByNodeId[node.id] ?? 0) : 0;

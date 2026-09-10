@@ -9,7 +9,8 @@
     "lint": "eslint",
     "check:data": "node scripts/check-data.mjs",
     "bake:layout": "node scripts/bake-layout.mjs",
-    "prebuild": "node scripts/check-data.mjs"
+    "prebuild": "node scripts/check-data.mjs",
+    "test": "node --test \"scripts/tests/**/*.test.mjs\""
   },
   "dependencies": {
     "@xyflow/react": "^12.11.6",

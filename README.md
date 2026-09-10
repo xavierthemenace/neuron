@@ -15,11 +15,14 @@ npm run dev          # http://localhost:3000
 | --- | --- |
 | `npm run dev` | Dev server |
 | `npm run build` | Production build (runs `check:data` first via `prebuild`) |
-| `npm run check:data` | Referential integrity of the curriculum |
+| `npm run check:data` | Referential integrity of the curriculum, plus `data/layout.json` coverage |
 | `npm run bake:layout` | Recompute `data/layout.json` after editing nodes or links |
+| `npm test` | Unit tests for the pure logic (mastery, decay, resets, workout, hulls) |
 | `npm run lint` | ESLint |
 
-CI runs `npm ci`, lint, and a production build on pull requests.
+CI runs `npm ci`, lint, `tsc --noEmit`, `check:data`, `npm test`, and a
+production build on pull requests. It uses Node 24 because the tests import
+`lib/*.ts` directly through Node's built-in TypeScript type stripping.
 
 ## Product capabilities
 
@@ -93,9 +96,12 @@ Positions are baked rather than simulated at runtime. Node and edge objects are 
 `data/intelligenceData.json` is the curriculum source of truth. After changing nodes or links:
 
 ```bash
-npm run check:data
-npm run bake:layout
+npm run bake:layout   # positions for any new nodes
+npm run check:data    # fails if a node has no baked position
 ```
+
+`check:data` is wired into `prebuild`, so a node added without re-baking fails
+the build instead of silently rendering at the map origin.
 
 Resources have an optional `url`: entries with one are links, while entries without one are citations rather than guessed URLs.
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getSetting, putSetting, type CoachSettings } from "@/lib/db";
 import type { ConceptNode, IntelligenceData } from "@/lib/types";
+import { useDismissable } from "./useDismissable";
 
 const DEFAULT_SETTINGS: CoachSettings = {
   provider: "ollama",
@@ -73,6 +74,25 @@ export function AICoach({
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const wasOpen = useRef(false);
+
+  useDismissable({
+    open,
+    onClose: () => setOpen(false),
+    modal: true,
+    container: dialogRef,
+  });
+
+  // The launcher unmounts while the dialog is up, so the generic focus-restore
+  // in useDismissable has nothing to return to and focus would fall to <body>,
+  // making Tab restart from the top of the page. Re-focus the button once it
+  // comes back.
+  useEffect(() => {
+    if (wasOpen.current && !open) triggerRef.current?.focus();
+    wasOpen.current = open;
+  }, [open]);
 
   useEffect(() => {
     void getSetting<CoachSettings>("coach-settings")
@@ -118,6 +138,7 @@ export function AICoach({
   if (!open) {
     return (
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         className="pointer-events-auto absolute bottom-14 left-16 z-30 rounded-full border border-violet-200/15 bg-[oklch(0.13_0.025_295_/_0.92)] px-3 py-2 text-[10px] font-medium text-violet-50/80 shadow-xl backdrop-blur-xl transition-colors hover:border-violet-200/30 hover:text-white md:bottom-4 md:left-[11.5rem]"
@@ -129,7 +150,7 @@ export function AICoach({
 
   return (
     <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/65 p-3 backdrop-blur-sm" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}>
-      <section role="dialog" aria-modal="true" aria-label="AI cognitive coach" className="max-h-[92dvh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/12 bg-[oklch(0.14_0.018_265_/_0.985)] shadow-2xl">
+      <section ref={dialogRef} role="dialog" aria-modal="true" aria-label="AI cognitive coach" className="max-h-[92dvh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/12 bg-[oklch(0.14_0.018_265_/_0.985)] shadow-2xl">
         <header className="flex items-start gap-3 border-b border-white/10 px-5 py-4">
           <div className="min-w-0 flex-1">
             <h2 className="text-base font-semibold text-white">AI Coach</h2>

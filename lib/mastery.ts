@@ -208,9 +208,16 @@ export function isSatisfied(
   return !exerciseResetState(logs, exerciseId, cadence, now).available;
 }
 
-/** Estimate minutes for analytics when a task did not explicitly record them. */
+/**
+ * Estimate minutes for analytics when a task did not explicitly record them.
+ *
+ * The plural matters: 30 of the 34 curriculum tasks that state a duration write
+ * it as "20 minutes", and a `(?:minute|min)\b` pattern rejects every one of
+ * them because \b fails before the trailing "s". They silently fell back to the
+ * XP-derived guess, which skewed the practice-minutes analytics.
+ */
 export function estimateExerciseMinutes(exercise: Exercise): number {
-  const match = exercise.label.match(/(\d+)\s*(?:-|–)?\s*(?:minute|min)\b/i);
+  const match = exercise.label.match(/(\d+)\s*(?:-|–)?\s*(?:minutes?|mins?)\b/i);
   if (match) return Math.max(1, Number(match[1]));
   return Math.max(5, Math.round((exercise.xp * 0.8) / 5) * 5);
 }

@@ -7,6 +7,7 @@ import {
 } from "@/lib/mastery";
 import { synergyMultiplierForNode } from "@/lib/training";
 import type { IntelligenceData } from "@/lib/types";
+import { useDismissable } from "./useDismissable";
 import { useProgress } from "./ProgressProvider";
 
 export function CommandPalette({
@@ -30,6 +31,7 @@ export function CommandPalette({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -44,15 +46,18 @@ export function CommandPalette({
         }
         return;
       }
-      if (event.key === "Escape" && open) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setOpen(false);
-      }
+      // Escape is handled by the shared dismiss stack so the topmost layer wins.
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
   }, [open]);
+
+  useDismissable({
+    open,
+    onClose: () => setOpen(false),
+    modal: true,
+    container: dialogRef,
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -138,6 +143,7 @@ export function CommandPalette({
       }}
     >
       <section
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Neuron command palette"

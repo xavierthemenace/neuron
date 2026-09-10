@@ -76,6 +76,49 @@ for (const id of nodeIds) {
   if (!linked.has(id)) warnings.push(`node "${id}" has no links — it will float`);
 }
 
+/*
+ * Layout positions are baked ahead of time, and lib/graph.ts falls back to
+ * {x:0,y:0} for anything missing. That fallback is silent: a node added here
+ * without re-baking would render stacked at the map origin with no error
+ * anywhere. Since this script already gates the build, make the drift loud.
+ */
+let layout;
+try {
+  layout = JSON.parse(
+    readFileSync(new URL("../data/layout.json", import.meta.url), "utf8"),
+  );
+} catch (cause) {
+  errors.push(
+    `could not read data/layout.json (${cause.message}) — run: npm run bake:layout`,
+  );
+}
+
+if (layout) {
+  const baked = new Set(Object.keys(layout));
+  const missing = [...nodeIds].filter((id) => !baked.has(id));
+  const orphaned = [...baked].filter((id) => !nodeIds.has(id));
+
+  for (const id of missing) {
+    errors.push(`node "${id}" has no baked position — run: npm run bake:layout`);
+  }
+  // Stale keys are harmless at runtime but mean the file is out of date.
+  for (const id of orphaned) {
+    warnings.push(`layout.json has a stale position for removed node "${id}"`);
+  }
+
+  for (const [id, point] of Object.entries(layout)) {
+    if (
+      !point ||
+      typeof point.x !== "number" ||
+      typeof point.y !== "number" ||
+      !Number.isFinite(point.x) ||
+      !Number.isFinite(point.y)
+    ) {
+      errors.push(`layout.json position for "${id}" is not a finite {x,y}`);
+    }
+  }
+}
+
 for (const w of warnings) console.warn(`warn  ${w}`);
 for (const e of errors) console.error(`error ${e}`);
 
