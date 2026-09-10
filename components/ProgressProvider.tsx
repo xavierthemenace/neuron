@@ -17,7 +17,6 @@ import {
   type DecayState,
 } from "@/lib/mastery";
 import {
-  STORAGE_KEY,
   emptyProgress,
   loadProgress,
   newId,
@@ -29,7 +28,7 @@ import type { Exercise, LogEntry, Progress } from "@/lib/types";
 export interface LogExerciseOptions {
   multiplier?: number;
   minutes?: number;
-  source?: "panel" | "command";
+  source?: "panel" | "command" | "workout" | "coach";
 }
 
 export interface LogSignal {
@@ -77,8 +76,6 @@ function reducer(state: State, action: Action): State {
       const nodeLogs = state.progress.logs.filter(
         (log) => log.nodeId === action.nodeId,
       );
-      // This is the authoritative anti-spam gate. UI controls also disable, but
-      // the reducer prevents racing double clicks or alternate logging surfaces.
       if (
         !exerciseResetState(
           nodeLogs,
@@ -147,6 +144,7 @@ interface ProgressContextValue {
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 const SAVE_DEBOUNCE_MS = 300;
+const CHANNEL_NAME = "neuron-progress-v2";
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
   const [{ progress, hydrated, lastLogSignal, decayTick }, dispatch] = useReducer(
@@ -156,9 +154,32 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   );
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
+  const channel = useRef<BroadcastChannel | null>(null);
 
   useEffect(() => {
-    dispatch({ kind: "hydrate", progress: loadProgress() });
+    let cancelled = false;
+    void loadProgress().then((loaded) => {
+      if (!cancelled) dispatch({ kind: "hydrate", progress: loaded });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof BroadcastChannel === "undefined") return;
+    const broadcast = new BroadcastChannel(CHANNEL_NAME);
+    channel.current = broadcast;
+    broadcast.onmessage = (event: MessageEvent<unknown>) => {
+      const incoming = parseProgress(event.data);
+      if (!incoming) return;
+      dirty.current = false;
+      dispatch({ kind: "replace", progress: incoming });
+    };
+    return () => {
+      broadcast.close();
+      if (channel.current === broadcast) channel.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -174,8 +195,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     dirty.current = true;
     saveTimer.current = setTimeout(() => {
-      saveProgress(progress);
-      dirty.current = false;
+      const snapshot = progress;
+      void saveProgress(snapshot).then(() => {
+        dirty.current = false;
+        channel.current?.postMessage(snapshot);
+      });
       saveTimer.current = null;
     }, SAVE_DEBOUNCE_MS);
     return () => {
@@ -187,29 +211,12 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     const flush = () => {
       if (!dirty.current) return;
-      saveProgress(progress);
       dirty.current = false;
+      void saveProgress(progress);
     };
     window.addEventListener("pagehide", flush);
     return () => window.removeEventListener("pagehide", flush);
   }, [progress, hydrated]);
-
-  useEffect(() => {
-    const onStorage = (event: StorageEvent) => {
-      if (event.key !== STORAGE_KEY || event.newValue === null) return;
-      try {
-        const incoming = parseProgress(JSON.parse(event.newValue));
-        if (incoming) {
-          dirty.current = false;
-          dispatch({ kind: "replace", progress: incoming });
-        }
-      } catch {
-        // A corrupt write from elsewhere shouldn't take this tab down.
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
 
   const logsByNodeId = useMemo(() => {
     const grouped: Record<string, LogEntry[]> = {};
