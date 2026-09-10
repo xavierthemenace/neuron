@@ -8,7 +8,6 @@ export interface ConceptNodeData extends Record<string, unknown> {
   label: string;
   hue: number;
   xp: number;
-  /** Mastery tier index, 0-4. */
   tierIndex: number;
   radius: number;
   opacity: number;
@@ -16,27 +15,20 @@ export interface ConceptNodeData extends Record<string, unknown> {
   lightness: number;
   chroma: number;
   categoryLabel: string;
-  /** Ebbinghaus retention multiplier, 0.5-1 for trained nodes. */
   retention: number;
   decaying: boolean;
-  /** Dimmed by search or a legend filter — still visible, but receded. */
   dimmed: boolean;
-  /** Receded because another node is focused and this is outside its local network. */
   contextDimmed: boolean;
   focusMode: boolean;
 }
 
 export interface SynapseEdgeData extends Record<string, unknown> {
   hue: number;
-  /** min(tier of source, tier of target) — drives how alive the edge looks. */
   strength: number;
   synergy: boolean;
   dimmed: boolean;
-  /** True when this edge directly touches the focused node. */
   highlighted: boolean;
-  /** Receded because a different edge is part of the focused node's local network. */
   contextDimmed: boolean;
-  /** Changes when a connected exercise is logged, restarting the particle burst. */
   burstKey: string | null;
 }
 
@@ -44,6 +36,20 @@ export type ConceptFlowNode = Node<ConceptNodeData, "concept">;
 export type SynapseFlowEdge = Edge<SynapseEdgeData, "synapse">;
 
 const LAYOUT = bakedLayout as Record<string, Point>;
+
+/**
+ * React Flow shallow-compares node/edge objects. These caches preserve identity
+ * whenever a derived visual signature is unchanged, so logging one exercise
+ * does not cause the other ~99 nodes or unrelated synapses to re-render.
+ */
+const NODE_CACHE = new Map<
+  string,
+  { signature: string; value: ConceptFlowNode }
+>();
+const EDGE_CACHE = new Map<
+  string,
+  { signature: string; value: SynapseFlowEdge }
+>();
 
 export function positionOf(nodeId: string): Point {
   return LAYOUT[nodeId] ?? { x: 0, y: 0 };
@@ -53,7 +59,6 @@ export function indexBy<T extends { id: string }>(items: T[]): Map<string, T> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
-/** Which nodes a filter leaves highlighted. */
 export function matchingNodeIds(
   data: IntelligenceData,
   search: string,
@@ -95,12 +100,30 @@ export function buildNodes(
     const category = categories.get(node.categoryId);
     const position = positionOf(node.id);
     const retention = retentionByNodeId[node.id] ?? 1;
-
-    const size = radius * 2;
     const selected = node.id === selectedId;
     const inFocusContext = focusIds?.has(node.id) ?? false;
+    const dimmed = visible ? !visible.has(node.id) : false;
+    const contextDimmed = focusIds ? !inFocusContext : false;
+    const size = radius * 2;
 
-    return {
+    const signature = [
+      data.version,
+      node.label,
+      category?.label ?? "",
+      category?.hue ?? 0,
+      position.x,
+      position.y,
+      xp,
+      retention.toFixed(4),
+      selected ? 1 : 0,
+      dimmed ? 1 : 0,
+      contextDimmed ? 1 : 0,
+      focusMode ? 1 : 0,
+    ].join("|");
+    const cached = NODE_CACHE.get(node.id);
+    if (cached?.signature === signature) return cached.value;
+
+    const value = {
       id: node.id,
       type: "concept",
       position: { x: position.x - radius, y: position.y - radius },
@@ -119,14 +142,17 @@ export function buildNodes(
         categoryLabel: category?.label ?? "",
         retention,
         decaying: retention < 0.999,
-        dimmed: visible ? !visible.has(node.id) : false,
-        contextDimmed: focusIds ? !inFocusContext : false,
+        dimmed,
+        contextDimmed,
         focusMode,
       },
       selected,
       zIndex: selected ? 20 : inFocusContext ? 10 : 0,
       draggable: false,
     } satisfies ConceptFlowNode;
+
+    NODE_CACHE.set(node.id, { signature, value });
+    return value;
   });
 }
 
@@ -142,10 +168,10 @@ export function buildEdges(
   burstSignal: { id: string; nodeId: string } | null = null,
 ): SynapseFlowEdge[] {
   return data.links.map((link) => {
+    const edgeId = `${link.source}--${link.target}`;
     const sourceTier = tierForXp(xpByNodeId[link.source] ?? 0).index;
     const targetTier = tierForXp(xpByNodeId[link.target] ?? 0).index;
     const strength = Math.min(sourceTier, targetTier);
-
     const sourceCategory = nodesById.get(link.source)?.categoryId;
     const hue = categories.get(sourceCategory ?? "")?.hue ?? 0;
     const highlighted = Boolean(
@@ -155,13 +181,34 @@ export function buildEdges(
       ? focusIds.has(link.source) && focusIds.has(link.target)
       : highlighted;
     const hidden = Boolean(focusMode && focusIds && !inFocusContext);
+    const dimmed = visible
+      ? !visible.has(link.source) || !visible.has(link.target)
+      : false;
+    const contextDimmed = Boolean(selectedId) && !inFocusContext;
     const bursts = Boolean(
       burstSignal &&
         (link.source === burstSignal.nodeId || link.target === burstSignal.nodeId),
     );
+    const burstKey = bursts && burstSignal ? burstSignal.id : null;
 
-    return {
-      id: `${link.source}--${link.target}`,
+    const signature = [
+      data.version,
+      link.source,
+      link.target,
+      link.type,
+      hue,
+      strength,
+      hidden ? 1 : 0,
+      dimmed ? 1 : 0,
+      highlighted ? 1 : 0,
+      contextDimmed ? 1 : 0,
+      burstKey ?? "",
+    ].join("|");
+    const cached = EDGE_CACHE.get(edgeId);
+    if (cached?.signature === signature) return cached.value;
+
+    const value = {
+      id: edgeId,
       source: link.source,
       target: link.target,
       type: "synapse",
@@ -170,29 +217,34 @@ export function buildEdges(
         hue,
         strength,
         synergy: link.type === "synergy",
-        dimmed: visible
-          ? !visible.has(link.source) || !visible.has(link.target)
-          : false,
+        dimmed,
         highlighted,
-        contextDimmed: Boolean(selectedId) && !inFocusContext,
-        burstKey: bursts && burstSignal ? burstSignal.id : null,
+        contextDimmed,
+        burstKey,
       },
       zIndex: highlighted ? 5 : inFocusContext ? 2 : 0,
     } satisfies SynapseFlowEdge;
+
+    EDGE_CACHE.set(edgeId, { signature, value });
+    return value;
   });
 }
 
-/** Neighbours of a node, for the side panel and pathway guide. */
 export function neighborsOf(
   data: IntelligenceData,
   nodeId: string,
 ): { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] {
-  const out: { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] = [];
+  const out: {
+    id: string;
+    type: "prereq" | "synergy";
+    direction: "in" | "out";
+  }[] = [];
   for (const link of data.links) {
-    if (link.source === nodeId)
+    if (link.source === nodeId) {
       out.push({ id: link.target, type: link.type, direction: "out" });
-    else if (link.target === nodeId)
+    } else if (link.target === nodeId) {
       out.push({ id: link.source, type: link.type, direction: "in" });
+    }
   }
   return out;
 }
