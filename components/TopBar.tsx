@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { exportAnkiCsv, exportObsidianVault } from "@/lib/knowledge-export";
 import { TIERS, dayKey, tierForXp, totalXp } from "@/lib/mastery";
 import { exportProgress, importProgress } from "@/lib/storage";
 import type { Category, IntelligenceData } from "@/lib/types";
@@ -224,7 +225,7 @@ export function TopBar({
             Data
           </button>
           {dataOpen && (
-            <div className="absolute right-0 top-full z-40 mt-2 w-36 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute right-0 top-full z-40 mt-2 w-44 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
               <button
                 type="button"
                 onClick={() => {
@@ -233,8 +234,29 @@ export function TopBar({
                 }}
                 className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
               >
-                Export progress
+                Export progress JSON
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  exportAnkiCsv(data);
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Export Anki CSV
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  void exportObsidianVault(data);
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Export Obsidian ZIP
+              </button>
+              <div className="my-1 h-px bg-white/8" />
               <button
                 type="button"
                 onClick={() => fileInput.current?.click()}
