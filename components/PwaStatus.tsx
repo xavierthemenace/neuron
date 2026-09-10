@@ -30,6 +30,23 @@ export function PwaStatus() {
               }
             });
           });
+
+          void navigator.serviceWorker.ready.then((ready) => {
+            const urls = performance
+              .getEntriesByType("resource")
+              .map((entry) => entry.name)
+              .filter((value) => {
+                try {
+                  return new URL(value).origin === window.location.origin;
+                } catch {
+                  return false;
+                }
+              });
+            ready.active?.postMessage({
+              type: "CACHE_URLS",
+              urls: [window.location.href, ...urls],
+            });
+          });
         })
         .catch(() => undefined);
     }
