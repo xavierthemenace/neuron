@@ -10,6 +10,7 @@ import type {
   ResourceType,
 } from "@/lib/types";
 import { HabitChecklist } from "./HabitChecklist";
+import { MarkdownJournal } from "./MarkdownJournal";
 import { useProgress } from "./ProgressProvider";
 
 const RESOURCE_LABEL: Record<ResourceType, string> = {
@@ -213,6 +214,8 @@ export function SidePanel({
               </div>
               <HabitChecklist data={data} node={node} hue={hue} />
             </section>
+
+            <MarkdownJournal nodeId={node.id} hue={hue} />
 
             {neighbors.length > 0 && (
               <section>
