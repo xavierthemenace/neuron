@@ -4,11 +4,6 @@ import { Handle, Position, type NodeProps } from "@xyflow/react";
 import { memo } from "react";
 import type { ConceptFlowNode } from "@/lib/graph";
 
-/**
- * One faculty on the map. Everything visual — size, colour, bloom — is derived
- * from the node's XP upstream in lib/graph.ts, so this component stays a pure
- * function of its data and React.memo can skip unchanged nodes.
- */
 function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
   const {
     radius,
@@ -19,26 +14,32 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
     glow,
     dimmed,
     contextDimmed,
+    focusMode,
+    retention,
+    decaying,
     tierIndex,
   } = data;
   const size = radius * 2;
 
   const core = `oklch(${lightness} ${chroma} ${hue})`;
   const halo = `oklch(${lightness} ${chroma} ${hue} / 0.55)`;
+  const retainedOpacity = opacity * (0.76 + retention * 0.24);
   const visualOpacity = selected
-    ? Math.max(opacity, 0.94)
-    : dimmed
-      ? 0.07
-      : contextDimmed
-        ? Math.min(opacity, 0.24)
-        : opacity;
+    ? Math.max(retainedOpacity, 0.96)
+    : contextDimmed && focusMode
+      ? 0.05
+      : dimmed
+        ? 0.1
+        : contextDimmed
+          ? Math.min(retainedOpacity, 0.26)
+          : retainedOpacity;
 
   return (
     <div
       className="group relative flex items-center justify-center"
       style={{ width: size, height: size }}
+      title={decaying ? `${data.label} · retention is decaying; train to refresh` : data.label}
     >
-      {/* Handles are invisible anchors — edges need them, the design doesn't. */}
       <Handle
         type="target"
         position={Position.Top}
@@ -54,9 +55,9 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
         <div
           className="animate-node-focus pointer-events-none absolute rounded-full border"
           style={{
-            inset: -10,
-            borderColor: `oklch(0.88 ${Math.max(chroma, 0.1)} ${hue} / 0.7)`,
-            boxShadow: `0 0 18px oklch(${lightness} ${chroma} ${hue} / 0.28)`,
+            inset: -11,
+            borderColor: `oklch(0.9 ${Math.max(chroma, 0.1)} ${hue} / 0.78)`,
+            boxShadow: `0 0 22px oklch(${lightness} ${chroma} ${hue} / 0.34)`,
           }}
           aria-hidden="true"
         />
@@ -67,7 +68,7 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
           "relative rounded-full transition-[opacity,box-shadow,transform,filter] duration-300 ease-out",
           selected ? "scale-[1.14]" : "group-hover:scale-110",
           contextDimmed && !selected ? "saturate-50" : "",
-          tierIndex >= 3 && !contextDimmed ? "animate-node-pulse" : "",
+          tierIndex >= 3 && !contextDimmed && !decaying ? "animate-node-pulse" : "",
         ].join(" ")}
         style={{
           width: size,
@@ -84,15 +85,22 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
             0.18,
           )} ${chroma * 0.78} ${hue}) 100%)`,
           boxShadow: selected
-            ? `0 0 ${Math.max(glow, 12)}px ${halo}, 0 0 ${Math.max(
+            ? `0 0 ${Math.max(glow, 13)}px ${halo}, 0 0 ${Math.max(
                 glow * 2.8,
-                34,
-              )}px oklch(${lightness} ${chroma} ${hue} / 0.3), inset 0 0 0 1px oklch(1 0 0 / 0.18)`
+                36,
+              )}px oklch(${lightness} ${chroma} ${hue} / 0.34), inset 0 0 0 1px oklch(1 0 0 / 0.2)`
             : glow
-              ? `0 0 ${glow}px ${halo}, 0 0 ${glow * 2.2}px oklch(${lightness} ${chroma} ${hue} / 0.22), inset 0 0 0 1px oklch(1 0 0 / 0.08)`
-              : "inset 0 0 0 1px oklch(0.5 0.03 265 / 0.6)",
+              ? `0 0 ${glow}px ${halo}, 0 0 ${glow * 2.2}px oklch(${lightness} ${chroma} ${hue} / ${0.12 + 0.12 * retention}), inset 0 0 0 1px oklch(1 0 0 / 0.1)`
+              : "0 1px 8px oklch(0 0 0 / 0.32), inset 0 0 0 1px oklch(0.65 0.035 265 / 0.72)",
         }}
       />
+
+      {decaying && !contextDimmed && !dimmed && (
+        <span
+          className="pointer-events-none absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-black/60 bg-amber-300/80 shadow-[0_0_8px_currentColor]"
+          aria-hidden="true"
+        />
+      )}
 
       <span
         className={[
@@ -100,12 +108,16 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
           "whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium tracking-tight",
           "transition-[opacity,background-color,border-color,transform] duration-300",
           selected
-            ? "translate-y-0 border-white/12 bg-black/65 opacity-100 shadow-lg backdrop-blur-md"
-            : dimmed || contextDimmed
+            ? "translate-y-0 border-white/15 bg-black/75 opacity-100 shadow-lg backdrop-blur-md"
+            : dimmed
               ? "translate-y-0.5 border-transparent bg-transparent opacity-0"
-              : "translate-y-0.5 border-transparent bg-transparent opacity-55 group-hover:translate-y-0 group-hover:border-white/10 group-hover:bg-black/55 group-hover:opacity-100 group-hover:backdrop-blur-md",
+              : contextDimmed && focusMode
+                ? "translate-y-0.5 border-transparent bg-transparent opacity-0"
+                : contextDimmed
+                  ? "translate-y-0.5 border-transparent bg-transparent opacity-20"
+                  : "translate-y-0.5 border-transparent bg-black/15 opacity-70 group-hover:translate-y-0 group-hover:border-white/12 group-hover:bg-black/65 group-hover:opacity-100 group-hover:backdrop-blur-md",
         ].join(" ")}
-        style={{ color: `oklch(0.94 0.035 ${hue})` }}
+        style={{ color: `oklch(0.96 0.035 ${hue})` }}
       >
         {data.label}
       </span>

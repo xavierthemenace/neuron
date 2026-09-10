@@ -10,9 +10,13 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import { xpByNode } from "@/lib/mastery";
 import {
-  STORAGE_KEY,
+  decayStateForLogs,
+  exerciseResetState,
+  xpByNode,
+  type DecayState,
+} from "@/lib/mastery";
+import {
   emptyProgress,
   loadProgress,
   newId,
@@ -21,44 +25,84 @@ import {
 } from "@/lib/storage";
 import type { Exercise, LogEntry, Progress } from "@/lib/types";
 
+export interface LogExerciseOptions {
+  multiplier?: number;
+  minutes?: number;
+  source?: "panel" | "command" | "workout" | "coach";
+}
+
+export interface LogSignal {
+  id: string;
+  nodeId: string;
+}
+
 type Action =
   | { kind: "hydrate"; progress: Progress }
-  | { kind: "log"; nodeId: string; exercise: Exercise; note?: string }
+  | {
+      kind: "log";
+      nodeId: string;
+      exercise: Exercise;
+      note?: string;
+      options?: LogExerciseOptions;
+    }
   | { kind: "undo"; logId: string }
   | { kind: "replace"; progress: Progress }
-  | { kind: "reset" };
+  | { kind: "reset" }
+  | { kind: "tick" };
 
-/**
- * `hydrated` lives in the reducer rather than its own useState so that reading
- * localStorage is a single dispatch — a second setState in the same effect
- * would cause a cascading render.
- */
 interface State {
   progress: Progress;
   hydrated: boolean;
+  lastLogSignal: LogSignal | null;
+  decayTick: number;
 }
 
 function initialState(): State {
-  return { progress: emptyProgress(), hydrated: false };
+  return {
+    progress: emptyProgress(),
+    hydrated: false,
+    lastLogSignal: null,
+    decayTick: 0,
+  };
 }
 
 function reducer(state: State, action: Action): State {
   switch (action.kind) {
     case "hydrate":
-      return { progress: action.progress, hydrated: true };
+      return { ...state, progress: action.progress, hydrated: true };
     case "replace":
-      return { ...state, progress: action.progress };
+      return { ...state, progress: action.progress, lastLogSignal: null };
     case "log": {
+      const nodeLogs = state.progress.logs.filter(
+        (log) => log.nodeId === action.nodeId,
+      );
+      if (
+        !exerciseResetState(
+          nodeLogs,
+          action.exercise.id,
+          action.exercise.cadence,
+        ).available
+      ) {
+        return state;
+      }
+
+      const multiplier = Math.max(1, action.options?.multiplier ?? 1);
+      const id = newId();
       const entry: LogEntry = {
-        id: newId(),
+        id,
         nodeId: action.nodeId,
         exerciseId: action.exercise.id,
-        xp: action.exercise.xp,
+        baseXp: action.exercise.xp,
+        multiplier,
+        xp: Math.round(action.exercise.xp * multiplier),
+        minutes: action.options?.minutes,
         note: action.note?.trim() || undefined,
+        source: action.options?.source ?? "panel",
         at: new Date().toISOString(),
       };
       return {
         ...state,
+        lastLogSignal: { id, nodeId: action.nodeId },
         progress: { ...state.progress, logs: [...state.progress.logs, entry] },
       };
     }
@@ -67,55 +111,95 @@ function reducer(state: State, action: Action): State {
         ...state,
         progress: {
           ...state.progress,
-          logs: state.progress.logs.filter((l) => l.id !== action.logId),
+          logs: state.progress.logs.filter((log) => log.id !== action.logId),
         },
       };
     case "reset":
-      return { ...state, progress: emptyProgress() };
+      return { ...state, progress: emptyProgress(), lastLogSignal: null };
+    case "tick":
+      return { ...state, decayTick: state.decayTick + 1 };
   }
 }
 
 interface ProgressContextValue {
   progress: Progress;
-  /** False until localStorage has been read — gate rendering on this. */
   hydrated: boolean;
+  /** Effective XP after memory decay; use this for mastery/visual state. */
   xpByNodeId: Record<string, number>;
+  /** Historical awarded XP, before decay. */
+  rawXpByNodeId: Record<string, number>;
+  decayByNodeId: Record<string, DecayState>;
   logsByNodeId: Record<string, LogEntry[]>;
-  logExercise: (nodeId: string, exercise: Exercise, note?: string) => void;
+  lastLogSignal: LogSignal | null;
+  logExercise: (
+    nodeId: string,
+    exercise: Exercise,
+    note?: string,
+    options?: LogExerciseOptions,
+  ) => void;
   undoLog: (logId: string) => void;
   replaceProgress: (progress: Progress) => void;
   resetProgress: () => void;
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
-
 const SAVE_DEBOUNCE_MS = 300;
+const CHANNEL_NAME = "neuron-progress-v2";
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
-  const [{ progress, hydrated }, dispatch] = useReducer(
+  const [{ progress, hydrated, lastLogSignal, decayTick }, dispatch] = useReducer(
     reducer,
     undefined,
     initialState,
   );
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  /** True while an edit made here has not yet reached localStorage. */
   const dirty = useRef(false);
+  const channel = useRef<BroadcastChannel | null>(null);
 
-  // Read storage only after mount: the server render has no localStorage, and
-  // seeding state from it during render would desync the two.
   useEffect(() => {
-    dispatch({ kind: "hydrate", progress: loadProgress() });
+    let cancelled = false;
+    void loadProgress().then((loaded) => {
+      if (!cancelled) dispatch({ kind: "hydrate", progress: loaded });
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Debounced write — logging several exercises in a row shouldn't serialise
-  // the whole log array on every click.
+  useEffect(() => {
+    if (typeof BroadcastChannel === "undefined") return;
+    const broadcast = new BroadcastChannel(CHANNEL_NAME);
+    channel.current = broadcast;
+    broadcast.onmessage = (event: MessageEvent<unknown>) => {
+      const incoming = parseProgress(event.data);
+      if (!incoming) return;
+      dirty.current = false;
+      dispatch({ kind: "replace", progress: incoming });
+    };
+    return () => {
+      broadcast.close();
+      if (channel.current === broadcast) channel.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => dispatch({ kind: "tick" }),
+      60 * 60 * 1000,
+    );
+    return () => window.clearInterval(timer);
+  }, []);
+
   useEffect(() => {
     if (!hydrated) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     dirty.current = true;
     saveTimer.current = setTimeout(() => {
-      saveProgress(progress);
-      dirty.current = false;
+      const snapshot = progress;
+      void saveProgress(snapshot).then(() => {
+        dirty.current = false;
+        channel.current?.postMessage(snapshot);
+      });
       saveTimer.current = null;
     }, SAVE_DEBOUNCE_MS);
     return () => {
@@ -123,57 +207,55 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     };
   }, [progress, hydrated]);
 
-  // Flush a pending debounce if the tab is hidden or closed mid-window — but
-  // only when there is genuinely an unsaved change. Writing unconditionally
-  // here would stamp this tab's state over a newer one saved by another tab.
   useEffect(() => {
     if (!hydrated) return;
     const flush = () => {
       if (!dirty.current) return;
-      saveProgress(progress);
       dirty.current = false;
+      void saveProgress(progress);
     };
     window.addEventListener("pagehide", flush);
     return () => window.removeEventListener("pagehide", flush);
   }, [progress, hydrated]);
-
-  // Another tab logging work should show up here rather than being silently
-  // overwritten the next time this tab saves. The storage event fires only in
-  // the tabs that did *not* make the change, which is exactly what we want.
-  useEffect(() => {
-    const onStorage = (event: StorageEvent) => {
-      if (event.key !== STORAGE_KEY || event.newValue === null) return;
-      try {
-        const incoming = parseProgress(JSON.parse(event.newValue));
-        if (incoming) {
-          dirty.current = false;
-          dispatch({ kind: "replace", progress: incoming });
-        }
-      } catch {
-        // A corrupt write from elsewhere shouldn't take this tab down.
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  const xpByNodeId = useMemo(() => xpByNode(progress.logs), [progress.logs]);
 
   const logsByNodeId = useMemo(() => {
     const grouped: Record<string, LogEntry[]> = {};
     for (const log of progress.logs) {
       (grouped[log.nodeId] ??= []).push(log);
     }
-    // Newest first — the panel shows recent activity.
     for (const list of Object.values(grouped)) {
       list.sort((a, b) => b.at.localeCompare(a.at));
     }
     return grouped;
   }, [progress.logs]);
 
+  const rawXpByNodeId = useMemo(() => xpByNode(progress.logs), [progress.logs]);
+
+  const decayByNodeId = useMemo(() => {
+    void decayTick;
+    const now = new Date();
+    const states: Record<string, DecayState> = {};
+    for (const [nodeId, logs] of Object.entries(logsByNodeId)) {
+      states[nodeId] = decayStateForLogs(logs, now);
+    }
+    return states;
+  }, [logsByNodeId, decayTick]);
+
+  const xpByNodeId = useMemo(() => {
+    const effective: Record<string, number> = {};
+    for (const [nodeId, rawXp] of Object.entries(rawXpByNodeId)) {
+      effective[nodeId] = decayByNodeId[nodeId]?.effectiveXp ?? rawXp;
+    }
+    return effective;
+  }, [rawXpByNodeId, decayByNodeId]);
+
   const logExercise = useCallback(
-    (nodeId: string, exercise: Exercise, note?: string) =>
-      dispatch({ kind: "log", nodeId, exercise, note }),
+    (
+      nodeId: string,
+      exercise: Exercise,
+      note?: string,
+      options?: LogExerciseOptions,
+    ) => dispatch({ kind: "log", nodeId, exercise, note, options }),
     [],
   );
   const undoLog = useCallback(
@@ -191,7 +273,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       progress,
       hydrated,
       xpByNodeId,
+      rawXpByNodeId,
+      decayByNodeId,
       logsByNodeId,
+      lastLogSignal,
       logExercise,
       undoLog,
       replaceProgress,
@@ -201,7 +286,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       progress,
       hydrated,
       xpByNodeId,
+      rawXpByNodeId,
+      decayByNodeId,
       logsByNodeId,
+      lastLogSignal,
       logExercise,
       undoLog,
       replaceProgress,

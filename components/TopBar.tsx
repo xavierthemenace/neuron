@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TIERS, tierForXp, totalXp } from "@/lib/mastery";
+import { exportAnkiCsv, exportObsidianVault } from "@/lib/knowledge-export";
+import { TIERS, dayKey, tierForXp, totalXp } from "@/lib/mastery";
 import { exportProgress, importProgress } from "@/lib/storage";
 import type { Category, IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
@@ -11,6 +12,7 @@ export function TopBar({
   search,
   onSearchChange,
   onSelectNode,
+  onOpenAnalytics,
   activeCategories,
   onToggleCategory,
   onClearFilters,
@@ -19,6 +21,7 @@ export function TopBar({
   search: string;
   onSearchChange: (value: string) => void;
   onSelectNode: (id: string) => void;
+  onOpenAnalytics: () => void;
   activeCategories: Set<string>;
   onToggleCategory: (id: string) => void;
   onClearFilters: () => void;
@@ -28,10 +31,10 @@ export function TopBar({
   const searchInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
+  const [dataOpen, setDataOpen] = useState(false);
 
   const total = totalXp(progress);
 
-  // How many nodes sit at each mastery tier — the one-line summary of progress.
   const tierCounts = useMemo(() => {
     const counts = new Array(TIERS.length).fill(0);
     for (const node of data.nodes) {
@@ -48,15 +51,9 @@ export function TopBar({
   const searchResults = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return [];
-
     return data.nodes
       .filter((node) => {
-        if (
-          activeCategories.size > 0 &&
-          !activeCategories.has(node.categoryId)
-        ) {
-          return false;
-        }
+        if (activeCategories.size > 0 && !activeCategories.has(node.categoryId)) return false;
         return (
           node.label.toLowerCase().includes(query) ||
           node.description.toLowerCase().includes(query)
@@ -65,14 +62,24 @@ export function TopBar({
       .slice(0, 6);
   }, [activeCategories, data.nodes, search]);
 
+  const streak = useMemo(() => {
+    const active = new Set(progress.logs.map((log) => dayKey(new Date(log.at))));
+    const cursor = new Date();
+    cursor.setHours(12, 0, 0, 0);
+    if (!active.has(dayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+    let count = 0;
+    while (active.has(dayKey(cursor))) {
+      count += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return count;
+  }, [progress.logs]);
+
   const awake = data.nodes.length - tierCounts[0];
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) {
-        return;
-      }
-
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
       if (
         target?.tagName === "INPUT" ||
@@ -81,11 +88,9 @@ export function TopBar({
       ) {
         return;
       }
-
       event.preventDefault();
       searchInput.current?.focus();
     };
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
@@ -105,28 +110,25 @@ export function TopBar({
   };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-col gap-2 p-3 md:p-4">
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4">
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-black/45 px-3 py-2 shadow-sm backdrop-blur-xl">
-          <span className="text-sm font-semibold tracking-tight text-neutral-100">
-            Neuron
-          </span>
+        <div className="flex items-center gap-2.5 rounded-xl border border-white/12 bg-black/60 px-3 py-2 shadow-lg backdrop-blur-xl">
+          <span className="text-sm font-semibold tracking-tight text-white">Neuron</span>
           <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
-          <span className="tabular-nums text-xs text-neutral-400">
-            <span className="font-medium text-neutral-100">{total.toLocaleString()}</span>{" "}
-            XP
+          <span className="tabular-nums text-xs text-neutral-300">
+            <span className="font-semibold text-white">{total.toLocaleString()}</span> XP
           </span>
-          <span className="tabular-nums text-xs text-neutral-500">
+          <span className="hidden tabular-nums text-xs text-neutral-500 sm:inline">
             {awake}/{data.nodes.length} active
           </span>
         </div>
 
-        <div className="relative">
+        <div className="relative order-last w-full sm:order-none sm:w-auto">
           <div className="relative">
             <input
               ref={searchInput}
               value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={(event) => onSearchChange(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && searchResults[0]) {
                   event.preventDefault();
@@ -138,7 +140,7 @@ export function TopBar({
               }}
               placeholder="Search faculties…"
               aria-label="Search faculties"
-              className="w-48 rounded-xl border border-white/10 bg-black/45 px-3 py-2 pr-8 text-xs text-neutral-200 outline-none backdrop-blur-xl transition-[border-color,background-color,box-shadow] placeholder:text-neutral-600 focus:border-white/25 focus:bg-black/60 focus:shadow-lg md:w-64"
+              className="w-full rounded-xl border border-white/12 bg-black/60 px-3 py-2 pr-9 text-xs text-neutral-100 shadow-lg outline-none backdrop-blur-xl transition-[border-color,background-color,box-shadow] placeholder:text-neutral-500 focus:border-white/30 focus:bg-black/75 sm:w-64"
             />
             {search ? (
               <button
@@ -148,69 +150,44 @@ export function TopBar({
                   searchInput.current?.focus();
                 }}
                 aria-label="Clear search"
-                className="absolute right-1.5 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-md text-neutral-600 transition-colors hover:bg-white/8 hover:text-neutral-300"
+                className="absolute right-1.5 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-md text-neutral-500 hover:bg-white/8 hover:text-white"
               >
-                <svg viewBox="0 0 12 12" className="h-3 w-3" aria-hidden="true">
-                  <path
-                    d="M2 2l8 8M10 2L2 10"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                ×
               </button>
             ) : (
-              <span className="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 font-mono text-[9px] text-neutral-600 md:block">
-                /
-              </span>
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] text-neutral-500">/</span>
             )}
           </div>
 
           {search.trim() && (
-            <div className="absolute left-0 top-full z-30 mt-2 w-[min(22rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl border border-white/10 bg-[oklch(0.14_0.016_265_/_0.96)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
               {searchResults.length > 0 ? (
-                <>
-                  {searchResults.map((node, index) => {
-                    const category = categoriesById.get(node.categoryId);
-                    return (
-                      <button
-                        key={node.id}
-                        type="button"
-                        onClick={() => chooseSearchResult(node.id)}
-                        className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06] focus:bg-white/[0.06] focus:outline-none"
-                      >
-                        <span
-                          className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]"
-                          style={{
-                            color: `oklch(0.72 0.16 ${category?.hue ?? 260})`,
-                            background: "currentColor",
-                          }}
-                          aria-hidden="true"
-                        />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-xs font-medium text-neutral-200 group-hover:text-white">
-                            {node.label}
-                          </span>
-                          <span className="block truncate text-[10px] text-neutral-600 group-hover:text-neutral-500">
-                            {category?.label ?? "Faculty"}
-                          </span>
-                        </span>
-                        {index === 0 && (
-                          <span className="hidden shrink-0 text-[9px] text-neutral-700 md:block">
-                            Enter
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                  <div className="px-2.5 pb-1 pt-1.5 text-[9px] text-neutral-700">
-                    {searchResults.length === 6 ? "Showing top matches" : `${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
-                  </div>
-                </>
+                searchResults.map((node, index) => {
+                  const category = categoriesById.get(node.categoryId);
+                  return (
+                    <button
+                      key={node.id}
+                      type="button"
+                      onClick={() => chooseSearchResult(node.id)}
+                      className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/[0.07] focus:bg-white/[0.07] focus:outline-none"
+                    >
+                      <span
+                        className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]"
+                        style={{
+                          color: `oklch(0.78 0.16 ${category?.hue ?? 260})`,
+                          background: "currentColor",
+                        }}
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-xs font-medium text-neutral-100">{node.label}</span>
+                        <span className="block truncate text-[10px] text-neutral-500">{category?.label ?? "Faculty"}</span>
+                      </span>
+                      {index === 0 && <span className="text-[9px] text-neutral-600">Enter</span>}
+                    </button>
+                  );
+                })
               ) : (
-                <div className="px-3 py-3 text-xs text-neutral-600">
-                  No matching faculties
-                </div>
+                <div className="px-3 py-3 text-xs text-neutral-500">No matching faculties</div>
               )}
             </div>
           )}
@@ -218,78 +195,119 @@ export function TopBar({
 
         <button
           type="button"
-          onClick={() => setLegendOpen((v) => !v)}
+          onClick={() => setLegendOpen((value) => !value)}
           aria-expanded={legendOpen}
           className={[
-            "rounded-xl border px-3 py-2 text-xs backdrop-blur-xl transition-colors",
+            "rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
             activeCategories.size > 0
-              ? "border-white/30 bg-white/10 text-neutral-100"
-              : "border-white/10 bg-black/45 text-neutral-400 hover:text-neutral-200",
+              ? "border-white/30 bg-white/12 text-white"
+              : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
           ].join(" ")}
         >
-          Filter
-          {activeCategories.size > 0 && ` (${activeCategories.size})`}
+          Filter{activeCategories.size > 0 && ` (${activeCategories.size})`}
         </button>
 
-        <div className="ml-auto flex items-center gap-2">
+        <button
+          type="button"
+          onClick={onOpenAnalytics}
+          className="rounded-xl border border-white/12 bg-black/60 px-3 py-2 text-xs text-neutral-300 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
+        >
+          Analytics{streak > 0 && <span className="ml-1.5 text-emerald-200/70">{streak}d</span>}
+        </button>
+
+        <div className="relative ml-auto">
           <button
             type="button"
-            onClick={() => exportProgress(progress)}
-            className="rounded-xl border border-white/10 bg-black/45 px-3 py-2 text-xs text-neutral-400 backdrop-blur-xl transition-colors hover:border-white/25 hover:text-neutral-100"
+            onClick={() => setDataOpen((value) => !value)}
+            aria-expanded={dataOpen}
+            className="rounded-xl border border-white/12 bg-black/60 px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
           >
-            Export
+            Data
           </button>
-          <button
-            type="button"
-            onClick={() => fileInput.current?.click()}
-            className="rounded-xl border border-white/10 bg-black/45 px-3 py-2 text-xs text-neutral-400 backdrop-blur-xl transition-colors hover:border-white/25 hover:text-neutral-100"
-          >
-            Import
-          </button>
-          <input
-            ref={fileInput}
-            type="file"
-            accept="application/json,.json"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void onImport(file);
-              e.target.value = "";
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Erase all logged progress? Export first if you want a backup.",
-                )
-              ) {
-                resetProgress();
-              }
-            }}
-            className="rounded-xl border border-white/10 bg-black/45 px-3 py-2 text-xs text-neutral-600 backdrop-blur-xl transition-colors hover:border-red-500/40 hover:text-red-300"
-          >
-            Reset
-          </button>
+          {dataOpen && (
+            <div className="absolute right-0 top-full z-40 mt-2 w-44 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+              <button
+                type="button"
+                onClick={() => {
+                  exportProgress(progress);
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Export progress JSON
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  exportAnkiCsv(data);
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Export Anki CSV
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  void exportObsidianVault(data);
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Export Obsidian ZIP
+              </button>
+              <div className="my-1 h-px bg-white/8" />
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+              >
+                Import progress
+              </button>
+              <input
+                ref={fileInput}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void onImport(file);
+                  event.target.value = "";
+                  setDataOpen(false);
+                }}
+              />
+              <div className="my-1 h-px bg-white/8" />
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm("Erase all logged progress? Export first if you want a backup.")) {
+                    resetProgress();
+                  }
+                  setDataOpen(false);
+                }}
+                className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-red-300/60 hover:bg-red-400/[0.07] hover:text-red-200"
+              >
+                Reset progress
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-black/35 px-2.5 py-2 text-[9px] text-neutral-500 shadow-lg backdrop-blur-xl lg:flex">
+          <kbd className="font-mono">⌘/Ctrl K</kbd>
+          <span>commands</span>
         </div>
       </div>
 
       {error && (
-        <div className="pointer-events-auto w-fit rounded-lg border border-red-500/30 bg-red-950/50 px-3 py-1.5 text-xs text-red-200 backdrop-blur-xl">
+        <div className="pointer-events-auto w-fit rounded-lg border border-red-500/30 bg-red-950/70 px-3 py-1.5 text-xs text-red-100 shadow-lg backdrop-blur-xl">
           {error}
-          <button
-            type="button"
-            onClick={() => setError(null)}
-            className="ml-2 text-red-400 hover:text-red-200"
-          >
-            dismiss
-          </button>
+          <button type="button" onClick={() => setError(null)} className="ml-2 text-red-300 hover:text-white">dismiss</button>
         </div>
       )}
 
       {legendOpen && (
-        <div className="pointer-events-auto w-full max-w-2xl rounded-xl border border-white/10 bg-black/55 p-3 shadow-xl backdrop-blur-xl">
+        <div className="pointer-events-auto w-full max-w-3xl rounded-xl border border-white/12 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-wrap gap-1.5">
             {data.categories.map((category: Category) => {
               const active = activeCategories.has(category.id);
@@ -301,54 +319,33 @@ export function TopBar({
                   aria-pressed={active}
                   className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-all"
                   style={{
-                    borderColor: active
-                      ? `oklch(0.7 0.15 ${category.hue})`
-                      : "oklch(1 0 0 / 0.12)",
-                    background: active
-                      ? `oklch(0.7 0.15 ${category.hue} / 0.16)`
-                      : "transparent",
-                    color: active
-                      ? `oklch(0.88 0.1 ${category.hue})`
-                      : "oklch(0.65 0.01 265)",
+                    borderColor: active ? `oklch(0.75 0.15 ${category.hue})` : "oklch(1 0 0 / 0.14)",
+                    background: active ? `oklch(0.7 0.15 ${category.hue} / 0.18)` : "oklch(1 0 0 / 0.025)",
+                    color: active ? `oklch(0.92 0.1 ${category.hue})` : "oklch(0.74 0.01 265)",
                   }}
                 >
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ background: `oklch(0.72 0.16 ${category.hue})` }}
-                    aria-hidden="true"
-                  />
+                  <span className="h-2 w-2 rounded-full" style={{ background: `oklch(0.78 0.16 ${category.hue})` }} aria-hidden="true" />
                   {category.label}
                 </button>
               );
             })}
           </div>
           {activeCategories.size > 0 && (
-            <button
-              type="button"
-              onClick={onClearFilters}
-              className="mt-2 text-[11px] text-neutral-500 transition-colors hover:text-neutral-300"
-            >
-              Clear filters
-            </button>
+            <button type="button" onClick={onClearFilters} className="mt-2 text-[11px] text-neutral-400 hover:text-white">Clear filters</button>
           )}
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/8 pt-2.5 text-[10px] text-neutral-500">
             {TIERS.map((tier) => (
               <span key={tier.index} className="flex items-center gap-1.5">
                 <span
-                  className="rounded-full bg-neutral-300"
-                  style={{
-                    width: 4 + tier.index * 1.6,
-                    height: 4 + tier.index * 1.6,
-                    opacity: tier.opacity,
-                  }}
+                  className="rounded-full bg-neutral-200"
+                  style={{ width: 5 + tier.index * 1.6, height: 5 + tier.index * 1.6, opacity: tier.opacity }}
                   aria-hidden="true"
                 />
                 {tier.name}
-                <span className="tabular-nums text-neutral-600">
-                  {tierCounts[tier.index]}
-                </span>
+                <span className="tabular-nums text-neutral-600">{tierCounts[tier.index]}</span>
               </span>
             ))}
+            <span className="ml-auto text-amber-200/50">amber dot = retention decay</span>
           </div>
         </div>
       )}

@@ -1,7 +1,11 @@
-import type { LogEntry, Progress } from "./types";
+import type { Cadence, Exercise, LogEntry, Progress } from "./types";
 
 /** XP at which a node is considered fully trained. Caps the growth curve. */
 export const MAX_XP = 700;
+export const DECAY_GRACE_DAYS = 14;
+export const DECAY_HALF_LIFE_DAYS = 120;
+export const DECAY_FLOOR_XP = 50;
+export const SESSION_RESET_HOURS = 4;
 
 export interface Tier {
   index: number;
@@ -18,15 +22,15 @@ export interface Tier {
 }
 
 /**
- * Five visual states. The map should read at a glance: a dim scatter when you
- * start, a lit-up brain once you've put the work in.
+ * Five visual states. Dormant nodes remain legible enough to navigate while
+ * trained nodes progressively become the visual hierarchy of the map.
  */
 export const TIERS: Tier[] = [
-  { index: 0, min: 0,   name: "Dormant",      opacity: 0.3,  glow: 0,  lightness: 0.55, chroma: 0.04 },
-  { index: 1, min: 50,  name: "Firing",       opacity: 0.62, glow: 10, lightness: 0.66, chroma: 0.11 },
-  { index: 2, min: 150, name: "Myelinated",   opacity: 0.8,  glow: 20, lightness: 0.72, chroma: 0.16 },
-  { index: 3, min: 350, name: "Consolidated", opacity: 0.92, glow: 32, lightness: 0.78, chroma: 0.2  },
-  { index: 4, min: 700, name: "Mastered",     opacity: 1,    glow: 46, lightness: 0.85, chroma: 0.24 },
+  { index: 0, min: 0, name: "Dormant", opacity: 0.42, glow: 0, lightness: 0.58, chroma: 0.055 },
+  { index: 1, min: 50, name: "Firing", opacity: 0.68, glow: 11, lightness: 0.68, chroma: 0.12 },
+  { index: 2, min: 150, name: "Myelinated", opacity: 0.84, glow: 21, lightness: 0.74, chroma: 0.17 },
+  { index: 3, min: 350, name: "Consolidated", opacity: 0.94, glow: 33, lightness: 0.8, chroma: 0.2 },
+  { index: 4, min: 700, name: "Mastered", opacity: 1, glow: 47, lightness: 0.86, chroma: 0.24 },
 ];
 
 export function tierForXp(xp: number): Tier {
@@ -45,32 +49,98 @@ export function tierProgress(xp: number): number {
   const current = tierForXp(xp);
   const next = nextTier(xp);
   if (!next) return 1;
-  return (xp - current.min) / (next.min - current.min);
+  return Math.max(0, Math.min(1, (xp - current.min) / (next.min - current.min)));
 }
 
 const BASE_RADIUS = 15;
 const MAX_GROWTH = 27;
 
-/**
- * Square-rooted so the first few logs produce visible growth while late ones
- * taper — early feedback matters more than late precision, and a linear curve
- * would blow the layout apart at high XP.
- */
+/** Square-rooted so early training creates strong visual feedback. */
 export function radiusForXp(xp: number): number {
-  const t = Math.min(xp, MAX_XP) / MAX_XP;
+  const t = Math.min(Math.max(xp, 0), MAX_XP) / MAX_XP;
   return Math.round(BASE_RADIUS + MAX_GROWTH * Math.sqrt(t));
 }
 
 /** Diameter of the largest possible orb — used to size layout collision. */
 export const MAX_DIAMETER = (BASE_RADIUS + MAX_GROWTH) * 2;
 
-/** Sums logs into a nodeId -> xp map in one pass. */
+/** Sums awarded logs into a nodeId -> raw XP map in one pass. */
 export function xpByNode(logs: LogEntry[]): Record<string, number> {
   const totals: Record<string, number> = {};
   for (const log of logs) {
     totals[log.nodeId] = (totals[log.nodeId] ?? 0) + log.xp;
   }
   return totals;
+}
+
+export interface DecayState {
+  rawXp: number;
+  effectiveXp: number;
+  retention: number;
+  daysIdle: number;
+  decaying: boolean;
+  lastTrainedAt: string | null;
+}
+
+/**
+ * Ebbinghaus-inspired retention curve. Training has a two-week grace period;
+ * afterwards progress decays gently with a 120-day half-life. Once a faculty
+ * has reached Firing, decay never erases that foundation completely.
+ */
+export function decayStateForLogs(
+  logs: LogEntry[],
+  now = new Date(),
+): DecayState {
+  if (logs.length === 0) {
+    return {
+      rawXp: 0,
+      effectiveXp: 0,
+      retention: 1,
+      daysIdle: 0,
+      decaying: false,
+      lastTrainedAt: null,
+    };
+  }
+
+  let rawXp = 0;
+  let latestMs = 0;
+  let latestIso: string | null = null;
+  for (const log of logs) {
+    rawXp += log.xp;
+    const ms = new Date(log.at).getTime();
+    if (ms > latestMs) {
+      latestMs = ms;
+      latestIso = log.at;
+    }
+  }
+
+  const daysIdle = Math.max(0, (now.getTime() - latestMs) / 864e5);
+  if (daysIdle <= DECAY_GRACE_DAYS) {
+    return {
+      rawXp,
+      effectiveXp: rawXp,
+      retention: 1,
+      daysIdle,
+      decaying: false,
+      lastTrainedAt: latestIso,
+    };
+  }
+
+  const decayingDays = daysIdle - DECAY_GRACE_DAYS;
+  const factor = Math.pow(0.5, decayingDays / DECAY_HALF_LIFE_DAYS);
+  const floor = Math.min(rawXp, DECAY_FLOOR_XP);
+  const effectiveXp = floor + (rawXp - floor) * factor;
+  // Glow can ebb a little faster than numeric XP while never becoming illegible.
+  const retention = Math.max(0.5, Math.pow(0.5, decayingDays / 90));
+
+  return {
+    rawXp,
+    effectiveXp: Math.round(effectiveXp),
+    retention,
+    daysIdle,
+    decaying: true,
+    lastTrainedAt: latestIso,
+  };
 }
 
 export function totalXp(progress: Progress): number {
@@ -85,26 +155,62 @@ export function dayKey(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
+export interface ExerciseResetState {
+  available: boolean;
+  nextResetAt: Date | null;
+}
+
+function latestExerciseLog(logs: LogEntry[], exerciseId: string): LogEntry | null {
+  let latest: LogEntry | null = null;
+  for (const log of logs) {
+    if (log.exerciseId !== exerciseId) continue;
+    if (!latest || log.at > latest.at) latest = log;
+  }
+  return latest;
+}
+
 /**
- * Whether an exercise counts as satisfied right now. `session` exercises have
- * no window — they're done whenever you choose to do them.
+ * Every XP task has a reset boundary. Session tasks intentionally use a
+ * four-hour cooldown: they are repeatable, but never infinitely spammable.
  */
+export function exerciseResetState(
+  logs: LogEntry[],
+  exerciseId: string,
+  cadence: Cadence,
+  now = new Date(),
+): ExerciseResetState {
+  const latest = latestExerciseLog(logs, exerciseId);
+  if (!latest) return { available: true, nextResetAt: null };
+
+  if (cadence === "daily") {
+    if (dayKey(new Date(latest.at)) !== dayKey(now)) {
+      return { available: true, nextResetAt: null };
+    }
+    const reset = new Date(now);
+    reset.setHours(24, 0, 0, 0);
+    return { available: false, nextResetAt: reset };
+  }
+
+  const durationMs =
+    cadence === "weekly" ? 7 * 864e5 : SESSION_RESET_HOURS * 60 * 60 * 1000;
+  const reset = new Date(new Date(latest.at).getTime() + durationMs);
+  return reset <= now
+    ? { available: true, nextResetAt: null }
+    : { available: false, nextResetAt: reset };
+}
+
 export function isSatisfied(
   logs: LogEntry[],
   exerciseId: string,
-  cadence: "daily" | "weekly" | "session",
+  cadence: Cadence,
   now = new Date(),
 ): boolean {
-  if (cadence === "session") return false;
-  const windowMs = cadence === "daily" ? 864e5 : 7 * 864e5;
-  if (cadence === "daily") {
-    const today = dayKey(now);
-    return logs.some(
-      (l) => l.exerciseId === exerciseId && dayKey(new Date(l.at)) === today,
-    );
-  }
-  const cutoff = now.getTime() - windowMs;
-  return logs.some(
-    (l) => l.exerciseId === exerciseId && new Date(l.at).getTime() >= cutoff,
-  );
+  return !exerciseResetState(logs, exerciseId, cadence, now).available;
+}
+
+/** Estimate minutes for analytics when a task did not explicitly record them. */
+export function estimateExerciseMinutes(exercise: Exercise): number {
+  const match = exercise.label.match(/(\d+)\s*(?:-|–)?\s*(?:minute|min)\b/i);
+  if (match) return Math.max(1, Number(match[1]));
+  return Math.max(5, Math.round((exercise.xp * 0.8) / 5) * 5);
 }

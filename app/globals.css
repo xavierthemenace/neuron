@@ -1,16 +1,13 @@
 @import "tailwindcss";
 
-/*
- * Committed dark-only. The whole visual premise is a dim network that lights up
- * as you train it, which has no meaningful light-mode equivalent.
- */
 :root {
   color-scheme: dark;
-  --surface: oklch(0.145 0.018 265);
-  --surface-raised: oklch(0.19 0.02 265);
-  --foreground: oklch(0.95 0.005 265);
-  --muted: oklch(0.62 0.012 265);
-  --border: oklch(1 0 0 / 0.1);
+  --surface: oklch(0.125 0.018 265);
+  --surface-raised: oklch(0.185 0.022 265);
+  --foreground: oklch(0.97 0.005 265);
+  --muted: oklch(0.69 0.014 265);
+  --border: oklch(1 0 0 / 0.13);
+  --focus-ring: oklch(0.82 0.13 230);
 }
 
 @theme inline {
@@ -24,12 +21,9 @@ body {
   background: var(--surface);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  /* The canvas owns all scrolling. */
   overflow: hidden;
 }
 
-/* Layered radial light gives the graph a little more depth without competing
- * with the category colours carried by the nodes themselves. */
 body::before {
   content: "";
   position: fixed;
@@ -38,18 +32,34 @@ body::before {
   z-index: 0;
   background:
     radial-gradient(
-      circle at 50% 42%,
-      oklch(0.31 0.065 278 / 0.34),
-      transparent 34%
+      circle at 50% 40%,
+      oklch(0.33 0.072 278 / 0.38),
+      transparent 31%
     ),
     radial-gradient(
-      ellipse 88% 68% at 50% 48%,
-      oklch(0.235 0.038 268 / 0.48),
+      ellipse 90% 72% at 50% 48%,
+      oklch(0.245 0.042 268 / 0.54),
       transparent 72%
+    ),
+    linear-gradient(
+      to bottom,
+      oklch(0.16 0.018 265 / 0.35),
+      transparent 22%,
+      transparent 78%,
+      oklch(0.08 0.01 265 / 0.45)
     );
 }
 
-/* Slow breathing bloom on the highest-mastery nodes. */
+::selection {
+  background: oklch(0.72 0.14 230 / 0.35);
+  color: white;
+}
+
+:where(button, input, textarea, a):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 @keyframes node-pulse {
   0%,
   100% {
@@ -64,7 +74,6 @@ body::before {
   animation: node-pulse 3.6s ease-in-out infinite;
 }
 
-/* One-shot confirmation when a faculty becomes the active focus. */
 @keyframes node-focus-ring {
   0% {
     opacity: 0;
@@ -74,7 +83,7 @@ body::before {
     opacity: 0.95;
   }
   100% {
-    opacity: 0.58;
+    opacity: 0.62;
     transform: scale(1);
   }
 }
@@ -88,20 +97,26 @@ body::before {
   .animate-node-focus {
     animation: none;
   }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
 }
 
-/* ---- React Flow surfaces, repainted for the dark palette ---- */
+/* ---- React Flow surfaces ---- */
 
 .react-flow__controls-button {
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--border);
-  color: var(--muted);
+  color: oklch(0.76 0.015 265);
   transition: color 150ms ease, background 150ms ease;
 }
 
 .react-flow__controls-button:hover {
-  background: oklch(1 0 0 / 0.07);
+  background: oklch(1 0 0 / 0.09);
   color: var(--foreground);
 }
 
@@ -112,7 +127,7 @@ body::before {
 .react-flow__controls {
   border-radius: 11px;
   overflow: hidden;
-  box-shadow: 0 12px 32px oklch(0 0 0 / 0.18);
+  box-shadow: 0 12px 34px oklch(0 0 0 / 0.28);
 }
 
 .react-flow__edge-path {
@@ -122,9 +137,14 @@ body::before {
     stroke-opacity 260ms ease;
 }
 
+.react-flow__minimap {
+  backdrop-filter: blur(14px);
+}
+
 .react-flow__attribution {
-  background: transparent;
-  color: oklch(0.42 0.01 265);
+  background: oklch(0.08 0.01 265 / 0.38);
+  border-radius: 5px 0 0 0;
+  color: oklch(0.58 0.012 265);
   font-size: 10px;
 }
 
@@ -132,10 +152,14 @@ body::before {
   color: inherit;
 }
 
-/* Node focus is communicated by the orb's own ring, not a browser ring. */
-.react-flow__node:focus,
-.react-flow__node:focus-visible {
+.react-flow__node:focus {
   outline: none;
+}
+
+.react-flow__node:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 8px;
+  border-radius: 999px;
 }
 
 .react-flow__node {
@@ -146,11 +170,22 @@ body::before {
   z-index: 15 !important;
 }
 
-/* ---- Scrollbars inside the side panel ---- */
+@media (prefers-contrast: more) {
+  :root {
+    --muted: oklch(0.78 0.014 265);
+    --border: oklch(1 0 0 / 0.22);
+  }
+
+  .react-flow__edge-path {
+    stroke-opacity: 0.9;
+  }
+}
+
+/* ---- Scrollbars ---- */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(1 0 0 / 0.14) transparent;
+  scrollbar-color: oklch(1 0 0 / 0.2) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -159,8 +194,12 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 0.14);
+  background: oklch(1 0 0 / 0.2);
   border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(1 0 0 / 0.3);
 }
 
 ::-webkit-scrollbar-track {
