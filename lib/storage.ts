@@ -1,5 +1,7 @@
+import { getStoredProgress, putStoredProgress } from "./db";
 import type { LogEntry, Progress } from "./types";
 
+/** Legacy v1 localStorage key, retained solely for one-time migration/fallback. */
 export const STORAGE_KEY = "neuron.progress.v1";
 
 export function emptyProgress(): Progress {
@@ -48,7 +50,14 @@ function parseLogEntry(value: unknown): LogEntry | null {
   if (multiplier !== undefined && multiplier >= 1) parsed.multiplier = multiplier;
   if (minutes !== undefined && minutes > 0) parsed.minutes = minutes;
   if (typeof log.note === "string" && log.note.trim()) parsed.note = log.note;
-  if (log.source === "panel" || log.source === "command") parsed.source = log.source;
+  if (
+    log.source === "panel" ||
+    log.source === "command" ||
+    log.source === "workout" ||
+    log.source === "coach"
+  ) {
+    parsed.source = log.source;
+  }
 
   return parsed;
 }
@@ -69,24 +78,55 @@ export function parseProgress(value: unknown): Progress | null {
   };
 }
 
-/** Reads saved progress. Returns empty progress rather than throwing. */
-export function loadProgress(): Progress {
-  if (typeof window === "undefined") return emptyProgress();
+function loadLegacyProgress(): Progress | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyProgress();
-    return parseProgress(JSON.parse(raw)) ?? emptyProgress();
+    if (!raw) return null;
+    return parseProgress(JSON.parse(raw));
   } catch {
-    return emptyProgress();
+    return null;
   }
 }
 
-export function saveProgress(progress: Progress): void {
+/**
+ * IndexedDB is now authoritative. On the first v2 visit, a valid localStorage
+ * v1 payload is copied into IndexedDB and then removed after the write succeeds.
+ */
+export async function loadProgress(): Promise<Progress> {
+  if (typeof window === "undefined") return emptyProgress();
+  try {
+    const stored = parseProgress(await getStoredProgress());
+    if (stored) return stored;
+
+    const legacy = loadLegacyProgress();
+    if (legacy) {
+      await putStoredProgress(legacy);
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // Migration succeeded even if a privacy mode blocks localStorage writes.
+      }
+      return legacy;
+    }
+  } catch {
+    // IndexedDB can be blocked by browser policy. Fall back to the legacy store
+    // so the app remains usable instead of losing the entire session.
+    return loadLegacyProgress() ?? emptyProgress();
+  }
+  return emptyProgress();
+}
+
+export async function saveProgress(progress: Progress): Promise<void> {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    await putStoredProgress(progress);
   } catch {
-    // Quota exceeded or storage blocked — the session still works in memory.
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+      // Storage can be completely unavailable; in-memory state still works.
+    }
   }
 }
 
