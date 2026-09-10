@@ -87,7 +87,7 @@ export interface LogEntry {
   minutes?: number;
   /** Typed work, evidence, or a short completion note. */
   note?: string;
-  source?: "panel" | "command";
+  source?: "panel" | "command" | "workout" | "coach";
   /** ISO 8601 timestamp. */
   at: string;
 }
