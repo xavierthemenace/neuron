@@ -201,6 +201,7 @@ function Graph() {
         data={data}
         search={search}
         onSearchChange={setSearch}
+        onSelectNode={focusNode}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
         onClearFilters={() => setActiveCategories(new Set())}
