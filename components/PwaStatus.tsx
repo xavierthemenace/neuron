@@ -14,6 +14,10 @@ export function PwaStatus() {
     window.addEventListener("online", onOnline);
     window.addEventListener("offline", onOffline);
 
+    if (navigator.storage?.persist) {
+      void navigator.storage.persist().catch(() => false);
+    }
+
     if ("serviceWorker" in navigator) {
       void navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
