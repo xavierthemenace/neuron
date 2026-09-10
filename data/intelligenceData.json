@@ -1,0 +1,1264 @@
+{
+  "version": 1,
+  "categories": [
+    { "id": "linguistic", "domain": "gardner", "label": "Linguistic", "hue": 200, "blurb": "Sensitivity to spoken and written language — the machinery of naming, arguing, narrating and persuading." },
+    { "id": "logical", "domain": "gardner", "label": "Logical-Mathematical", "hue": 220, "blurb": "Detecting patterns, reasoning deductively, and handling abstraction and quantity." },
+    { "id": "spatial", "domain": "gardner", "label": "Spatial", "hue": 240, "blurb": "Perceiving, transforming and reconstructing the visual-spatial world in the mind's eye." },
+    { "id": "musical", "domain": "gardner", "label": "Musical", "hue": 260, "blurb": "Discriminating pitch, rhythm, timbre and structure — and producing them." },
+    { "id": "kinesthetic", "domain": "gardner", "label": "Bodily-Kinesthetic", "hue": 280, "blurb": "Using the body with precision, and thinking through physical action and proprioception." },
+    { "id": "interpersonal", "domain": "gardner", "label": "Interpersonal", "hue": 300, "blurb": "Reading other people's intentions, motivations and states, and coordinating with them." },
+    { "id": "intrapersonal", "domain": "gardner", "label": "Intrapersonal", "hue": 320, "blurb": "Accurate self-modelling — knowing your own drives, limits, values and failure modes." },
+    { "id": "naturalistic", "domain": "gardner", "label": "Naturalistic", "hue": 340, "blurb": "Recognising, classifying and reasoning about the living world and natural systems." },
+    { "id": "eq-self-awareness", "domain": "eq", "label": "Self-Awareness", "hue": 20, "blurb": "Noticing your own emotional state accurately and in real time, before it drives behaviour." },
+    { "id": "eq-self-regulation", "domain": "eq", "label": "Self-Regulation", "hue": 35, "blurb": "Choosing your response instead of emitting it — impulse control, reappraisal, recovery." },
+    { "id": "eq-social-awareness", "domain": "eq", "label": "Social Awareness", "hue": 50, "blurb": "Empathy and situational read: what others feel, and what the room is actually doing." },
+    { "id": "eq-relationship", "domain": "eq", "label": "Relationship Management", "hue": 65, "blurb": "Turning emotional read into outcomes — influence, repair, conflict, and building trust." },
+    { "id": "gf-reasoning", "domain": "fluid", "label": "Abstract Reasoning", "hue": 145, "blurb": "Novel problem solving with no stored answer available — the core of fluid intelligence." },
+    { "id": "gf-working-memory", "domain": "fluid", "label": "Working Memory", "hue": 160, "blurb": "Holding and manipulating information live. The bottleneck almost every other faculty runs through." },
+    { "id": "gf-processing-speed", "domain": "fluid", "label": "Processing Speed", "hue": 175, "blurb": "How fast simple operations run — the clock rate underneath fluid reasoning." },
+    { "id": "crystallized", "domain": "crystallized", "label": "Crystallized Knowledge", "hue": 110, "blurb": "The accumulated, well-indexed store of facts, models and skills — what fluid ability deposits over time." }
+  ],
+  "nodes": [
+    { "id": "ling-vocab-depth", "categoryId": "linguistic", "label": "Vocabulary Depth", "tier": 0,
+      "description": "The size and precision of your active lexicon. Depth matters more than breadth: knowing a word's connotation, register and collocations is what lets you deploy it, not merely recognise it.",
+      "why": "Words are the handles you grab concepts by — a missing word is usually a missing distinction.",
+      "resources": [
+        { "title": "Anki (spaced repetition)", "type": "tool", "url": "https://apps.ankiweb.net/" },
+        { "title": "The Elements of Eloquence — Mark Forsyth", "type": "book" },
+        { "title": "Merriam-Webster", "type": "tool", "url": "https://www.merriam-webster.com/" }
+      ],
+      "exercises": [
+        { "id": "ling-vocab-depth-1", "label": "Add 5 unfamiliar words to your SRS deck with a real sentence each", "xp": 10, "cadence": "daily" },
+        { "id": "ling-vocab-depth-2", "label": "Review your vocabulary deck to zero", "xp": 8, "cadence": "daily" },
+        { "id": "ling-vocab-depth-3", "label": "Rewrite a paragraph replacing every vague word with a precise one", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "ling-reading", "categoryId": "linguistic", "label": "Analytical Reading", "tier": 1,
+      "description": "Reading for structure rather than content: locating the thesis, the load-bearing arguments, and the places the author quietly assumes something. Distinct from reading speed, which mostly trades comprehension for pace.",
+      "why": "Most knowledge arrives as text, and unstructured reading leaves almost all of it unretrievable.",
+      "resources": [
+        { "title": "How to Read a Book — Mortimer Adler & Charles Van Doren", "type": "book" },
+        { "title": "Harvard Project Zero — Thinking Routines", "type": "practice", "url": "https://pz.harvard.edu/thinking-routines" }
+      ],
+      "exercises": [
+        { "id": "ling-reading-1", "label": "Read a chapter and write its argument in 3 sentences without looking back", "xp": 15, "cadence": "daily" },
+        { "id": "ling-reading-2", "label": "Map one article's claims and identify its weakest link", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "ling-writing", "categoryId": "linguistic", "label": "Expository Writing", "tier": 1,
+      "description": "Turning a tangle of half-formed thought into prose another person can follow. The real work is ordering ideas and cutting everything that does not carry weight.",
+      "why": "Writing is the highest-bandwidth debugger for your own thinking — vague prose is almost always vague thought.",
+      "resources": [
+        { "title": "On Writing Well — William Zinsser", "type": "book" },
+        { "title": "The Elements of Style — Strunk & White", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "ling-writing-1", "label": "Write 300 words explaining one idea to a smart stranger", "xp": 15, "cadence": "daily" },
+        { "id": "ling-writing-2", "label": "Cut a finished piece by 25% without losing meaning", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "ling-rhetoric", "categoryId": "linguistic", "label": "Rhetoric & Persuasion", "tier": 2,
+      "description": "Structuring a case for a specific audience: what they already believe, what would actually move them, and which order of claims survives contact with their objections.",
+      "why": "A correct idea that cannot be transmitted has almost no effect on the world.",
+      "resources": [
+        { "title": "Influence — Robert Cialdini", "type": "book" },
+        { "title": "Kialo (structured debate)", "type": "tool", "url": "https://www.kialo.com/" }
+      ],
+      "exercises": [
+        { "id": "ling-rhetoric-1", "label": "Argue a position you disagree with, in writing, as strongly as you can", "xp": 25, "cadence": "weekly" },
+        { "id": "ling-rhetoric-2", "label": "Rewrite one argument for a specific hostile audience", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "ling-speaking", "categoryId": "linguistic", "label": "Extemporaneous Speaking", "tier": 2,
+      "description": "Composing coherent, structured speech in real time under social pressure, without a script. Depends heavily on working memory and on tolerance for the pause.",
+      "why": "Most high-stakes communication happens live, where you cannot revise.",
+      "resources": [
+        { "title": "Toastmasters International", "type": "practice", "url": "https://www.toastmasters.org/" },
+        { "title": "Impro — Keith Johnstone", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "ling-speaking-1", "label": "Record a 2-minute unscripted explanation of a random concept", "xp": 15, "cadence": "daily" },
+        { "id": "ling-speaking-2", "label": "Speak for 5 minutes on a prompt drawn at random", "xp": 25, "cadence": "weekly" }
+      ] },
+    { "id": "ling-second-language", "categoryId": "linguistic", "label": "Second Language", "tier": 2,
+      "description": "Acquiring a language to functional fluency. Forces explicit attention to grammar, phonology and idiom that native use leaves invisible.",
+      "why": "A second language rebuilds your model of how meaning is encoded, and audibly sharpens the first one.",
+      "resources": [
+        { "title": "Anki", "type": "tool", "url": "https://apps.ankiweb.net/" },
+        { "title": "Duolingo", "type": "tool", "url": "https://www.duolingo.com/" },
+        { "title": "Fluent Forever — Gabriel Wyner", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "ling-second-language-1", "label": "20 minutes of target-language input (audio or text)", "xp": 12, "cadence": "daily" },
+        { "id": "ling-second-language-2", "label": "Shadow a native recording for 10 minutes", "xp": 12, "cadence": "daily" },
+        { "id": "ling-second-language-3", "label": "Hold a 15-minute conversation with a speaker", "xp": 30, "cadence": "weekly" }
+      ] },
+    { "id": "log-deduction", "categoryId": "logical", "label": "Deductive Reasoning", "tier": 0,
+      "description": "Moving from premises to conclusions without leaking. Includes recognising valid forms and, more usefully, spotting the invalid ones that feel persuasive.",
+      "why": "It is the substrate every other kind of rigorous argument is built on.",
+      "resources": [
+        { "title": "Brilliant (logic courses)", "type": "course", "url": "https://brilliant.org/" },
+        { "title": "Gödel, Escher, Bach — Douglas Hofstadter", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "log-deduction-1", "label": "Solve one logic puzzle or grid problem", "xp": 10, "cadence": "daily" },
+        { "id": "log-deduction-2", "label": "Find the hidden premise in an argument you encountered today", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "log-proof", "categoryId": "logical", "label": "Proof & Formalism", "tier": 1,
+      "description": "Constructing an argument that survives an adversarial reader: stating exactly what is assumed, what is claimed, and why each step follows.",
+      "why": "Formal proof is the strongest available training for noticing when you have not actually shown what you think you showed.",
+      "resources": [
+        { "title": "How to Solve It — George Pólya", "type": "book" },
+        { "title": "Khan Academy", "type": "course", "url": "https://www.khanacademy.org/" }
+      ],
+      "exercises": [
+        { "id": "log-proof-1", "label": "Prove one small result from scratch, writing every step", "xp": 20, "cadence": "weekly" },
+        { "id": "log-proof-2", "label": "Find the flaw in a deliberately broken proof", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "log-probability", "categoryId": "logical", "label": "Probabilistic Thinking", "tier": 1,
+      "description": "Reasoning under uncertainty with actual numbers: base rates, conditional probability, and updating on evidence rather than on vividness.",
+      "why": "Almost every real decision is made under uncertainty, and untrained intuition is reliably miscalibrated.",
+      "resources": [
+        { "title": "Thinking, Fast and Slow — Daniel Kahneman", "type": "book" },
+        { "title": "Metaculus (forecasting)", "type": "practice", "url": "https://www.metaculus.com/" },
+        { "title": "Superforecasting — Philip Tetlock", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "log-probability-1", "label": "Make one dated, numeric prediction with a confidence level", "xp": 12, "cadence": "daily" },
+        { "id": "log-probability-2", "label": "Score last month's predictions and check your calibration", "xp": 25, "cadence": "weekly" }
+      ] },
+    { "id": "log-estimation", "categoryId": "logical", "label": "Fermi Estimation", "tier": 1,
+      "description": "Decomposing an unknown quantity into factors you can each guess within an order of magnitude, then recomposing. Accuracy comes from the decomposition, not from the guesses.",
+      "why": "It turns \"I have no idea\" into a usable number in under a minute, which is often the whole decision.",
+      "resources": [
+        { "title": "Guesstimation — Weinstein & Adam", "type": "book" },
+        { "title": "Our World in Data (for checking)", "type": "tool", "url": "https://ourworldindata.org/" }
+      ],
+      "exercises": [
+        { "id": "log-estimation-1", "label": "Estimate one quantity from first principles, then look it up", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "log-algorithmic", "categoryId": "logical", "label": "Algorithmic Thinking", "tier": 2,
+      "description": "Specifying a procedure precisely enough that a machine — or a stranger — could execute it, including the edge cases you would otherwise have skipped over.",
+      "why": "It is the discipline of making vague plans executable, which generalises far beyond code.",
+      "resources": [
+        { "title": "Project Euler", "type": "practice", "url": "https://projecteuler.net/" },
+        { "title": "Algorithms to Live By — Christian & Griffiths", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "log-algorithmic-1", "label": "Solve one algorithmic problem end to end", "xp": 20, "cadence": "daily" },
+        { "id": "log-algorithmic-2", "label": "Write an everyday process as unambiguous pseudocode", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "log-systems", "categoryId": "logical", "label": "Systems Thinking", "tier": 2,
+      "description": "Seeing stocks, flows, feedback loops and delays rather than isolated causes. Explains why interventions that look obvious so often backfire.",
+      "why": "Most consequential problems are systems problems, and linear cause-and-effect models get them wrong.",
+      "resources": [
+        { "title": "Thinking in Systems — Donella Meadows", "type": "book" },
+        { "title": "LOOPY (system simulator)", "type": "tool", "url": "https://ncase.me/loopy/" }
+      ],
+      "exercises": [
+        { "id": "log-systems-1", "label": "Diagram one situation as a causal loop with feedback", "xp": 20, "cadence": "weekly" },
+        { "id": "log-systems-2", "label": "Identify a delay that explains a surprising outcome you saw", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "spa-visualization", "categoryId": "spatial", "label": "Mental Visualization", "tier": 0,
+      "description": "Generating, holding and inspecting an image in the mind's eye with enough stability to read details off it. Vividness varies enormously between people and is partly trainable.",
+      "why": "A stable mental image is a free scratchpad that does not consume verbal working memory.",
+      "resources": [
+        { "title": "Drawing on the Right Side of the Brain — Betty Edwards", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "spa-visualization-1", "label": "Hold an object in mind for 60s, then draw it from memory", "xp": 12, "cadence": "daily" },
+        { "id": "spa-visualization-2", "label": "Mentally walk a familiar route naming details at each turn", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "spa-rotation", "categoryId": "spatial", "label": "Mental Rotation", "tier": 1,
+      "description": "Transforming an imagined object — rotating, reflecting, slicing — and correctly predicting the result. One of the most reliably measurable spatial subskills.",
+      "why": "It underwrites geometry, engineering, chemistry and anything where you must see the other side of a shape.",
+      "resources": [
+        { "title": "Rubik's cube practice", "type": "practice" },
+        { "title": "GeoGebra 3D", "type": "tool", "url": "https://www.geogebra.org/" }
+      ],
+      "exercises": [
+        { "id": "spa-rotation-1", "label": "Predict a 3D object's cross-section, then verify it", "xp": 12, "cadence": "daily" },
+        { "id": "spa-rotation-2", "label": "Solve a cube or 3D puzzle from a scrambled state", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "spa-navigation", "categoryId": "spatial", "label": "Navigation & Mapping", "tier": 1,
+      "description": "Building an allocentric map of an environment — one that survives you turning around — rather than a chain of turn-by-turn instructions.",
+      "why": "Spatial memory is unusually durable, which makes it a powerful scaffold to hang other memories on.",
+      "resources": [
+        { "title": "OpenStreetMap", "type": "tool", "url": "https://www.openstreetmap.org/" },
+        { "title": "GeoGuessr", "type": "practice", "url": "https://www.geoguessr.com/" }
+      ],
+      "exercises": [
+        { "id": "spa-navigation-1", "label": "Navigate somewhere without turn-by-turn directions", "xp": 15, "cadence": "weekly" },
+        { "id": "spa-navigation-2", "label": "Sketch a map of a place you visited today from memory", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "spa-drawing", "categoryId": "spatial", "label": "Observational Drawing", "tier": 1,
+      "description": "Drawing what is actually in front of you rather than the symbol your brain substitutes for it. The difficulty is perceptual, not manual.",
+      "why": "It is the fastest way to discover how much of what you \"see\" is reconstruction rather than observation.",
+      "resources": [
+        { "title": "Drawing on the Right Side of the Brain — Betty Edwards", "type": "book" },
+        { "title": "The Sketchnote Handbook — Mike Rohde", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "spa-drawing-1", "label": "Draw one object from life for 15 minutes", "xp": 15, "cadence": "daily" },
+        { "id": "spa-drawing-2", "label": "Do a blind contour drawing without looking at the page", "xp": 10, "cadence": "weekly" }
+      ] },
+    { "id": "spa-diagramming", "categoryId": "spatial", "label": "Diagrammatic Reasoning", "tier": 2,
+      "description": "Choosing a visual representation that makes the structure of a problem obvious — and recognising when a diagram is smuggling in a false assumption.",
+      "why": "The right diagram can collapse a problem that is intractable in words.",
+      "resources": [
+        { "title": "The Visual Display of Quantitative Information — Edward Tufte", "type": "book" },
+        { "title": "Excalidraw", "type": "tool", "url": "https://excalidraw.com/" }
+      ],
+      "exercises": [
+        { "id": "spa-diagramming-1", "label": "Redraw a problem you are stuck on in a different representation", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "spa-modeling", "categoryId": "spatial", "label": "3D Modelling & Making", "tier": 2,
+      "description": "Building physical or digital objects, where a spatial error becomes immediately and unforgivingly visible.",
+      "why": "Making closes the loop between imagined structure and real structure faster than any other practice.",
+      "resources": [
+        { "title": "Blender", "type": "tool", "url": "https://www.blender.org/" }
+      ],
+      "exercises": [
+        { "id": "spa-modeling-1", "label": "Model or build one object from a reference", "xp": 25, "cadence": "weekly" }
+      ] },
+    { "id": "mus-pitch", "categoryId": "musical", "label": "Pitch Discrimination", "tier": 0,
+      "description": "Hearing the distance between two notes reliably. Relative pitch is trainable at any age; absolute pitch largely is not, and matters far less than people assume.",
+      "why": "It is the perceptual primitive every other musical skill is assembled from.",
+      "resources": [
+        { "title": "musictheory.net ear trainer", "type": "tool", "url": "https://www.musictheory.net/" },
+        { "title": "Teoria ear training", "type": "tool", "url": "https://www.teoria.com/" }
+      ],
+      "exercises": [
+        { "id": "mus-pitch-1", "label": "10 minutes of interval recognition drills", "xp": 12, "cadence": "daily" },
+        { "id": "mus-pitch-2", "label": "Identify the intervals in a melody you heard today", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "mus-rhythm", "categoryId": "musical", "label": "Rhythm & Timing", "tier": 0,
+      "description": "Holding a steady internal pulse, subdividing it, and placing events accurately against it — including deliberately off it.",
+      "why": "Precise internal timing is shared machinery with motor control and speech.",
+      "resources": [
+        { "title": "Metronome practice", "type": "practice" },
+        { "title": "This Is Your Brain on Music — Daniel Levitin", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "mus-rhythm-1", "label": "Clap or play a rhythm against a metronome for 10 minutes", "xp": 12, "cadence": "daily" },
+        { "id": "mus-rhythm-2", "label": "Transcribe the rhythm of a phrase you heard", "xp": 12, "cadence": "weekly" }
+      ] },
+    { "id": "mus-harmony", "categoryId": "musical", "label": "Harmonic Understanding", "tier": 1,
+      "description": "Hearing chords as functions inside a key rather than as isolated sounds, and predicting where a progression wants to resolve.",
+      "why": "Harmony is the clearest everyday example of perceiving deep structure under a surface pattern.",
+      "resources": [
+        { "title": "musictheory.net lessons", "type": "course", "url": "https://www.musictheory.net/" },
+        { "title": "IMSLP (public domain scores)", "type": "tool", "url": "https://imslp.org/" }
+      ],
+      "exercises": [
+        { "id": "mus-harmony-1", "label": "Work out the chord progression of one song by ear", "xp": 20, "cadence": "weekly" },
+        { "id": "mus-harmony-2", "label": "Identify chord qualities in 10 minutes of drills", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "mus-instrument", "categoryId": "musical", "label": "Instrumental Practice", "tier": 1,
+      "description": "Deliberate practice on an instrument: isolating the hardest bar, slowing it below the error threshold, and rebuilding speed from there.",
+      "why": "It is one of the few domains where the deliberate-practice loop is unambiguous and the feedback is instant.",
+      "resources": [
+        { "title": "Peak — Anders Ericsson & Robert Pool", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "mus-instrument-1", "label": "25 minutes of focused practice on your weakest passage", "xp": 20, "cadence": "daily" },
+        { "id": "mus-instrument-2", "label": "Record yourself and diagnose one specific flaw", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "mus-transcription", "categoryId": "musical", "label": "Transcription by Ear", "tier": 2,
+      "description": "Writing down music you can only hear. Forces pitch, rhythm and harmony to operate together at speed, with no visual crutch.",
+      "why": "It is the closest thing music has to a full-system integration test of the ear.",
+      "resources": [
+        { "title": "IMSLP", "type": "tool", "url": "https://imslp.org/" }
+      ],
+      "exercises": [
+        { "id": "mus-transcription-1", "label": "Transcribe 8 bars of music by ear", "xp": 30, "cadence": "weekly" }
+      ] },
+    { "id": "mus-improvisation", "categoryId": "musical", "label": "Improvisation", "tier": 2,
+      "description": "Generating musical ideas in real time inside a set of constraints — composing and executing with no separation between the two.",
+      "why": "It trains rapid generation under constraint, the same motion as extemporaneous speech and live problem solving.",
+      "resources": [
+        { "title": "Effortless Mastery — Kenny Werner", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "mus-improvisation-1", "label": "Improvise for 10 minutes over a backing track", "xp": 20, "cadence": "daily" },
+        { "id": "mus-improvisation-2", "label": "Improvise using only one constraint (3 notes, one string)", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "kin-proprioception", "categoryId": "kinesthetic", "label": "Proprioception", "tier": 0,
+      "description": "Knowing where your body is without looking. The sense most people never train directly, and the one every other physical skill silently depends on.",
+      "why": "You cannot correct a movement you cannot feel, so proprioception sets the ceiling on motor learning.",
+      "resources": [
+        { "title": "Becoming a Supple Leopard — Kelly Starrett", "type": "book" },
+        { "title": "Feldenkrais Method", "type": "practice" }
+      ],
+      "exercises": [
+        { "id": "kin-proprioception-1", "label": "5 minutes of balance work with eyes closed", "xp": 10, "cadence": "daily" },
+        { "id": "kin-proprioception-2", "label": "Move through a full joint-by-joint range-of-motion scan", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "kin-coordination", "categoryId": "kinesthetic", "label": "Fine Motor Coordination", "tier": 1,
+      "description": "Precise, repeatable small movements — the hands doing exactly what was intended, at speed, without conscious supervision.",
+      "why": "Fine motor skill is where automaticity becomes visible: the movement frees attention once it stops needing any.",
+      "resources": [
+        { "title": "Juggling practice", "type": "practice" },
+        { "title": "Monkeytype (typing)", "type": "tool", "url": "https://monkeytype.com/" }
+      ],
+      "exercises": [
+        { "id": "kin-coordination-1", "label": "10 minutes of a fine-motor drill (juggling, typing, instrument)", "xp": 12, "cadence": "daily" },
+        { "id": "kin-coordination-2", "label": "Practise one skill with your non-dominant hand", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "kin-strength", "categoryId": "kinesthetic", "label": "Strength & Conditioning", "tier": 1,
+      "description": "Progressive overload against measurable resistance. The clearest existing model of deliberate practice: quantified load, planned progression, enforced recovery.",
+      "why": "Aerobic and resistance training have the best-evidenced effects of any intervention on cognition and mood.",
+      "resources": [
+        { "title": "Spark — John Ratey", "type": "book" },
+        { "title": "Starting Strength — Mark Rippetoe", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "kin-strength-1", "label": "Complete a planned training session", "xp": 20, "cadence": "session" },
+        { "id": "kin-strength-2", "label": "30 minutes of zone-2 aerobic work", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "kin-motor-learning", "categoryId": "kinesthetic", "label": "Motor Skill Acquisition", "tier": 1,
+      "description": "Deliberately building a new movement pattern: breaking it into parts, practising below failure speed, and chaining it back together.",
+      "why": "The acquisition loop here is identical to the one for cognitive skills, but with far faster feedback.",
+      "resources": [
+        { "title": "The Inner Game of Tennis — Timothy Gallwey", "type": "book" },
+        { "title": "The Art of Learning — Josh Waitzkin", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "kin-motor-learning-1", "label": "Drill one movement slowly at zero errors for 15 minutes", "xp": 15, "cadence": "daily" },
+        { "id": "kin-motor-learning-2", "label": "Film a movement and compare it against a reference", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "kin-breath", "categoryId": "kinesthetic", "label": "Breath & Somatic Control", "tier": 2,
+      "description": "Voluntary control of breathing and muscular tension as a direct lever on arousal — the fastest physical route into the nervous system.",
+      "why": "It is the shortest path from a physical action to a change in emotional state, which makes it the workhorse of self-regulation.",
+      "resources": [
+        { "title": "The Body Keeps the Score — Bessel van der Kolk", "type": "book" },
+        { "title": "Insight Timer", "type": "tool", "url": "https://insighttimer.com/" }
+      ],
+      "exercises": [
+        { "id": "kin-breath-1", "label": "5 minutes of paced breathing with a long exhale", "xp": 10, "cadence": "daily" },
+        { "id": "kin-breath-2", "label": "Do a progressive muscle relaxation pass", "xp": 12, "cadence": "weekly" }
+      ] },
+    { "id": "kin-craft", "categoryId": "kinesthetic", "label": "Manual Craft", "tier": 2,
+      "description": "Working a physical material — wood, food, clay, textile — where the material pushes back and tells you immediately that your model of it was wrong.",
+      "why": "Craft grounds abstract planning in a medium that refuses to accept a hand-wave.",
+      "resources": [
+        { "title": "The Craftsman — Richard Sennett", "type": "book" },
+        { "title": "Shop Class as Soulcraft — Matthew Crawford", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "kin-craft-1", "label": "Spend 45 minutes making something physical", "xp": 25, "cadence": "weekly" }
+      ] },
+    { "id": "inter-active-listening", "categoryId": "interpersonal", "label": "Active Listening", "tier": 0,
+      "description": "Listening to understand rather than to reply: reflecting back what you heard and checking it before responding. Much harder than it sounds, because the reply is already forming.",
+      "why": "Almost every interpersonal failure traces back to someone answering a question that was not asked.",
+      "resources": [
+        { "title": "Nonviolent Communication — Marshall Rosenberg", "type": "book" },
+        { "title": "Greater Good in Action", "type": "practice", "url": "https://ggia.berkeley.edu/" }
+      ],
+      "exercises": [
+        { "id": "inter-active-listening-1", "label": "In one conversation, reflect back before responding", "xp": 12, "cadence": "daily" },
+        { "id": "inter-active-listening-2", "label": "Ask three follow-up questions before offering an opinion", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "inter-perspective", "categoryId": "interpersonal", "label": "Perspective Taking", "tier": 1,
+      "description": "Reconstructing another person's model of the situation — what they know, want and fear — as distinct from feeling what they feel.",
+      "why": "It is the cognitive half of empathy, and the half that actually predicts behaviour.",
+      "resources": [
+        { "title": "Harvard Project Zero — Circle of Viewpoints", "type": "practice", "url": "https://pz.harvard.edu/thinking-routines" },
+        { "title": "The Evolution of Trust", "type": "tool", "url": "https://ncase.me/trust/" }
+      ],
+      "exercises": [
+        { "id": "inter-perspective-1", "label": "Write one disagreement from the other side's point of view", "xp": 15, "cadence": "daily" },
+        { "id": "inter-perspective-2", "label": "State someone's position so well they would endorse it", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "inter-nonverbal", "categoryId": "interpersonal", "label": "Nonverbal Reading", "tier": 1,
+      "description": "Reading posture, face, prosody and timing as signal — while holding your interpretation loosely, because single cues are famously unreliable.",
+      "why": "Most of the emotional content of a conversation never reaches the words.",
+      "resources": [
+        { "title": "Emotions Revealed — Paul Ekman", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "inter-nonverbal-1", "label": "Watch a conversation on mute and infer the emotional arc", "xp": 12, "cadence": "weekly" },
+        { "id": "inter-nonverbal-2", "label": "Name one nonverbal shift you noticed today and what preceded it", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "inter-collaboration", "categoryId": "interpersonal", "label": "Collaboration", "tier": 1,
+      "description": "Producing work with others: dividing labour, surfacing disagreement early, and keeping a shared model of the goal that does not silently drift.",
+      "why": "Group output is limited far more by coordination quality than by the ability of any member.",
+      "resources": [
+        { "title": "The Culture Code — Daniel Coyle", "type": "book" },
+        { "title": "Crucial Conversations — Patterson et al.", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "inter-collaboration-1", "label": "Make one implicit team assumption explicit", "xp": 15, "cadence": "weekly" },
+        { "id": "inter-collaboration-2", "label": "Give one piece of specific, actionable feedback", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "inter-teaching", "categoryId": "interpersonal", "label": "Teaching & Explaining", "tier": 2,
+      "description": "Building an explanation from the learner's existing model rather than from your own — which requires finding out what that model actually is first.",
+      "why": "Teaching is the sharpest possible audit of your own understanding: the gaps surface instantly.",
+      "resources": [
+        { "title": "Made to Stick — Chip & Dan Heath", "type": "book" },
+        { "title": "Khan Academy", "type": "course", "url": "https://www.khanacademy.org/" }
+      ],
+      "exercises": [
+        { "id": "inter-teaching-1", "label": "Explain something you learned today to another person", "xp": 15, "cadence": "daily" },
+        { "id": "inter-teaching-2", "label": "Write a Feynman-style explanation with no jargon", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "inter-negotiation", "categoryId": "interpersonal", "label": "Negotiation", "tier": 2,
+      "description": "Finding the trade that both sides prefer to no deal — which means uncovering interests underneath stated positions.",
+      "why": "It forces perspective-taking and self-regulation to operate simultaneously under real stakes.",
+      "resources": [
+        { "title": "Getting to Yes — Fisher & Ury", "type": "book" },
+        { "title": "Never Split the Difference — Chris Voss", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "inter-negotiation-1", "label": "Identify the underlying interest behind one stated position", "xp": 15, "cadence": "weekly" },
+        { "id": "inter-negotiation-2", "label": "Prepare a BATNA before a real conversation", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "intra-introspection", "categoryId": "intrapersonal", "label": "Introspective Accuracy", "tier": 0,
+      "description": "Reporting your own internal state correctly — which research suggests people are much worse at than they believe, especially about motives.",
+      "why": "Every plan you make runs on a model of yourself; if that model is wrong, the plans fail for reasons you cannot see.",
+      "resources": [
+        { "title": "Insight — Tasha Eurich", "type": "book" },
+        { "title": "Thinking, Fast and Slow — Daniel Kahneman", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "intra-introspection-1", "label": "Write 10 minutes of unedited journal, then name the real driver", "xp": 12, "cadence": "daily" },
+        { "id": "intra-introspection-2", "label": "Predict your own behaviour, then check it a week later", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "intra-metacognition", "categoryId": "intrapersonal", "label": "Metacognition", "tier": 1,
+      "description": "Thinking about your own thinking: knowing which strategy you are using, whether it is working, and when to switch.",
+      "why": "It is the control loop over every other skill on this map — the thing that decides where effort goes.",
+      "resources": [
+        { "title": "Learning How to Learn (Coursera)", "type": "course", "url": "https://www.coursera.org/learn/learning-how-to-learn" },
+        { "title": "LessWrong", "type": "practice", "url": "https://www.lesswrong.com/" }
+      ],
+      "exercises": [
+        { "id": "intra-metacognition-1", "label": "Name the strategy you used on a problem and rate its fit", "xp": 12, "cadence": "daily" },
+        { "id": "intra-metacognition-2", "label": "Run a written retrospective on one project or week", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "intra-values", "categoryId": "intrapersonal", "label": "Values Clarification", "tier": 1,
+      "description": "Working out what you actually optimise for, as revealed by your choices rather than by what you say — and reconciling the two.",
+      "why": "Undeclared values still steer every decision; making them explicit is what makes trade-offs negotiable.",
+      "resources": [
+        { "title": "Man's Search for Meaning — Viktor Frankl", "type": "book" },
+        { "title": "Designing Your Life — Burnett & Evans", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "intra-values-1", "label": "Audit one decision against your stated values", "xp": 15, "cadence": "weekly" },
+        { "id": "intra-values-2", "label": "Rank your top five values and force the ties apart", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "intra-attention", "categoryId": "intrapersonal", "label": "Attention Management", "tier": 1,
+      "description": "Directing and sustaining attention on one thing, and noticing the exact moment it has wandered — the noticing is the trainable part.",
+      "why": "Attention is the scarce resource; every other faculty is throttled by how much of it you can hold on target.",
+      "resources": [
+        { "title": "Deep Work — Cal Newport", "type": "book" },
+        { "title": "Focusmate", "type": "tool", "url": "https://www.focusmate.com/" }
+      ],
+      "exercises": [
+        { "id": "intra-attention-1", "label": "One 50-minute distraction-free deep work block", "xp": 20, "cadence": "daily" },
+        { "id": "intra-attention-2", "label": "10 minutes of focused-attention meditation", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "intra-growth-mindset", "categoryId": "intrapersonal", "label": "Growth Orientation", "tier": 2,
+      "description": "Treating ability as trainable and failure as information. Practically, it shows up as what you do in the first ten seconds after being wrong.",
+      "why": "It determines whether difficulty makes you practise more or avoid the domain entirely.",
+      "resources": [
+        { "title": "Mindset — Carol Dweck", "type": "book" },
+        { "title": "Self-Compassion — Kristin Neff", "type": "tool", "url": "https://self-compassion.org/" }
+      ],
+      "exercises": [
+        { "id": "intra-growth-mindset-1", "label": "Log one mistake and what it taught you, without self-attack", "xp": 12, "cadence": "daily" },
+        { "id": "intra-growth-mindset-2", "label": "Deliberately attempt something above your current level", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "intra-solitude", "categoryId": "intrapersonal", "label": "Reflective Solitude", "tier": 2,
+      "description": "Sustained unstimulated time — no input, no phone — which is when consolidation and the genuinely novel connections tend to happen.",
+      "why": "Insight is mostly a background process, and it needs unfilled time to run in.",
+      "resources": [
+        { "title": "Digital Minimalism — Cal Newport", "type": "book" },
+        { "title": "Solitude — Anthony Storr", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "intra-solitude-1", "label": "30 minutes with no input — walk, sit, or stare", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "nat-observation", "categoryId": "naturalistic", "label": "Field Observation", "tier": 0,
+      "description": "Looking at the living world closely enough to notice what is actually there rather than what you expect — the same discipline as observational drawing, applied outdoors.",
+      "why": "Careful observation is the raw input to every classification and every hypothesis.",
+      "resources": [
+        { "title": "The Laws Guide to Nature Drawing and Journaling — John Muir Laws", "type": "book" },
+        { "title": "iNaturalist", "type": "tool", "url": "https://www.inaturalist.org/" }
+      ],
+      "exercises": [
+        { "id": "nat-observation-1", "label": "Observe one organism for 10 minutes and write what you saw", "xp": 12, "cadence": "daily" },
+        { "id": "nat-observation-2", "label": "Keep a dated nature-journal entry with a sketch", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "nat-taxonomy", "categoryId": "naturalistic", "label": "Classification & Taxonomy", "tier": 1,
+      "description": "Sorting things by the features that actually carve nature at its joints, and learning to distrust the superficial resemblances that mislead.",
+      "why": "Building a good category system is the general skill behind every ontology, schema and mental model.",
+      "resources": [
+        { "title": "iNaturalist", "type": "tool", "url": "https://www.inaturalist.org/" },
+        { "title": "Merlin Bird ID", "type": "tool", "url": "https://merlin.allaboutbirds.org/" }
+      ],
+      "exercises": [
+        { "id": "nat-taxonomy-1", "label": "Identify 3 species to genus and record what distinguished them", "xp": 12, "cadence": "daily" },
+        { "id": "nat-taxonomy-2", "label": "Build a small dichotomous key for a group you know", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "nat-ecology", "categoryId": "naturalistic", "label": "Ecological Reasoning", "tier": 1,
+      "description": "Reasoning about interdependence, energy flow and population feedback — systems thinking where the system is alive and the delays are long.",
+      "why": "Ecosystems are the most legible large-scale example of feedback, delay and non-obvious second-order effects.",
+      "resources": [
+        { "title": "Braiding Sweetgrass — Robin Wall Kimmerer", "type": "book" },
+        { "title": "The Hidden Life of Trees — Peter Wohlleben", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "nat-ecology-1", "label": "Trace one food web or nutrient cycle in a local habitat", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "nat-pattern-recognition", "categoryId": "naturalistic", "label": "Natural Pattern Recognition", "tier": 1,
+      "description": "Spotting recurring form in nature — branching, spirals, tessellation, scaling laws — and recognising the same generative rules across unrelated systems.",
+      "why": "The same handful of patterns reappear in biology, finance and networks; learning them once pays out everywhere.",
+      "resources": [
+        { "title": "Scale — Geoffrey West", "type": "book" },
+        { "title": "3Blue1Brown", "type": "video", "url": "https://www.3blue1brown.com/" }
+      ],
+      "exercises": [
+        { "id": "nat-pattern-recognition-1", "label": "Find one natural pattern and name its generating rule", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "nat-seasonality", "categoryId": "naturalistic", "label": "Seasonal & Cyclical Awareness", "tier": 2,
+      "description": "Tracking slow cycles — weather, migration, light, growth — over months. Training for a timescale most attention never operates on.",
+      "why": "It builds patience with long feedback loops, which is exactly what long-horizon skill development requires.",
+      "resources": [
+        { "title": "eBird", "type": "tool", "url": "https://ebird.org/" },
+        { "title": "Stellarium", "type": "tool", "url": "https://stellarium.org/" }
+      ],
+      "exercises": [
+        { "id": "nat-seasonality-1", "label": "Record one dated phenological observation", "xp": 10, "cadence": "weekly" }
+      ] },
+    { "id": "nat-navigation-natural", "categoryId": "naturalistic", "label": "Natural Navigation", "tier": 2,
+      "description": "Orienting by sun, stars, wind, vegetation and terrain rather than by instrument — reading direction off the environment itself.",
+      "why": "It fuses spatial reasoning with field observation and works when nothing else does.",
+      "resources": [
+        { "title": "The Natural Navigator — Tristan Gooley", "type": "book" },
+        { "title": "Stellarium", "type": "tool", "url": "https://stellarium.org/" }
+      ],
+      "exercises": [
+        { "id": "nat-navigation-natural-1", "label": "Determine north without a compass or phone, then verify", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqa-emotion-granularity", "categoryId": "eq-self-awareness", "label": "Emotional Granularity", "tier": 0,
+      "description": "Distinguishing \"anxious\" from \"apprehensive\" from \"resentful\" instead of collapsing everything into good or bad. People with finer emotional vocabulary regulate measurably better.",
+      "why": "You cannot act on a feeling you can only describe as \"off\" — precision in naming is what makes a response selectable.",
+      "resources": [
+        { "title": "How Emotions Are Made — Lisa Feldman Barrett", "type": "book" },
+        { "title": "Atlas of the Heart — Brené Brown", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqa-emotion-granularity-1", "label": "Name your current emotion with a specific word, three times today", "xp": 10, "cadence": "daily" },
+        { "id": "eqa-emotion-granularity-2", "label": "Log the day's emotions and their triggers", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "eqa-interoception", "categoryId": "eq-self-awareness", "label": "Interoception", "tier": 0,
+      "description": "Reading the body's internal signals — heart rate, gut, jaw, breath — which usually register a state change before conscious awareness does.",
+      "why": "The body reports the emotion first, so interoception buys you the seconds in which regulation is still possible.",
+      "resources": [
+        { "title": "The Body Keeps the Score — Bessel van der Kolk", "type": "book" },
+        { "title": "Greater Good in Action — Body Scan", "type": "practice", "url": "https://ggia.berkeley.edu/" }
+      ],
+      "exercises": [
+        { "id": "eqa-interoception-1", "label": "Do a 5-minute body scan and note three sensations", "xp": 10, "cadence": "daily" },
+        { "id": "eqa-interoception-2", "label": "Catch one physical signal of stress before it escalates", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "eqa-trigger-mapping", "categoryId": "eq-self-awareness", "label": "Trigger Mapping", "tier": 1,
+      "description": "Cataloguing the specific situations that reliably knock you off balance, and the early signature of each — usually a small set that repeats for years.",
+      "why": "A known trigger is a planned-for trigger; an unknown one just looks like the world being unfair.",
+      "resources": [
+        { "title": "Feeling Good — David Burns", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqa-trigger-mapping-1", "label": "Log one trigger, its early signal, and your response", "xp": 12, "cadence": "daily" },
+        { "id": "eqa-trigger-mapping-2", "label": "Review the week's triggers and find the common pattern", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "eqa-bias-awareness", "categoryId": "eq-self-awareness", "label": "Bias Awareness", "tier": 1,
+      "description": "Catching your own motivated reasoning in flight — noticing when a conclusion arrived suspiciously fast because you wanted it.",
+      "why": "Bias is invisible from the inside by construction, so only a trained habit of checking catches it.",
+      "resources": [
+        { "title": "Thinking, Fast and Slow — Daniel Kahneman", "type": "book" },
+        { "title": "LessWrong", "type": "practice", "url": "https://www.lesswrong.com/" }
+      ],
+      "exercises": [
+        { "id": "eqa-bias-awareness-1", "label": "Find one belief you hold partly because it is convenient", "xp": 15, "cadence": "daily" },
+        { "id": "eqa-bias-awareness-2", "label": "Run a pre-mortem on a decision you are about to make", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "eqa-feedback-seeking", "categoryId": "eq-self-awareness", "label": "Feedback Seeking", "tier": 2,
+      "description": "Actively soliciting information about how you land on other people, and receiving it without defending — the second part being the hard one.",
+      "why": "Self-perception and how you actually land diverge quietly; outside data is the only correction available.",
+      "resources": [
+        { "title": "Thanks for the Feedback — Stone & Heen", "type": "book" },
+        { "title": "Insight — Tasha Eurich", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqa-feedback-seeking-1", "label": "Ask one person for specific feedback and only ask questions back", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "eqa-narrative-audit", "categoryId": "eq-self-awareness", "label": "Narrative Audit", "tier": 2,
+      "description": "Examining the story you tell about yourself — the recurring roles and explanations — and testing whether it still fits the evidence.",
+      "why": "Self-narrative silently constrains what you attempt, long after the events that formed it stopped being relevant.",
+      "resources": [
+        { "title": "Redirect — Timothy Wilson", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqa-narrative-audit-1", "label": "Write one recurring self-story and list evidence against it", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "eqr-impulse-control", "categoryId": "eq-self-regulation", "label": "Impulse Control", "tier": 0,
+      "description": "Inserting a gap between stimulus and response. The gap does not need to be long — it needs to exist at all.",
+      "why": "Nearly every action people regret was available for reconsideration for about two seconds.",
+      "resources": [
+        { "title": "Willpower — Baumeister & Tierney", "type": "book" },
+        { "title": "Greater Good in Action", "type": "practice", "url": "https://ggia.berkeley.edu/" }
+      ],
+      "exercises": [
+        { "id": "eqr-impulse-control-1", "label": "Pause 10 seconds before one reactive response", "xp": 10, "cadence": "daily" },
+        { "id": "eqr-impulse-control-2", "label": "Delay one urge by 20 minutes and note what changed", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "eqr-reappraisal", "categoryId": "eq-self-regulation", "label": "Cognitive Reappraisal", "tier": 1,
+      "description": "Changing how you feel by changing how you frame the situation. The best-evidenced regulation strategy, and far more effective than suppression.",
+      "why": "Reappraisal alters the emotion itself; suppression only hides it and costs more to maintain.",
+      "resources": [
+        { "title": "Feeling Good — David Burns", "type": "book" },
+        { "title": "The Happiness Trap — Russ Harris", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqr-reappraisal-1", "label": "Reframe one frustrating event in a plausible alternative way", "xp": 12, "cadence": "daily" },
+        { "id": "eqr-reappraisal-2", "label": "Write the automatic thought and a balanced counter-thought", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "eqr-distress-tolerance", "categoryId": "eq-self-regulation", "label": "Distress Tolerance", "tier": 1,
+      "description": "Staying functional while feeling bad, instead of acting purely to make the feeling stop. Discomfort becomes something you can carry rather than something you must resolve.",
+      "why": "Most avoidance is not fear of the task but unwillingness to feel the discomfort of starting it.",
+      "resources": [
+        { "title": "DBT Skills Training Handouts — Marsha Linehan", "type": "book" },
+        { "title": "Insight Timer", "type": "tool", "url": "https://insighttimer.com/" }
+      ],
+      "exercises": [
+        { "id": "eqr-distress-tolerance-1", "label": "Sit with one uncomfortable feeling for 5 minutes without fixing it", "xp": 12, "cadence": "daily" },
+        { "id": "eqr-distress-tolerance-2", "label": "Do the task you have been avoiding, badly, for 10 minutes", "xp": 18, "cadence": "daily" }
+      ] },
+    { "id": "eqr-recovery", "categoryId": "eq-self-regulation", "label": "Recovery & Sleep", "tier": 1,
+      "description": "Protecting sleep and genuine downtime. Sleep debt degrades emotional regulation and working memory faster than almost any other variable.",
+      "why": "Every faculty on this map runs worse on a tired brain, so recovery is the cheapest multiplier available.",
+      "resources": [
+        { "title": "Why We Sleep — Matthew Walker", "type": "book" },
+        { "title": "Rest — Alex Soojung-Kim Pang", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqr-recovery-1", "label": "Hit your target sleep window", "xp": 15, "cadence": "daily" },
+        { "id": "eqr-recovery-2", "label": "Take a real break with no screen", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "eqr-habit-design", "categoryId": "eq-self-regulation", "label": "Habit Design", "tier": 2,
+      "description": "Engineering the environment and cues so the desired behaviour is the path of least resistance, rather than relying on willpower to win every time.",
+      "why": "Willpower is a depleting resource; structure is not, and structure is what makes practice survive bad weeks.",
+      "resources": [
+        { "title": "Atomic Habits — James Clear", "type": "book" },
+        { "title": "Tiny Habits — BJ Fogg", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqr-habit-design-1", "label": "Remove one point of friction from a habit you want", "xp": 15, "cadence": "weekly" },
+        { "id": "eqr-habit-design-2", "label": "Write one implementation intention: when X, I will Y", "xp": 12, "cadence": "weekly" }
+      ] },
+    { "id": "eqr-delayed-gratification", "categoryId": "eq-self-regulation", "label": "Delayed Gratification", "tier": 2,
+      "description": "Weighting a distant payoff correctly against an immediate one, in the moment when the immediate one is loud and present.",
+      "why": "Every skill on this map pays out on a horizon of months, which makes discounting the enemy of all of them.",
+      "resources": [
+        { "title": "The Marshmallow Test — Walter Mischel", "type": "book" },
+        { "title": "Deep Work — Cal Newport", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqr-delayed-gratification-1", "label": "Choose the long-horizon option in one real trade-off", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "eqs-empathic-accuracy", "categoryId": "eq-social-awareness", "label": "Empathic Accuracy", "tier": 0,
+      "description": "Correctly inferring what another person is feeling — and, critically, checking the inference rather than trusting it.",
+      "why": "Confident empathy that is wrong does more damage than admitted uncertainty.",
+      "resources": [
+        { "title": "Greater Good in Action", "type": "practice", "url": "https://ggia.berkeley.edu/" },
+        { "title": "Nonviolent Communication — Marshall Rosenberg", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqs-empathic-accuracy-1", "label": "Guess someone's feeling, then ask and compare", "xp": 12, "cadence": "daily" },
+        { "id": "eqs-empathic-accuracy-2", "label": "Name the unmet need behind someone's complaint", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "eqs-compassion", "categoryId": "eq-social-awareness", "label": "Compassion", "tier": 1,
+      "description": "Empathy plus the motivation to help, deliberately trained. Unlike raw empathic distress, compassion does not burn out under exposure.",
+      "why": "Empathy alone exhausts; compassion is the sustainable form and produces better outcomes for both parties.",
+      "resources": [
+        { "title": "Self-Compassion — Kristin Neff", "type": "tool", "url": "https://self-compassion.org/" },
+        { "title": "Greater Good in Action — Loving-Kindness", "type": "practice", "url": "https://ggia.berkeley.edu/" }
+      ],
+      "exercises": [
+        { "id": "eqs-compassion-1", "label": "10 minutes of loving-kindness practice", "xp": 12, "cadence": "daily" },
+        { "id": "eqs-compassion-2", "label": "Do one unprompted, useful thing for someone", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "eqs-social-context", "categoryId": "eq-social-awareness", "label": "Situational Read", "tier": 1,
+      "description": "Reading a group rather than an individual: who holds status, what is unsaid, and which norms are actually in force here.",
+      "why": "The right thing said into the wrong room lands as the wrong thing.",
+      "resources": [
+        { "title": "The Culture Map — Erin Meyer", "type": "book" },
+        { "title": "Impro — Keith Johnstone", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqs-social-context-1", "label": "In one group, note the unspoken rule everyone is following", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqs-cultural-fluency", "categoryId": "eq-social-awareness", "label": "Cultural Fluency", "tier": 1,
+      "description": "Recognising that directness, hierarchy, time and disagreement are encoded differently across cultures, and adjusting without condescending.",
+      "why": "Most cross-cultural friction is a decoding error, not a disagreement about substance.",
+      "resources": [
+        { "title": "The Culture Map — Erin Meyer", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqs-cultural-fluency-1", "label": "Identify one norm you assumed was universal", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqs-listening-depth", "categoryId": "eq-social-awareness", "label": "Listening for Subtext", "tier": 2,
+      "description": "Hearing the concern underneath the stated question — what the person is really asking about, which is often not the topic.",
+      "why": "Answering the literal question while missing the real one is the most common form of unhelpful help.",
+      "resources": [
+        { "title": "Difficult Conversations — Stone, Patton & Heen", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqs-listening-depth-1", "label": "Identify the real concern behind one surface question", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "eqs-boundaries-read", "categoryId": "eq-social-awareness", "label": "Reading Boundaries", "tier": 2,
+      "description": "Detecting where someone's limits are — often signalled indirectly — and treating a soft no as a no.",
+      "why": "Trust is built far more by respecting an unspoken limit than by any amount of stated goodwill.",
+      "resources": [
+        { "title": "Set Boundaries, Find Peace — Nedra Glover Tawwab", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqs-boundaries-read-1", "label": "Notice one indirect no and honour it without pressing", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-trust-building", "categoryId": "eq-relationship", "label": "Trust Building", "tier": 0,
+      "description": "Accumulating reliability over time: doing what you said, at the size you said, repeatedly. Slow to build and fast to lose.",
+      "why": "Trust is the bandwidth limit on every relationship — nothing difficult can be said without it.",
+      "resources": [
+        { "title": "The Evolution of Trust", "type": "tool", "url": "https://ncase.me/trust/" },
+        { "title": "The Speed of Trust — Stephen M. R. Covey", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqm-trust-building-1", "label": "Make one small commitment and keep it exactly", "xp": 12, "cadence": "daily" },
+        { "id": "eqm-trust-building-2", "label": "Say one true thing you would normally soften", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-conflict", "categoryId": "eq-relationship", "label": "Conflict Navigation", "tier": 1,
+      "description": "Staying in a disagreement productively: separating the person from the problem, and the impact from the intent.",
+      "why": "Avoided conflict does not disappear, it compounds — and arrives later at a worse moment.",
+      "resources": [
+        { "title": "Difficult Conversations — Stone, Patton & Heen", "type": "book" },
+        { "title": "Crucial Conversations — Patterson et al.", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqm-conflict-1", "label": "Raise one small issue instead of letting it pass", "xp": 18, "cadence": "weekly" },
+        { "id": "eqm-conflict-2", "label": "Separate impact from intent in one disagreement", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-repair", "categoryId": "eq-relationship", "label": "Rupture & Repair", "tier": 1,
+      "description": "Acknowledging harm specifically, without a defence attached, and changing the behaviour. Repair reliably matters more than never rupturing.",
+      "why": "Relationships are not distinguished by an absence of rupture but by the speed and honesty of repair.",
+      "resources": [
+        { "title": "Hold Me Tight — Sue Johnson", "type": "book" },
+        { "title": "Nonviolent Communication — Marshall Rosenberg", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqm-repair-1", "label": "Apologise for one specific thing with no \"but\"", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-influence", "categoryId": "eq-relationship", "label": "Ethical Influence", "tier": 2,
+      "description": "Moving people by making the genuinely better option clearer and easier — the line between influence and manipulation being whether it survives them knowing what you did.",
+      "why": "Influence without the ethical constraint destroys the trust that made it possible in the first place.",
+      "resources": [
+        { "title": "Influence — Robert Cialdini", "type": "book" },
+        { "title": "Getting to Yes — Fisher & Ury", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqm-influence-1", "label": "Persuade by improving the other side's information, not pressure", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-mentoring", "categoryId": "eq-relationship", "label": "Mentoring & Sponsorship", "tier": 2,
+      "description": "Deliberately raising someone else's capability — and spending your own credibility on their behalf when they are not in the room.",
+      "why": "Teaching someone to competence is the most rigorous test of whether you understand the skill yourself.",
+      "resources": [
+        { "title": "The Coaching Habit — Michael Bungay Stanier", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "eqm-mentoring-1", "label": "Ask a coaching question instead of giving the answer", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "eqm-network", "categoryId": "eq-relationship", "label": "Relationship Maintenance", "tier": 2,
+      "description": "Keeping weak ties alive with small, non-transactional contact, long before you need anything from them.",
+      "why": "Weak ties are the main channel through which genuinely new information and opportunity arrive.",
+      "resources": [
+        { "title": "The Strength of Weak Ties — Mark Granovetter", "type": "paper" }
+      ],
+      "exercises": [
+        { "id": "eqm-network-1", "label": "Contact one dormant tie with no ask attached", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "gf-pattern-abstraction", "categoryId": "gf-reasoning", "label": "Pattern Abstraction", "tier": 0,
+      "description": "Extracting the rule that generates a set of examples, then applying it to a case you have never seen. This is what matrix-reasoning tests are actually measuring.",
+      "why": "It is the closest thing to a direct measurement of fluid intelligence, and it underlies all genuine transfer.",
+      "resources": [
+        { "title": "Brilliant", "type": "course", "url": "https://brilliant.org/" },
+        { "title": "Surfaces and Essences — Hofstadter & Sander", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gf-pattern-abstraction-1", "label": "Solve 10 matrix or sequence reasoning items", "xp": 15, "cadence": "daily" },
+        { "id": "gf-pattern-abstraction-2", "label": "State the general rule behind three specific cases you met", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gf-analogy", "categoryId": "gf-reasoning", "label": "Analogical Mapping", "tier": 1,
+      "description": "Recognising that two situations share relational structure despite sharing no surface features — and noticing when the analogy breaks.",
+      "why": "Analogy is the main mechanism by which knowledge from one domain becomes usable in another.",
+      "resources": [
+        { "title": "Surfaces and Essences — Hofstadter & Sander", "type": "book" },
+        { "title": "Gödel, Escher, Bach — Douglas Hofstadter", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gf-analogy-1", "label": "Map a problem onto a structurally similar one from another field", "xp": 18, "cadence": "daily" },
+        { "id": "gf-analogy-2", "label": "Take an analogy you use and find exactly where it fails", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "gf-hypothesis", "categoryId": "gf-reasoning", "label": "Hypothesis Generation", "tier": 1,
+      "description": "Producing several candidate explanations rather than committing to the first plausible one, and designing a test that could distinguish them.",
+      "why": "Most reasoning failures are failures of imagination at step one, not errors of logic afterwards.",
+      "resources": [
+        { "title": "The Structure of Scientific Revolutions — Thomas Kuhn", "type": "book" },
+        { "title": "arXiv", "type": "tool", "url": "https://arxiv.org/" }
+      ],
+      "exercises": [
+        { "id": "gf-hypothesis-1", "label": "Generate 3 explanations for something surprising, then a test", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gf-novel-problem", "categoryId": "gf-reasoning", "label": "Novel Problem Solving", "tier": 2,
+      "description": "Making progress on a problem for which you have no stored procedure — where the work is finding a foothold, not executing a known method.",
+      "why": "It is the load-bearing case: fluid ability is exactly what remains when retrieval has nothing to offer.",
+      "resources": [
+        { "title": "How to Solve It — George Pólya", "type": "book" },
+        { "title": "Project Euler", "type": "practice", "url": "https://projecteuler.net/" }
+      ],
+      "exercises": [
+        { "id": "gf-novel-problem-1", "label": "Work 30 minutes on a problem with no known method", "xp": 25, "cadence": "daily" },
+        { "id": "gf-novel-problem-2", "label": "Solve a problem in a domain you have never studied", "xp": 30, "cadence": "weekly" }
+      ] },
+    { "id": "gf-inductive", "categoryId": "gf-reasoning", "label": "Inductive Inference", "tier": 2,
+      "description": "Generalising from limited data while tracking how much the evidence actually supports — including the discipline of not generalising yet.",
+      "why": "Real inference almost always runs on insufficient data, so calibrated induction is the practical skill.",
+      "resources": [
+        { "title": "Superforecasting — Philip Tetlock", "type": "book" },
+        { "title": "Metaculus", "type": "practice", "url": "https://www.metaculus.com/" }
+      ],
+      "exercises": [
+        { "id": "gf-inductive-1", "label": "State a generalisation and the evidence that would overturn it", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gwm-span", "categoryId": "gf-working-memory", "label": "Memory Span", "tier": 0,
+      "description": "How many independent items you can hold available at once. Raw span is quite fixed; what improves is how much you pack into each slot.",
+      "why": "Span sets a hard ceiling on how complex a thought you can assemble without writing it down.",
+      "resources": [
+        { "title": "Human Benchmark", "type": "tool", "url": "https://humanbenchmark.com/" }
+      ],
+      "exercises": [
+        { "id": "gwm-span-1", "label": "Run a digit or sequence span drill for 10 minutes", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gwm-chunking", "categoryId": "gf-working-memory", "label": "Chunking", "tier": 1,
+      "description": "Recoding several items into one meaningful unit, which is how experts appear to hold far more than they do. Chunking is where crystallized knowledge quietly buys you fluid capacity.",
+      "why": "It is the one reliable way to get more out of a fixed working-memory span.",
+      "resources": [
+        { "title": "Peak — Anders Ericsson & Robert Pool", "type": "book" },
+        { "title": "Moonwalking with Einstein — Joshua Foer", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gwm-chunking-1", "label": "Recode a list into meaningful groups and recall it", "xp": 12, "cadence": "daily" },
+        { "id": "gwm-chunking-2", "label": "Find the chunk structure an expert uses in your field", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "gwm-updating", "categoryId": "gf-working-memory", "label": "Updating & Inhibition", "tier": 1,
+      "description": "Replacing what is held in mind as new information arrives, and suppressing the now-irrelevant old contents — the suppression being the harder half.",
+      "why": "Stale contents that fail to clear are a common and invisible source of reasoning error.",
+      "resources": [
+        { "title": "Human Benchmark", "type": "tool", "url": "https://humanbenchmark.com/" }
+      ],
+      "exercises": [
+        { "id": "gwm-updating-1", "label": "Run an n-back or updating task for 10 minutes", "xp": 12, "cadence": "daily" },
+        { "id": "gwm-updating-2", "label": "Deliberately drop a hypothesis that new evidence killed", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gwm-mental-manipulation", "categoryId": "gf-working-memory", "label": "Mental Manipulation", "tier": 2,
+      "description": "Transforming held information rather than merely storing it — mental arithmetic, reordering, running a simulation forward in your head.",
+      "why": "Storage without manipulation is memory; the manipulation is where the thinking happens.",
+      "resources": [
+        { "title": "Secrets of Mental Math — Arthur Benjamin", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gwm-mental-manipulation-1", "label": "Do 10 minutes of mental arithmetic with no writing", "xp": 12, "cadence": "daily" },
+        { "id": "gwm-mental-manipulation-2", "label": "Play a chess or Go position forward 5 moves in your head", "xp": 18, "cadence": "daily" }
+      ] },
+    { "id": "gwm-dual-task", "categoryId": "gf-working-memory", "label": "Load Management", "tier": 2,
+      "description": "Recognising when a task has exceeded your capacity and offloading deliberately — to paper, to a diagram, to a checklist — rather than dropping items silently.",
+      "why": "The skill is not holding more but knowing precisely when you no longer can.",
+      "resources": [
+        { "title": "The Checklist Manifesto — Atul Gawande", "type": "book" },
+        { "title": "Cognitive Load Theory — John Sweller", "type": "paper" }
+      ],
+      "exercises": [
+        { "id": "gwm-dual-task-1", "label": "Notice one overload moment and externalise the state", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gs-perceptual-speed", "categoryId": "gf-processing-speed", "label": "Perceptual Speed", "tier": 0,
+      "description": "How fast you can compare, match and discriminate simple stimuli. Largely constitutional, but measurably degraded by fatigue and sleep debt.",
+      "why": "It is the clock rate the rest of cognition runs on, and the first thing poor sleep takes away.",
+      "resources": [
+        { "title": "Human Benchmark", "type": "tool", "url": "https://humanbenchmark.com/" }
+      ],
+      "exercises": [
+        { "id": "gs-perceptual-speed-1", "label": "Run a reaction-time or visual-search drill", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "gs-automaticity", "categoryId": "gf-processing-speed", "label": "Automaticity", "tier": 1,
+      "description": "Practising a sub-skill until it runs without supervision, freeing attention for the level above it. The main mechanism by which experts appear fast.",
+      "why": "Every operation you automate hands its working-memory budget back to the harder problem.",
+      "resources": [
+        { "title": "Peak — Anders Ericsson & Robert Pool", "type": "book" },
+        { "title": "Monkeytype", "type": "tool", "url": "https://monkeytype.com/" }
+      ],
+      "exercises": [
+        { "id": "gs-automaticity-1", "label": "Drill one sub-skill to fluency for 15 minutes", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gs-scanning", "categoryId": "gf-processing-speed", "label": "Visual Scanning", "tier": 1,
+      "description": "Sweeping a dense field efficiently for the thing that matters — with a search strategy rather than a random walk.",
+      "why": "Most information environments are now dense enough that filtering speed dominates reading speed.",
+      "resources": [
+        { "title": "Human Benchmark", "type": "tool", "url": "https://humanbenchmark.com/" }
+      ],
+      "exercises": [
+        { "id": "gs-scanning-1", "label": "Skim a dense document for one specific fact, timed", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "gs-decision-speed", "categoryId": "gf-processing-speed", "label": "Decision Speed", "tier": 2,
+      "description": "Deciding quickly when the decision is cheap and reversible, and deliberately slowing down when it is neither. The skill is the classification, not the speed.",
+      "why": "Treating every decision as high-stakes wastes the budget you need for the ones that are.",
+      "resources": [
+        { "title": "Thinking, Fast and Slow — Daniel Kahneman", "type": "book" },
+        { "title": "Algorithms to Live By — Christian & Griffiths", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gs-decision-speed-1", "label": "Classify a decision as reversible or not, then act accordingly", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gs-typing-fluency", "categoryId": "gf-processing-speed", "label": "Input Fluency", "tier": 2,
+      "description": "Getting thought out of your head and into a medium fast enough that the medium stops being the bottleneck — typing, handwriting, shorthand, tool fluency.",
+      "why": "When capture is slow, ideas are lost between having them and recording them.",
+      "resources": [
+        { "title": "Monkeytype", "type": "tool", "url": "https://monkeytype.com/" },
+        { "title": "TypeRacer", "type": "practice", "url": "https://play.typeracer.com/" }
+      ],
+      "exercises": [
+        { "id": "gs-typing-fluency-1", "label": "10 minutes of typing or capture-speed practice", "xp": 10, "cadence": "daily" }
+      ] },
+    { "id": "gc-retrieval-practice", "categoryId": "crystallized", "label": "Retrieval Practice", "tier": 0,
+      "description": "Recalling from an empty page rather than rereading. The difficulty is the mechanism — effortful retrieval is what strengthens the trace.",
+      "why": "It is the single best-evidenced study technique, and it feels worse than the techniques that do not work.",
+      "resources": [
+        { "title": "Make It Stick — Brown, Roediger & McDaniel", "type": "book" },
+        { "title": "Anki", "type": "tool", "url": "https://apps.ankiweb.net/" }
+      ],
+      "exercises": [
+        { "id": "gc-retrieval-practice-1", "label": "Close the book and write everything you remember", "xp": 15, "cadence": "daily" },
+        { "id": "gc-retrieval-practice-2", "label": "Self-test on last week's material with no notes", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "gc-spaced-repetition", "categoryId": "crystallized", "label": "Spaced Repetition", "tier": 0,
+      "description": "Reviewing at expanding intervals timed to just before forgetting. Converts a linear time cost into near-permanent retention.",
+      "why": "Without spacing, almost everything you learn is gone within weeks regardless of how well you understood it.",
+      "resources": [
+        { "title": "Anki", "type": "tool", "url": "https://apps.ankiweb.net/" },
+        { "title": "Gwern — Spaced Repetition", "type": "practice", "url": "https://gwern.net/spaced-repetition" },
+        { "title": "SuperMemo", "type": "tool", "url": "https://www.supermemo.com/" }
+      ],
+      "exercises": [
+        { "id": "gc-spaced-repetition-1", "label": "Clear your review queue to zero", "xp": 12, "cadence": "daily" },
+        { "id": "gc-spaced-repetition-2", "label": "Write 5 atomic cards from today's reading", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gc-elaboration", "categoryId": "crystallized", "label": "Elaborative Encoding", "tier": 1,
+      "description": "Connecting new material to what you already know — explaining why it is true, and where it contradicts something else you believe.",
+      "why": "Isolated facts have no retrieval routes; elaboration is what builds the paths back to them.",
+      "resources": [
+        { "title": "Make It Stick — Brown, Roediger & McDaniel", "type": "book" },
+        { "title": "Learning How to Learn (Coursera)", "type": "course", "url": "https://www.coursera.org/learn/learning-how-to-learn" }
+      ],
+      "exercises": [
+        { "id": "gc-elaboration-1", "label": "Connect one new fact to three things you already know", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gc-interleaving", "categoryId": "crystallized", "label": "Interleaved Practice", "tier": 1,
+      "description": "Mixing problem types within a session instead of blocking them. Performance during practice drops; retention and transfer rise.",
+      "why": "Blocked practice teaches you to execute a method; interleaving teaches you to choose one.",
+      "resources": [
+        { "title": "Make It Stick — Brown, Roediger & McDaniel", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gc-interleaving-1", "label": "Mix three problem types in one practice session", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gc-memory-palace", "categoryId": "crystallized", "label": "Method of Loci", "tier": 1,
+      "description": "Hanging arbitrary information on a vividly imagined route through a familiar place, exploiting how durable spatial memory is.",
+      "why": "It converts material your memory ignores into material it is built to hold.",
+      "resources": [
+        { "title": "Moonwalking with Einstein — Joshua Foer", "type": "book" },
+        { "title": "Art of Memory", "type": "practice", "url": "https://artofmemory.com/" }
+      ],
+      "exercises": [
+        { "id": "gc-memory-palace-1", "label": "Memorise a 20-item list using a memory palace", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "gc-note-system", "categoryId": "crystallized", "label": "Knowledge System", "tier": 1,
+      "description": "An external store with real linking, so that past thinking is retrievable and can collide productively with new material. An unindexed archive is not a knowledge system.",
+      "why": "Memory is lossy and associative; a linked external store is the prosthesis that makes long-term synthesis possible.",
+      "resources": [
+        { "title": "How to Take Smart Notes — Sönke Ahrens", "type": "book" },
+        { "title": "Zettelkasten.de", "type": "practice", "url": "https://zettelkasten.de/" },
+        { "title": "Obsidian", "type": "tool", "url": "https://obsidian.md/" }
+      ],
+      "exercises": [
+        { "id": "gc-note-system-1", "label": "Write one permanent note in your own words and link it", "xp": 15, "cadence": "daily" },
+        { "id": "gc-note-system-2", "label": "Link two previously unconnected notes and say why", "xp": 18, "cadence": "weekly" }
+      ] },
+    { "id": "gc-mental-models", "categoryId": "crystallized", "label": "Mental Model Library", "tier": 1,
+      "description": "A stocked, cross-disciplinary set of explanatory frames — feedback, incentives, selection, compounding — with a clear sense of where each applies.",
+      "why": "A broad model library is what lets you recognise a familiar structure inside an unfamiliar problem.",
+      "resources": [
+        { "title": "Farnam Street — Mental Models", "type": "practice", "url": "https://fs.blog/mental-models/" },
+        { "title": "The Model Thinker — Scott E. Page", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gc-mental-models-1", "label": "Apply one named model to a situation from today", "xp": 12, "cadence": "daily" },
+        { "id": "gc-mental-models-2", "label": "Add a model to your library with two worked examples", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "gc-knowledge-breadth", "categoryId": "crystallized", "label": "Knowledge Breadth", "tier": 1,
+      "description": "Deliberate sampling well outside your specialisation, at enough depth to recognise the structure rather than just the vocabulary.",
+      "why": "Breadth is what supplies the source domains that analogical transfer draws on.",
+      "resources": [
+        { "title": "Range — David Epstein", "type": "book" },
+        { "title": "Our World in Data", "type": "tool", "url": "https://ourworldindata.org/" }
+      ],
+      "exercises": [
+        { "id": "gc-knowledge-breadth-1", "label": "Read something substantive far outside your field", "xp": 12, "cadence": "daily" }
+      ] },
+    { "id": "gc-domain-depth", "categoryId": "crystallized", "label": "Domain Depth", "tier": 2,
+      "description": "Going deep enough in one field to hold expert-level chunks and to have opinions that survive contact with practitioners.",
+      "why": "Depth in one domain is what teaches you what real understanding feels like, so you can recognise its absence elsewhere.",
+      "resources": [
+        { "title": "Peak — Anders Ericsson & Robert Pool", "type": "book" },
+        { "title": "Mastery — Robert Greene", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gc-domain-depth-1", "label": "60 minutes of deliberate practice at your current edge", "xp": 25, "cadence": "daily" },
+        { "id": "gc-domain-depth-2", "label": "Produce something a practitioner would critique seriously", "xp": 30, "cadence": "weekly" }
+      ] },
+    { "id": "gc-transfer", "categoryId": "crystallized", "label": "Transfer", "tier": 2,
+      "description": "Actually deploying knowledge in a context unlike the one you learned it in — which happens far less automatically than education assumes.",
+      "why": "Knowledge that never transfers is inert, and most of it stays inert unless transfer is practised on purpose.",
+      "resources": [
+        { "title": "Range — David Epstein", "type": "book" },
+        { "title": "Make It Stick — Brown, Roediger & McDaniel", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gc-transfer-1", "label": "Use a method from one field on a problem in another", "xp": 20, "cadence": "weekly" }
+      ] },
+    { "id": "gc-quantitative-literacy", "categoryId": "crystallized", "label": "Quantitative Literacy", "tier": 2,
+      "description": "Reading numbers critically: units, denominators, distributions, and what a statistic is silently leaving out.",
+      "why": "Most numeric claims that mislead are technically true, and only the denominator gives them away.",
+      "resources": [
+        { "title": "How to Lie with Statistics — Darrell Huff", "type": "book" },
+        { "title": "Our World in Data", "type": "tool", "url": "https://ourworldindata.org/" }
+      ],
+      "exercises": [
+        { "id": "gc-quantitative-literacy-1", "label": "Take one statistic and find its denominator and caveats", "xp": 15, "cadence": "daily" }
+      ] },
+    { "id": "gc-history-context", "categoryId": "crystallized", "label": "Historical Context", "tier": 2,
+      "description": "Knowing how the present arrangement came about, and therefore which parts of it are contingent rather than inevitable.",
+      "why": "Without history, every current arrangement looks like the only one that was ever possible.",
+      "resources": [
+        { "title": "Sapiens — Yuval Noah Harari", "type": "book" },
+        { "title": "The Structure of Scientific Revolutions — Thomas Kuhn", "type": "book" }
+      ],
+      "exercises": [
+        { "id": "gc-history-context-1", "label": "Trace the origin of one thing you take for granted", "xp": 15, "cadence": "weekly" }
+      ] },
+    { "id": "gc-technical-fluency", "categoryId": "crystallized", "label": "Technical Fluency", "tier": 2,
+      "description": "Enough command of your tools that they stop competing for attention with the problem you are using them on.",
+      "why": "Tool friction is a working-memory tax you pay on every single session until you remove it.",
+      "resources": [
+        { "title": "The Pragmatic Programmer — Hunt & Thomas", "type": "book" },
+        { "title": "Monkeytype", "type": "tool", "url": "https://monkeytype.com/" }
+      ],
+      "exercises": [
+        { "id": "gc-technical-fluency-1", "label": "Learn one shortcut or feature that removes recurring friction", "xp": 12, "cadence": "daily" }
+      ] }
+  ],
+  "links": [
+    { "source": "ling-vocab-depth", "target": "ling-reading", "type": "prereq" },
+    { "source": "ling-vocab-depth", "target": "ling-writing", "type": "prereq" },
+    { "source": "ling-reading", "target": "ling-writing", "type": "prereq" },
+    { "source": "ling-writing", "target": "ling-rhetoric", "type": "prereq" },
+    { "source": "ling-reading", "target": "ling-rhetoric", "type": "prereq" },
+    { "source": "ling-vocab-depth", "target": "ling-speaking", "type": "prereq" },
+    { "source": "ling-speaking", "target": "ling-rhetoric", "type": "prereq" },
+    { "source": "ling-vocab-depth", "target": "ling-second-language", "type": "prereq" },
+    { "source": "log-deduction", "target": "log-proof", "type": "prereq" },
+    { "source": "log-deduction", "target": "log-probability", "type": "prereq" },
+    { "source": "log-probability", "target": "log-estimation", "type": "prereq" },
+    { "source": "log-proof", "target": "log-algorithmic", "type": "prereq" },
+    { "source": "log-deduction", "target": "log-algorithmic", "type": "prereq" },
+    { "source": "log-probability", "target": "log-systems", "type": "prereq" },
+    { "source": "log-algorithmic", "target": "log-systems", "type": "prereq" },
+    { "source": "spa-visualization", "target": "spa-rotation", "type": "prereq" },
+    { "source": "spa-visualization", "target": "spa-navigation", "type": "prereq" },
+    { "source": "spa-visualization", "target": "spa-drawing", "type": "prereq" },
+    { "source": "spa-rotation", "target": "spa-modeling", "type": "prereq" },
+    { "source": "spa-drawing", "target": "spa-modeling", "type": "prereq" },
+    { "source": "spa-drawing", "target": "spa-diagramming", "type": "prereq" },
+    { "source": "spa-navigation", "target": "spa-diagramming", "type": "prereq" },
+    { "source": "mus-pitch", "target": "mus-harmony", "type": "prereq" },
+    { "source": "mus-pitch", "target": "mus-instrument", "type": "prereq" },
+    { "source": "mus-rhythm", "target": "mus-instrument", "type": "prereq" },
+    { "source": "mus-harmony", "target": "mus-transcription", "type": "prereq" },
+    { "source": "mus-pitch", "target": "mus-transcription", "type": "prereq" },
+    { "source": "mus-harmony", "target": "mus-improvisation", "type": "prereq" },
+    { "source": "mus-instrument", "target": "mus-improvisation", "type": "prereq" },
+    { "source": "kin-proprioception", "target": "kin-coordination", "type": "prereq" },
+    { "source": "kin-proprioception", "target": "kin-motor-learning", "type": "prereq" },
+    { "source": "kin-proprioception", "target": "kin-strength", "type": "prereq" },
+    { "source": "kin-proprioception", "target": "kin-breath", "type": "prereq" },
+    { "source": "kin-coordination", "target": "kin-craft", "type": "prereq" },
+    { "source": "kin-motor-learning", "target": "kin-craft", "type": "prereq" },
+    { "source": "inter-active-listening", "target": "inter-perspective", "type": "prereq" },
+    { "source": "inter-active-listening", "target": "inter-nonverbal", "type": "prereq" },
+    { "source": "inter-perspective", "target": "inter-collaboration", "type": "prereq" },
+    { "source": "inter-collaboration", "target": "inter-teaching", "type": "prereq" },
+    { "source": "inter-perspective", "target": "inter-negotiation", "type": "prereq" },
+    { "source": "inter-collaboration", "target": "inter-negotiation", "type": "prereq" },
+    { "source": "inter-nonverbal", "target": "inter-negotiation", "type": "prereq" },
+    { "source": "intra-introspection", "target": "intra-metacognition", "type": "prereq" },
+    { "source": "intra-introspection", "target": "intra-values", "type": "prereq" },
+    { "source": "intra-introspection", "target": "intra-attention", "type": "prereq" },
+    { "source": "intra-metacognition", "target": "intra-growth-mindset", "type": "prereq" },
+    { "source": "intra-values", "target": "intra-growth-mindset", "type": "prereq" },
+    { "source": "intra-attention", "target": "intra-solitude", "type": "prereq" },
+    { "source": "intra-metacognition", "target": "intra-solitude", "type": "prereq" },
+    { "source": "nat-observation", "target": "nat-taxonomy", "type": "prereq" },
+    { "source": "nat-observation", "target": "nat-ecology", "type": "prereq" },
+    { "source": "nat-observation", "target": "nat-pattern-recognition", "type": "prereq" },
+    { "source": "nat-taxonomy", "target": "nat-ecology", "type": "prereq" },
+    { "source": "nat-ecology", "target": "nat-seasonality", "type": "prereq" },
+    { "source": "nat-observation", "target": "nat-seasonality", "type": "prereq" },
+    { "source": "nat-pattern-recognition", "target": "nat-navigation-natural", "type": "prereq" },
+    { "source": "eqa-emotion-granularity", "target": "eqa-trigger-mapping", "type": "prereq" },
+    { "source": "eqa-interoception", "target": "eqa-trigger-mapping", "type": "prereq" },
+    { "source": "eqa-emotion-granularity", "target": "eqa-bias-awareness", "type": "prereq" },
+    { "source": "eqa-trigger-mapping", "target": "eqa-feedback-seeking", "type": "prereq" },
+    { "source": "eqa-bias-awareness", "target": "eqa-narrative-audit", "type": "prereq" },
+    { "source": "eqa-feedback-seeking", "target": "eqa-narrative-audit", "type": "prereq" },
+    { "source": "eqr-impulse-control", "target": "eqr-reappraisal", "type": "prereq" },
+    { "source": "eqr-impulse-control", "target": "eqr-distress-tolerance", "type": "prereq" },
+    { "source": "eqr-recovery", "target": "eqr-impulse-control", "type": "prereq" },
+    { "source": "eqr-reappraisal", "target": "eqr-habit-design", "type": "prereq" },
+    { "source": "eqr-distress-tolerance", "target": "eqr-delayed-gratification", "type": "prereq" },
+    { "source": "eqr-habit-design", "target": "eqr-delayed-gratification", "type": "prereq" },
+    { "source": "eqs-empathic-accuracy", "target": "eqs-compassion", "type": "prereq" },
+    { "source": "eqs-empathic-accuracy", "target": "eqs-social-context", "type": "prereq" },
+    { "source": "eqs-social-context", "target": "eqs-cultural-fluency", "type": "prereq" },
+    { "source": "eqs-empathic-accuracy", "target": "eqs-listening-depth", "type": "prereq" },
+    { "source": "eqs-compassion", "target": "eqs-boundaries-read", "type": "prereq" },
+    { "source": "eqs-listening-depth", "target": "eqs-boundaries-read", "type": "prereq" },
+    { "source": "eqm-trust-building", "target": "eqm-conflict", "type": "prereq" },
+    { "source": "eqm-trust-building", "target": "eqm-repair", "type": "prereq" },
+    { "source": "eqm-conflict", "target": "eqm-repair", "type": "prereq" },
+    { "source": "eqm-conflict", "target": "eqm-influence", "type": "prereq" },
+    { "source": "eqm-trust-building", "target": "eqm-mentoring", "type": "prereq" },
+    { "source": "eqm-trust-building", "target": "eqm-network", "type": "prereq" },
+    { "source": "eqm-mentoring", "target": "eqm-influence", "type": "prereq" },
+    { "source": "gf-pattern-abstraction", "target": "gf-analogy", "type": "prereq" },
+    { "source": "gf-pattern-abstraction", "target": "gf-hypothesis", "type": "prereq" },
+    { "source": "gf-analogy", "target": "gf-novel-problem", "type": "prereq" },
+    { "source": "gf-hypothesis", "target": "gf-novel-problem", "type": "prereq" },
+    { "source": "gf-hypothesis", "target": "gf-inductive", "type": "prereq" },
+    { "source": "gf-pattern-abstraction", "target": "gf-inductive", "type": "prereq" },
+    { "source": "gwm-span", "target": "gwm-chunking", "type": "prereq" },
+    { "source": "gwm-span", "target": "gwm-updating", "type": "prereq" },
+    { "source": "gwm-chunking", "target": "gwm-mental-manipulation", "type": "prereq" },
+    { "source": "gwm-updating", "target": "gwm-mental-manipulation", "type": "prereq" },
+    { "source": "gwm-updating", "target": "gwm-dual-task", "type": "prereq" },
+    { "source": "gwm-chunking", "target": "gwm-dual-task", "type": "prereq" },
+    { "source": "gs-perceptual-speed", "target": "gs-automaticity", "type": "prereq" },
+    { "source": "gs-perceptual-speed", "target": "gs-scanning", "type": "prereq" },
+    { "source": "gs-automaticity", "target": "gs-decision-speed", "type": "prereq" },
+    { "source": "gs-scanning", "target": "gs-decision-speed", "type": "prereq" },
+    { "source": "gs-automaticity", "target": "gs-typing-fluency", "type": "prereq" },
+    { "source": "gc-retrieval-practice", "target": "gc-elaboration", "type": "prereq" },
+    { "source": "gc-spaced-repetition", "target": "gc-elaboration", "type": "prereq" },
+    { "source": "gc-retrieval-practice", "target": "gc-interleaving", "type": "prereq" },
+    { "source": "gc-retrieval-practice", "target": "gc-memory-palace", "type": "prereq" },
+    { "source": "gc-elaboration", "target": "gc-note-system", "type": "prereq" },
+    { "source": "gc-note-system", "target": "gc-mental-models", "type": "prereq" },
+    { "source": "gc-elaboration", "target": "gc-mental-models", "type": "prereq" },
+    { "source": "gc-spaced-repetition", "target": "gc-knowledge-breadth", "type": "prereq" },
+    { "source": "gc-mental-models", "target": "gc-transfer", "type": "prereq" },
+    { "source": "gc-interleaving", "target": "gc-transfer", "type": "prereq" },
+    { "source": "gc-knowledge-breadth", "target": "gc-domain-depth", "type": "prereq" },
+    { "source": "gc-mental-models", "target": "gc-domain-depth", "type": "prereq" },
+    { "source": "gc-knowledge-breadth", "target": "gc-quantitative-literacy", "type": "prereq" },
+    { "source": "gc-knowledge-breadth", "target": "gc-history-context", "type": "prereq" },
+    { "source": "gc-domain-depth", "target": "gc-technical-fluency", "type": "prereq" },
+
+    { "source": "gwm-chunking", "target": "gc-domain-depth", "type": "synergy" },
+    { "source": "gwm-mental-manipulation", "target": "log-estimation", "type": "synergy" },
+    { "source": "gwm-span", "target": "ling-speaking", "type": "synergy" },
+    { "source": "gwm-updating", "target": "intra-attention", "type": "synergy" },
+    { "source": "gwm-dual-task", "target": "gc-note-system", "type": "synergy" },
+    { "source": "gc-retrieval-practice", "target": "gwm-span", "type": "synergy" },
+    { "source": "gf-pattern-abstraction", "target": "nat-pattern-recognition", "type": "synergy" },
+    { "source": "gf-analogy", "target": "gc-transfer", "type": "synergy" },
+    { "source": "gf-analogy", "target": "spa-diagramming", "type": "synergy" },
+    { "source": "gf-hypothesis", "target": "nat-ecology", "type": "synergy" },
+    { "source": "gf-novel-problem", "target": "log-algorithmic", "type": "synergy" },
+    { "source": "gf-inductive", "target": "log-probability", "type": "synergy" },
+    { "source": "gs-automaticity", "target": "kin-motor-learning", "type": "synergy" },
+    { "source": "gs-automaticity", "target": "mus-instrument", "type": "synergy" },
+    { "source": "gs-typing-fluency", "target": "gc-note-system", "type": "synergy" },
+    { "source": "gs-perceptual-speed", "target": "eqr-recovery", "type": "synergy" },
+    { "source": "gs-decision-speed", "target": "eqa-bias-awareness", "type": "synergy" },
+    { "source": "eqr-recovery", "target": "gwm-span", "type": "synergy" },
+    { "source": "eqr-habit-design", "target": "gc-spaced-repetition", "type": "synergy" },
+    { "source": "eqr-distress-tolerance", "target": "gc-domain-depth", "type": "synergy" },
+    { "source": "eqr-delayed-gratification", "target": "intra-attention", "type": "synergy" },
+    { "source": "eqr-reappraisal", "target": "eqa-emotion-granularity", "type": "synergy" },
+    { "source": "eqr-impulse-control", "target": "inter-negotiation", "type": "synergy" },
+    { "source": "eqa-interoception", "target": "kin-breath", "type": "synergy" },
+    { "source": "eqa-interoception", "target": "kin-proprioception", "type": "synergy" },
+    { "source": "eqa-bias-awareness", "target": "intra-metacognition", "type": "synergy" },
+    { "source": "eqa-feedback-seeking", "target": "intra-growth-mindset", "type": "synergy" },
+    { "source": "eqa-emotion-granularity", "target": "ling-vocab-depth", "type": "synergy" },
+    { "source": "eqa-narrative-audit", "target": "intra-values", "type": "synergy" },
+    { "source": "eqs-empathic-accuracy", "target": "inter-perspective", "type": "synergy" },
+    { "source": "eqs-empathic-accuracy", "target": "inter-nonverbal", "type": "synergy" },
+    { "source": "eqs-social-context", "target": "inter-collaboration", "type": "synergy" },
+    { "source": "eqs-listening-depth", "target": "inter-active-listening", "type": "synergy" },
+    { "source": "eqs-compassion", "target": "intra-growth-mindset", "type": "synergy" },
+    { "source": "eqm-conflict", "target": "inter-negotiation", "type": "synergy" },
+    { "source": "eqm-trust-building", "target": "inter-collaboration", "type": "synergy" },
+    { "source": "eqm-mentoring", "target": "inter-teaching", "type": "synergy" },
+    { "source": "eqm-influence", "target": "ling-rhetoric", "type": "synergy" },
+    { "source": "eqm-repair", "target": "eqr-reappraisal", "type": "synergy" },
+    { "source": "inter-teaching", "target": "gc-retrieval-practice", "type": "synergy" },
+    { "source": "inter-teaching", "target": "ling-writing", "type": "synergy" },
+    { "source": "inter-perspective", "target": "ling-rhetoric", "type": "synergy" },
+    { "source": "intra-metacognition", "target": "gc-interleaving", "type": "synergy" },
+    { "source": "intra-attention", "target": "gc-domain-depth", "type": "synergy" },
+    { "source": "intra-growth-mindset", "target": "gf-novel-problem", "type": "synergy" },
+    { "source": "intra-solitude", "target": "gf-hypothesis", "type": "synergy" },
+    { "source": "intra-values", "target": "eqr-delayed-gratification", "type": "synergy" },
+    { "source": "ling-writing", "target": "intra-metacognition", "type": "synergy" },
+    { "source": "ling-reading", "target": "gc-knowledge-breadth", "type": "synergy" },
+    { "source": "ling-second-language", "target": "gc-spaced-repetition", "type": "synergy" },
+    { "source": "ling-vocab-depth", "target": "gc-spaced-repetition", "type": "synergy" },
+    { "source": "log-systems", "target": "nat-ecology", "type": "synergy" },
+    { "source": "log-probability", "target": "gc-quantitative-literacy", "type": "synergy" },
+    { "source": "log-estimation", "target": "gc-quantitative-literacy", "type": "synergy" },
+    { "source": "log-deduction", "target": "gf-pattern-abstraction", "type": "synergy" },
+    { "source": "log-algorithmic", "target": "gc-technical-fluency", "type": "synergy" },
+    { "source": "spa-visualization", "target": "gc-memory-palace", "type": "synergy" },
+    { "source": "spa-navigation", "target": "gc-memory-palace", "type": "synergy" },
+    { "source": "spa-rotation", "target": "gf-pattern-abstraction", "type": "synergy" },
+    { "source": "spa-drawing", "target": "nat-observation", "type": "synergy" },
+    { "source": "spa-diagramming", "target": "log-systems", "type": "synergy" },
+    { "source": "spa-modeling", "target": "kin-craft", "type": "synergy" },
+    { "source": "mus-rhythm", "target": "kin-coordination", "type": "synergy" },
+    { "source": "mus-transcription", "target": "gwm-span", "type": "synergy" },
+    { "source": "mus-improvisation", "target": "ling-speaking", "type": "synergy" },
+    { "source": "mus-harmony", "target": "gf-pattern-abstraction", "type": "synergy" },
+    { "source": "kin-strength", "target": "eqr-recovery", "type": "synergy" },
+    { "source": "kin-breath", "target": "eqr-impulse-control", "type": "synergy" },
+    { "source": "kin-motor-learning", "target": "gc-domain-depth", "type": "synergy" },
+    { "source": "kin-proprioception", "target": "spa-visualization", "type": "synergy" },
+    { "source": "nat-taxonomy", "target": "gf-pattern-abstraction", "type": "synergy" },
+    { "source": "nat-seasonality", "target": "eqr-delayed-gratification", "type": "synergy" },
+    { "source": "nat-navigation-natural", "target": "spa-navigation", "type": "synergy" },
+    { "source": "gc-mental-models", "target": "log-systems", "type": "synergy" },
+    { "source": "gc-knowledge-breadth", "target": "gf-analogy", "type": "synergy" }
+  ]
+}
