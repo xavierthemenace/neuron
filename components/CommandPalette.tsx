@@ -36,7 +36,12 @@ export function CommandPalette({
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         event.stopImmediatePropagation();
-        setOpen((value) => !value);
+        if (open) {
+          setOpen(false);
+        } else {
+          setQuery("");
+          setOpen(true);
+        }
         return;
       }
       if (event.key === "Escape" && open) {
@@ -51,8 +56,8 @@ export function CommandPalette({
 
   useEffect(() => {
     if (!open) return;
-    setQuery("");
-    requestAnimationFrame(() => inputRef.current?.focus());
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
   }, [open]);
 
   const categoriesById = useMemo(
