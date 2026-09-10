@@ -29,7 +29,7 @@ export interface Resource {
   url?: string;
 }
 
-/** How often an exercise is meant to be repeated. Drives the "done?" indicator. */
+/** How often an exercise is meant to be repeated. Drives reset gating. */
 export type Cadence = "daily" | "weekly" | "session";
 
 export interface Exercise {
@@ -77,8 +77,17 @@ export interface LogEntry {
   id: string;
   nodeId: string;
   exerciseId: string;
+  /** Awarded XP after any active synergy multiplier. */
   xp: number;
+  /** Exercise XP before buffs. Optional for backwards-compatible v1 logs. */
+  baseXp?: number;
+  /** Multiplier used for the award, e.g. 1.25 for a synergy buff. */
+  multiplier?: number;
+  /** Estimated or user-entered practice duration. */
+  minutes?: number;
+  /** Typed work, evidence, or a short completion note. */
   note?: string;
+  source?: "panel" | "command";
   /** ISO 8601 timestamp. */
   at: string;
 }
