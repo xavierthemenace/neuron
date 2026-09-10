@@ -155,6 +155,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
   const channel = useRef<BroadcastChannel | null>(null);
+  const suppressNextPersist = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -173,6 +174,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     broadcast.onmessage = (event: MessageEvent<unknown>) => {
       const incoming = parseProgress(event.data);
       if (!incoming) return;
+      // A remote snapshot is already persisted by its originating tab. Mark the
+      // next progress effect as read-only so this tab does not immediately echo
+      // the same snapshot back and create an endless cross-tab broadcast cycle.
+      suppressNextPersist.current = true;
       dirty.current = false;
       dispatch({ kind: "replace", progress: incoming });
     };
@@ -192,6 +197,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
+    if (suppressNextPersist.current) {
+      suppressNextPersist.current = false;
+      return;
+    }
     if (saveTimer.current) clearTimeout(saveTimer.current);
     dirty.current = true;
     saveTimer.current = setTimeout(() => {
