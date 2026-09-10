@@ -16,10 +16,14 @@ export interface ConceptNodeData extends Record<string, unknown> {
   lightness: number;
   chroma: number;
   categoryLabel: string;
+  /** Ebbinghaus retention multiplier, 0.5-1 for trained nodes. */
+  retention: number;
+  decaying: boolean;
   /** Dimmed by search or a legend filter — still visible, but receded. */
   dimmed: boolean;
   /** Receded because another node is focused and this is outside its local network. */
   contextDimmed: boolean;
+  focusMode: boolean;
 }
 
 export interface SynapseEdgeData extends Record<string, unknown> {
@@ -32,18 +36,13 @@ export interface SynapseEdgeData extends Record<string, unknown> {
   highlighted: boolean;
   /** Receded because a different edge is part of the focused node's local network. */
   contextDimmed: boolean;
+  /** Changes when a connected exercise is logged, restarting the particle burst. */
+  burstKey: string | null;
 }
 
 export type ConceptFlowNode = Node<ConceptNodeData, "concept">;
 export type SynapseFlowEdge = Edge<SynapseEdgeData, "synapse">;
 
-/**
- * Positions are precomputed by `npm run bake:layout` rather than simulated at
- * runtime — the force pass costs ~500ms of blocked main thread for a result
- * that is identical on every load. Any node missing from the baked file (added
- * to the data but not yet re-baked) falls back to the origin, which is visibly
- * wrong on purpose rather than silently misplaced.
- */
 const LAYOUT = bakedLayout as Record<string, Point>;
 
 export function positionOf(nodeId: string): Point {
@@ -54,10 +53,7 @@ export function indexBy<T extends { id: string }>(items: T[]): Map<string, T> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
-/**
- * Which nodes a filter leaves highlighted. Returns null when nothing is
- * filtered, so callers can skip the dimming work entirely.
- */
+/** Which nodes a filter leaves highlighted. */
 export function matchingNodeIds(
   data: IntelligenceData,
   search: string,
@@ -89,6 +85,8 @@ export function buildNodes(
   visible: Set<string> | null,
   selectedId: string | null = null,
   focusIds: Set<string> | null = null,
+  focusMode = false,
+  retentionByNodeId: Record<string, number> = {},
 ): ConceptFlowNode[] {
   return data.nodes.map((node) => {
     const xp = xpByNodeId[node.id] ?? 0;
@@ -96,6 +94,7 @@ export function buildNodes(
     const radius = radiusForXp(xp);
     const category = categories.get(node.categoryId);
     const position = positionOf(node.id);
+    const retention = retentionByNodeId[node.id] ?? 1;
 
     const size = radius * 2;
     const selected = node.id === selectedId;
@@ -104,13 +103,7 @@ export function buildNodes(
     return {
       id: node.id,
       type: "concept",
-      // React Flow positions by top-left corner, so offset by the radius to
-      // keep the orb centred on its computed point as it grows.
       position: { x: position.x - radius, y: position.y - radius },
-      // Declared rather than measured. This array is rebuilt on every XP change
-      // and these fresh objects carry no `measured` field, so anything reading
-      // dimensions off the node itself — the MiniMap especially — would treat
-      // every node as unsized. We know the exact size, so we state it.
       width: size,
       height: size,
       data: {
@@ -120,12 +113,15 @@ export function buildNodes(
         tierIndex: tier.index,
         radius,
         opacity: tier.opacity,
-        glow: tier.glow,
+        glow: tier.glow * retention,
         lightness: tier.lightness,
         chroma: tier.chroma,
         categoryLabel: category?.label ?? "",
+        retention,
+        decaying: retention < 0.999,
         dimmed: visible ? !visible.has(node.id) : false,
         contextDimmed: focusIds ? !inFocusContext : false,
+        focusMode,
       },
       selected,
       zIndex: selected ? 20 : inFocusContext ? 10 : 0,
@@ -141,11 +137,13 @@ export function buildEdges(
   nodesById: Map<string, ConceptNode>,
   visible: Set<string> | null,
   selectedId: string | null = null,
+  focusIds: Set<string> | null = null,
+  focusMode = false,
+  burstSignal: { id: string; nodeId: string } | null = null,
 ): SynapseFlowEdge[] {
   return data.links.map((link) => {
     const sourceTier = tierForXp(xpByNodeId[link.source] ?? 0).index;
     const targetTier = tierForXp(xpByNodeId[link.target] ?? 0).index;
-    // An edge is only as alive as its weaker end — a synapse needs both sides.
     const strength = Math.min(sourceTier, targetTier);
 
     const sourceCategory = nodesById.get(link.source)?.categoryId;
@@ -153,12 +151,21 @@ export function buildEdges(
     const highlighted = Boolean(
       selectedId && (link.source === selectedId || link.target === selectedId),
     );
+    const inFocusContext = focusIds
+      ? focusIds.has(link.source) && focusIds.has(link.target)
+      : highlighted;
+    const hidden = Boolean(focusMode && focusIds && !inFocusContext);
+    const bursts = Boolean(
+      burstSignal &&
+        (link.source === burstSignal.nodeId || link.target === burstSignal.nodeId),
+    );
 
     return {
       id: `${link.source}--${link.target}`,
       source: link.source,
       target: link.target,
       type: "synapse",
+      hidden,
       data: {
         hue,
         strength,
@@ -167,20 +174,20 @@ export function buildEdges(
           ? !visible.has(link.source) || !visible.has(link.target)
           : false,
         highlighted,
-        contextDimmed: Boolean(selectedId) && !highlighted,
+        contextDimmed: Boolean(selectedId) && !inFocusContext,
+        burstKey: bursts && burstSignal ? burstSignal.id : null,
       },
-      zIndex: highlighted ? 5 : 0,
+      zIndex: highlighted ? 5 : inFocusContext ? 2 : 0,
     } satisfies SynapseFlowEdge;
   });
 }
 
-/** Neighbours of a node, for the side panel's connection chips. */
+/** Neighbours of a node, for the side panel and pathway guide. */
 export function neighborsOf(
   data: IntelligenceData,
   nodeId: string,
 ): { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] {
-  const out: { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] =
-    [];
+  const out: { id: string; type: "prereq" | "synergy"; direction: "in" | "out" }[] = [];
   for (const link of data.links) {
     if (link.source === nodeId)
       out.push({ id: link.target, type: link.type, direction: "out" });
