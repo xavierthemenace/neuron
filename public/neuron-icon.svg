@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Neuron app icon">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="32%" r="78%">
+      <stop offset="0" stop-color="#253b66"/>
+      <stop offset="0.58" stop-color="#111827"/>
+      <stop offset="1" stop-color="#090b11"/>
+    </radialGradient>
+    <radialGradient id="node" cx="34%" cy="28%" r="72%">
+      <stop offset="0" stop-color="#dffcff"/>
+      <stop offset="0.32" stop-color="#72e5f4"/>
+      <stop offset="1" stop-color="#3a5bd9"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g fill="none" stroke="#8ddfec" stroke-width="14" stroke-linecap="round" opacity=".55">
+    <path d="M145 188 242 250 349 161"/>
+    <path d="M242 250 355 334"/>
+    <path d="M242 250 153 351"/>
+  </g>
+  <g fill="url(#node)" stroke="#e7feff" stroke-width="7">
+    <circle cx="145" cy="188" r="34"/>
+    <circle cx="349" cy="161" r="28"/>
+    <circle cx="355" cy="334" r="31"/>
+    <circle cx="153" cy="351" r="27"/>
+    <circle cx="242" cy="250" r="55"/>
+  </g>
+</svg>
