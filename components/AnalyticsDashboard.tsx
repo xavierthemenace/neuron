@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import {
-  MAX_XP,
-  dayKey,
-  estimateExerciseMinutes,
-} from "@/lib/mastery";
+import { MAX_XP, dayKey, estimateExerciseMinutes } from "@/lib/mastery";
 import type { IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
 
@@ -67,7 +63,7 @@ export function AnalyticsDashboard({
   open: boolean;
   onClose: () => void;
 }) {
-  const { progress, xpByNodeId, rawXpByNodeId } = useProgress();
+  const { progress, xpByNodeId } = useProgress();
 
   useEffect(() => {
     if (!open) return;
@@ -86,16 +82,14 @@ export function AnalyticsDashboard({
           (sum, node) => sum + Math.min(MAX_XP, xpByNodeId[node.id] ?? 0),
           0,
         );
-        const raw = nodes.reduce((sum, node) => sum + (rawXpByNodeId[node.id] ?? 0), 0);
         const capacity = Math.max(1, nodes.length * MAX_XP);
         return {
           ...category,
           nodeCount: nodes.length,
           score: effective / capacity,
-          raw,
         };
       }),
-    [data.categories, data.nodes, rawXpByNodeId, xpByNodeId],
+    [data.categories, data.nodes, xpByNodeId],
   );
 
   const activity = useMemo(() => {
@@ -111,8 +105,13 @@ export function AnalyticsDashboard({
       const date = new Date(today);
       date.setDate(today.getDate() - (364 - index));
       const key = dayKey(date);
-      return { key, count: countByDay.get(key) ?? 0 };
+      return { key, count: countByDay.get(key) ?? 0, weekday: date.getDay() };
     });
+    const leading = days[0]?.weekday ?? 0;
+    const heatDays: Array<(typeof days)[number] | null> = [
+      ...Array.from({ length: leading }, () => null),
+      ...days,
+    ];
 
     let streak = 0;
     const cursor = new Date(today);
@@ -123,7 +122,9 @@ export function AnalyticsDashboard({
     }
 
     const exerciseById = new Map(
-      data.nodes.flatMap((node) => node.exercises.map((exercise) => [exercise.id, exercise] as const)),
+      data.nodes.flatMap((node) =>
+        node.exercises.map((exercise) => [exercise.id, exercise] as const),
+      ),
     );
     const minutes = progress.logs.reduce((sum, log) => {
       if (log.minutes && log.minutes > 0) return sum + log.minutes;
@@ -131,7 +132,12 @@ export function AnalyticsDashboard({
       return sum + (exercise ? estimateExerciseMinutes(exercise) : 0);
     }, 0);
 
-    return { days, streak, minutes, activeDays: countByDay.size };
+    return {
+      heatDays,
+      streak,
+      minutes,
+      activeDays: days.filter((day) => day.count > 0).length,
+    };
   }, [data.nodes, progress.logs]);
 
   if (!open) return null;
@@ -180,7 +186,12 @@ export function AnalyticsDashboard({
             </div>
 
             <div className="mx-auto max-w-[560px] overflow-hidden">
-              <svg viewBox={`0 0 ${RADAR_SIZE} ${RADAR_SIZE}`} className="h-auto w-full" role="img" aria-label="Radar chart of category mastery">
+              <svg
+                viewBox={`0 0 ${RADAR_SIZE} ${RADAR_SIZE}`}
+                className="h-auto w-full"
+                role="img"
+                aria-label="Radar chart of category mastery"
+              >
                 {[0.25, 0.5, 0.75, 1].map((ring) => (
                   <polygon
                     key={ring}
@@ -206,7 +217,13 @@ export function AnalyticsDashboard({
                       <text
                         x={labelPoint.x}
                         y={labelPoint.y}
-                        textAnchor={labelPoint.x < RADAR_CENTER - 16 ? "end" : labelPoint.x > RADAR_CENTER + 16 ? "start" : "middle"}
+                        textAnchor={
+                          labelPoint.x < RADAR_CENTER - 16
+                            ? "end"
+                            : labelPoint.x > RADAR_CENTER + 16
+                              ? "start"
+                              : "middle"
+                        }
                         dominantBaseline="middle"
                         fill="oklch(0.74 0.015 265)"
                         fontSize={9.5}
@@ -249,7 +266,7 @@ export function AnalyticsDashboard({
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
                 <div className="text-xl font-semibold tabular-nums text-neutral-50">{activity.activeDays}</div>
-                <div className="text-[10px] uppercase tracking-wider text-neutral-500">active days</div>
+                <div className="text-[10px] uppercase tracking-wider text-neutral-500">active days / 365</div>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
                 <div className="text-xl font-semibold tabular-nums text-neutral-50">{activity.minutes.toLocaleString()}</div>
@@ -259,23 +276,33 @@ export function AnalyticsDashboard({
 
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
               <h3 className="text-sm font-semibold text-neutral-100">365-day activity</h3>
-              <p className="mt-0.5 text-[11px] text-neutral-500">Every square is a local calendar day; brighter means more completed exercises.</p>
+              <p className="mt-0.5 text-[11px] text-neutral-500">
+                Every square is a local calendar day; brighter means more completed exercises.
+              </p>
               <div className="mt-4 overflow-x-auto pb-1">
                 <div className="grid w-max grid-flow-col grid-rows-7 gap-[3px]">
-                  {activity.days.map((day) => (
-                    <span
-                      key={day.key}
-                      className="h-[10px] w-[10px] rounded-[2px] border border-white/[0.025]"
-                      style={{ background: heatColor(heatLevel(day.count)) }}
-                      title={`${day.key}: ${day.count} exercise${day.count === 1 ? "" : "s"}`}
-                    />
-                  ))}
+                  {activity.heatDays.map((day, index) =>
+                    day ? (
+                      <span
+                        key={day.key}
+                        className="h-[10px] w-[10px] rounded-[2px] border border-white/[0.025]"
+                        style={{ background: heatColor(heatLevel(day.count)) }}
+                        title={`${day.key}: ${day.count} exercise${day.count === 1 ? "" : "s"}`}
+                      />
+                    ) : (
+                      <span key={`pad-${index}`} className="h-[10px] w-[10px]" aria-hidden="true" />
+                    ),
+                  )}
                 </div>
               </div>
               <div className="mt-2 flex items-center justify-end gap-1 text-[9px] text-neutral-600">
                 <span>Less</span>
                 {[0, 1, 2, 3, 4].map((level) => (
-                  <span key={level} className="h-2.5 w-2.5 rounded-[2px]" style={{ background: heatColor(level) }} />
+                  <span
+                    key={level}
+                    className="h-2.5 w-2.5 rounded-[2px]"
+                    style={{ background: heatColor(level) }}
+                  />
                 ))}
                 <span>More</span>
               </div>
@@ -288,7 +315,10 @@ export function AnalyticsDashboard({
                   .slice()
                   .sort((a, b) => b.score - a.score)
                   .map((category) => (
-                    <div key={category.id} className="grid grid-cols-[minmax(0,1fr)_3rem] items-center gap-3">
+                    <div
+                      key={category.id}
+                      className="grid grid-cols-[minmax(0,1fr)_3rem] items-center gap-3"
+                    >
                       <div>
                         <div className="mb-1 flex items-center justify-between gap-2 text-[11px]">
                           <span className="truncate text-neutral-300">{category.label}</span>
