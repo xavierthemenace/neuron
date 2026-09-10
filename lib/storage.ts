@@ -14,31 +14,59 @@ export function newId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function isLogEntry(value: unknown): value is LogEntry {
-  if (!value || typeof value !== "object") return false;
-  const l = value as Record<string, unknown>;
-  return (
-    typeof l.id === "string" &&
-    typeof l.nodeId === "string" &&
-    typeof l.exerciseId === "string" &&
-    typeof l.xp === "number" &&
-    Number.isFinite(l.xp) &&
-    typeof l.at === "string" &&
-    !Number.isNaN(Date.parse(l.at))
-  );
+function finiteNumber(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+function parseLogEntry(value: unknown): LogEntry | null {
+  if (!value || typeof value !== "object") return null;
+  const log = value as Record<string, unknown>;
+  if (
+    typeof log.id !== "string" ||
+    typeof log.nodeId !== "string" ||
+    typeof log.exerciseId !== "string" ||
+    typeof log.xp !== "number" ||
+    !Number.isFinite(log.xp) ||
+    typeof log.at !== "string" ||
+    Number.isNaN(Date.parse(log.at))
+  ) {
+    return null;
+  }
+
+  const parsed: LogEntry = {
+    id: log.id,
+    nodeId: log.nodeId,
+    exerciseId: log.exerciseId,
+    xp: log.xp,
+    at: log.at,
+  };
+
+  const baseXp = finiteNumber(log.baseXp);
+  const multiplier = finiteNumber(log.multiplier);
+  const minutes = finiteNumber(log.minutes);
+  if (baseXp !== undefined && baseXp >= 0) parsed.baseXp = baseXp;
+  if (multiplier !== undefined && multiplier >= 1) parsed.multiplier = multiplier;
+  if (minutes !== undefined && minutes > 0) parsed.minutes = minutes;
+  if (typeof log.note === "string" && log.note.trim()) parsed.note = log.note;
+  if (log.source === "panel" || log.source === "command") parsed.source = log.source;
+
+  return parsed;
 }
 
 /**
- * Validates unknown input into a Progress. Used for both localStorage reads and
- * file imports, since neither source can be trusted to be well-formed — one may
- * have been written by an older build, the other hand-edited.
+ * Validates unknown input into a Progress. Richer log metadata remains optional
+ * so every existing `neuron.progress.v1` export continues to import cleanly.
  */
 export function parseProgress(value: unknown): Progress | null {
   if (!value || typeof value !== "object") return null;
-  const p = value as Record<string, unknown>;
-  if (p.version !== 1) return null;
-  if (!Array.isArray(p.logs)) return null;
-  return { version: 1, logs: p.logs.filter(isLogEntry) };
+  const progress = value as Record<string, unknown>;
+  if (progress.version !== 1 || !Array.isArray(progress.logs)) return null;
+  return {
+    version: 1,
+    logs: progress.logs
+      .map(parseLogEntry)
+      .filter((log): log is LogEntry => log !== null),
+  };
 }
 
 /** Reads saved progress. Returns empty progress rather than throwing. */
@@ -49,7 +77,6 @@ export function loadProgress(): Progress {
     if (!raw) return emptyProgress();
     return parseProgress(JSON.parse(raw)) ?? emptyProgress();
   } catch {
-    // Private-mode browsers and blocked site data both throw on access.
     return emptyProgress();
   }
 }
@@ -69,12 +96,12 @@ export function exportProgress(progress: Progress): void {
     type: "application/json",
   });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `neuron-progress-${new Date().toISOString().slice(0, 10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `neuron-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
   URL.revokeObjectURL(url);
 }
 
