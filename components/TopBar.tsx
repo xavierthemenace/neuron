@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TIERS, tierForXp, totalXp } from "@/lib/mastery";
 import { exportProgress, importProgress } from "@/lib/storage";
 import type { Category, IntelligenceData } from "@/lib/types";
@@ -10,6 +10,7 @@ export function TopBar({
   data,
   search,
   onSearchChange,
+  onSelectNode,
   activeCategories,
   onToggleCategory,
   onClearFilters,
@@ -17,12 +18,14 @@ export function TopBar({
   data: IntelligenceData;
   search: string;
   onSearchChange: (value: string) => void;
+  onSelectNode: (id: string) => void;
   activeCategories: Set<string>;
   onToggleCategory: (id: string) => void;
   onClearFilters: () => void;
 }) {
   const { progress, xpByNodeId, replaceProgress, resetProgress } = useProgress();
   const fileInput = useRef<HTMLInputElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
 
@@ -37,7 +40,55 @@ export function TopBar({
     return counts;
   }, [data.nodes, xpByNodeId]);
 
+  const categoriesById = useMemo(
+    () => new Map(data.categories.map((category) => [category.id, category])),
+    [data.categories],
+  );
+
+  const searchResults = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return [];
+
+    return data.nodes
+      .filter((node) => {
+        if (
+          activeCategories.size > 0 &&
+          !activeCategories.has(node.categoryId)
+        ) {
+          return false;
+        }
+        return (
+          node.label.toLowerCase().includes(query) ||
+          node.description.toLowerCase().includes(query)
+        );
+      })
+      .slice(0, 6);
+  }, [activeCategories, data.nodes, search]);
+
   const awake = data.nodes.length - tierCounts[0];
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      searchInput.current?.focus();
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function onImport(file: File) {
     try {
@@ -48,10 +99,15 @@ export function TopBar({
     }
   }
 
+  const chooseSearchResult = (id: string) => {
+    onSelectNode(id);
+    onSearchChange("");
+  };
+
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-col gap-2 p-3 md:p-4">
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-black/45 px-3 py-2 backdrop-blur-xl">
+        <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-black/45 px-3 py-2 shadow-sm backdrop-blur-xl">
           <span className="text-sm font-semibold tracking-tight text-neutral-100">
             Neuron
           </span>
@@ -65,13 +121,100 @@ export function TopBar({
           </span>
         </div>
 
-        <input
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search faculties…"
-          aria-label="Search faculties"
-          className="w-44 rounded-xl border border-white/10 bg-black/45 px-3 py-2 text-xs text-neutral-200 outline-none backdrop-blur-xl transition-colors placeholder:text-neutral-600 focus:border-white/25 md:w-56"
-        />
+        <div className="relative">
+          <div className="relative">
+            <input
+              ref={searchInput}
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && searchResults[0]) {
+                  event.preventDefault();
+                  chooseSearchResult(searchResults[0].id);
+                } else if (event.key === "Escape" && search) {
+                  event.stopPropagation();
+                  onSearchChange("");
+                }
+              }}
+              placeholder="Search faculties…"
+              aria-label="Search faculties"
+              className="w-48 rounded-xl border border-white/10 bg-black/45 px-3 py-2 pr-8 text-xs text-neutral-200 outline-none backdrop-blur-xl transition-[border-color,background-color,box-shadow] placeholder:text-neutral-600 focus:border-white/25 focus:bg-black/60 focus:shadow-lg md:w-64"
+            />
+            {search ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onSearchChange("");
+                  searchInput.current?.focus();
+                }}
+                aria-label="Clear search"
+                className="absolute right-1.5 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-md text-neutral-600 transition-colors hover:bg-white/8 hover:text-neutral-300"
+              >
+                <svg viewBox="0 0 12 12" className="h-3 w-3" aria-hidden="true">
+                  <path
+                    d="M2 2l8 8M10 2L2 10"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            ) : (
+              <span className="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 font-mono text-[9px] text-neutral-600 md:block">
+                /
+              </span>
+            )}
+          </div>
+
+          {search.trim() && (
+            <div className="absolute left-0 top-full z-30 mt-2 w-[min(22rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl border border-white/10 bg-[oklch(0.14_0.016_265_/_0.96)] p-1.5 shadow-2xl backdrop-blur-2xl">
+              {searchResults.length > 0 ? (
+                <>
+                  {searchResults.map((node, index) => {
+                    const category = categoriesById.get(node.categoryId);
+                    return (
+                      <button
+                        key={node.id}
+                        type="button"
+                        onClick={() => chooseSearchResult(node.id)}
+                        className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06] focus:bg-white/[0.06] focus:outline-none"
+                      >
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]"
+                          style={{
+                            color: `oklch(0.72 0.16 ${category?.hue ?? 260})`,
+                            background: "currentColor",
+                          }}
+                          aria-hidden="true"
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-medium text-neutral-200 group-hover:text-white">
+                            {node.label}
+                          </span>
+                          <span className="block truncate text-[10px] text-neutral-600 group-hover:text-neutral-500">
+                            {category?.label ?? "Faculty"}
+                          </span>
+                        </span>
+                        {index === 0 && (
+                          <span className="hidden shrink-0 text-[9px] text-neutral-700 md:block">
+                            Enter
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                  <div className="px-2.5 pb-1 pt-1.5 text-[9px] text-neutral-700">
+                    {searchResults.length === 6 ? "Showing top matches" : `${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
+                  </div>
+                </>
+              ) : (
+                <div className="px-3 py-3 text-xs text-neutral-600">
+                  No matching faculties
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         <button
           type="button"
@@ -146,7 +289,7 @@ export function TopBar({
       )}
 
       {legendOpen && (
-        <div className="pointer-events-auto w-full max-w-2xl rounded-xl border border-white/10 bg-black/55 p-3 backdrop-blur-xl">
+        <div className="pointer-events-auto w-full max-w-2xl rounded-xl border border-white/10 bg-black/55 p-3 shadow-xl backdrop-blur-xl">
           <div className="flex flex-wrap gap-1.5">
             {data.categories.map((category: Category) => {
               const active = activeCategories.has(category.id);

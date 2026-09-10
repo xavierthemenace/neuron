@@ -35,18 +35,37 @@ function SynapseEdgeComponent({
   const strength = data?.strength ?? 0;
   const synergy = data?.synergy ?? false;
   const dimmed = data?.dimmed ?? false;
+  const highlighted = data?.highlighted ?? false;
+  const contextDimmed = data?.contextDimmed ?? false;
 
-  // The untrained baseline is deliberately well above "barely there": on day
-  // one the map has to read as a wired network, otherwise it is just a scatter
-  // of dots. Training then widens and brightens the connection from there.
+  const baseOpacity = (synergy ? 0.22 : 0.34) + strength * (synergy ? 0.1 : 0.13);
   const opacity = dimmed
-    ? 0.04
-    : (synergy ? 0.22 : 0.34) + strength * (synergy ? 0.1 : 0.13);
-  const width = (synergy ? 1 : 1.4) + strength * 0.4;
-  const color = `oklch(${0.66 + strength * 0.06} ${0.08 + strength * 0.05} ${hue})`;
+    ? 0.025
+    : contextDimmed
+      ? 0.055
+      : highlighted
+        ? Math.min(0.96, baseOpacity + 0.4)
+        : baseOpacity;
+  const width = (synergy ? 1 : 1.4) + strength * 0.4 + (highlighted ? 1.25 : 0);
+  const lightness = highlighted ? 0.77 + strength * 0.035 : 0.66 + strength * 0.06;
+  const chroma = (highlighted ? 0.12 : 0.08) + strength * 0.05;
+  const color = `oklch(${lightness} ${chroma} ${hue})`;
 
   return (
     <>
+      {highlighted && !dimmed && (
+        <BaseEdge
+          id={`${id}-glow`}
+          path={path}
+          style={{
+            stroke: color,
+            strokeWidth: width + 6,
+            strokeOpacity: 0.16,
+            filter: "blur(3px)",
+          }}
+        />
+      )}
+
       <BaseEdge
         id={id}
         path={path}
@@ -57,17 +76,18 @@ function SynapseEdgeComponent({
           strokeDasharray: synergy ? "5 7" : undefined,
         }}
       />
-      {strength > 0 && !dimmed && (
+
+      {strength > 0 && !dimmed && !contextDimmed && (
         // motion-safe: the pulses are decorative, and 188 of them animating is
         // exactly the kind of thing reduced-motion exists to switch off.
         <circle
           className="motion-safe:visible motion-reduce:hidden"
-          r={1.4 + strength * 0.55}
+          r={1.4 + strength * 0.55 + (highlighted ? 0.55 : 0)}
           fill={`oklch(0.94 ${0.08 + strength * 0.06} ${hue})`}
-          opacity={0.22 + strength * 0.16}
+          opacity={highlighted ? 0.72 : 0.22 + strength * 0.16}
         >
           <animateMotion
-            dur={`${PULSE_DURATION[strength]}s`}
+            dur={`${PULSE_DURATION[strength] * (highlighted ? 0.78 : 1)}s`}
             repeatCount="indefinite"
             path={path}
           />

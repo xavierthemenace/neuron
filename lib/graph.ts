@@ -18,6 +18,8 @@ export interface ConceptNodeData extends Record<string, unknown> {
   categoryLabel: string;
   /** Dimmed by search or a legend filter — still visible, but receded. */
   dimmed: boolean;
+  /** Receded because another node is focused and this is outside its local network. */
+  contextDimmed: boolean;
 }
 
 export interface SynapseEdgeData extends Record<string, unknown> {
@@ -26,6 +28,10 @@ export interface SynapseEdgeData extends Record<string, unknown> {
   strength: number;
   synergy: boolean;
   dimmed: boolean;
+  /** True when this edge directly touches the focused node. */
+  highlighted: boolean;
+  /** Receded because a different edge is part of the focused node's local network. */
+  contextDimmed: boolean;
 }
 
 export type ConceptFlowNode = Node<ConceptNodeData, "concept">;
@@ -81,6 +87,8 @@ export function buildNodes(
   xpByNodeId: Record<string, number>,
   categories: Map<string, Category>,
   visible: Set<string> | null,
+  selectedId: string | null = null,
+  focusIds: Set<string> | null = null,
 ): ConceptFlowNode[] {
   return data.nodes.map((node) => {
     const xp = xpByNodeId[node.id] ?? 0;
@@ -90,6 +98,8 @@ export function buildNodes(
     const position = positionOf(node.id);
 
     const size = radius * 2;
+    const selected = node.id === selectedId;
+    const inFocusContext = focusIds?.has(node.id) ?? false;
 
     return {
       id: node.id,
@@ -115,7 +125,10 @@ export function buildNodes(
         chroma: tier.chroma,
         categoryLabel: category?.label ?? "",
         dimmed: visible ? !visible.has(node.id) : false,
+        contextDimmed: focusIds ? !inFocusContext : false,
       },
+      selected,
+      zIndex: selected ? 20 : inFocusContext ? 10 : 0,
       draggable: false,
     } satisfies ConceptFlowNode;
   });
@@ -127,6 +140,7 @@ export function buildEdges(
   categories: Map<string, Category>,
   nodesById: Map<string, ConceptNode>,
   visible: Set<string> | null,
+  selectedId: string | null = null,
 ): SynapseFlowEdge[] {
   return data.links.map((link) => {
     const sourceTier = tierForXp(xpByNodeId[link.source] ?? 0).index;
@@ -136,6 +150,9 @@ export function buildEdges(
 
     const sourceCategory = nodesById.get(link.source)?.categoryId;
     const hue = categories.get(sourceCategory ?? "")?.hue ?? 0;
+    const highlighted = Boolean(
+      selectedId && (link.source === selectedId || link.target === selectedId),
+    );
 
     return {
       id: `${link.source}--${link.target}`,
@@ -149,7 +166,10 @@ export function buildEdges(
         dimmed: visible
           ? !visible.has(link.source) || !visible.has(link.target)
           : false,
+        highlighted,
+        contextDimmed: Boolean(selectedId) && !highlighted,
       },
+      zIndex: highlighted ? 5 : 0,
     } satisfies SynapseFlowEdge;
   });
 }
