@@ -86,13 +86,13 @@ export function MarkdownJournal({ nodeId, hue }: { nodeId: string; hue: number }
 
   useEffect(() => {
     let cancelled = false;
-    setStatus("idle");
     void Promise.all([getJournal(nodeId), getAttachments(nodeId)])
       .then(([journal, files]) => {
         if (cancelled) return;
         setMarkdown(journal?.markdown ?? "");
         setAttachments(files.sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
         setLoadedNodeId(nodeId);
+        setStatus("saved");
       })
       .catch(() => {
         if (!cancelled) setStatus("error");
