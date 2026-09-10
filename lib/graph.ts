@@ -129,6 +129,9 @@ export function buildNodes(
       position: { x: position.x - radius, y: position.y - radius },
       width: size,
       height: size,
+      ariaRole: "button",
+      ariaLabel: `${node.label}, ${category?.label ?? "faculty"}, ${tier.name}, ${xp} effective XP${retention < 0.999 ? `, ${Math.round(retention * 100)} percent retention` : ""}`,
+      focusable: true,
       data: {
         label: node.label,
         hue: category?.hue ?? 0,
@@ -213,6 +216,7 @@ export function buildEdges(
       target: link.target,
       type: "synapse",
       hidden,
+      focusable: false,
       data: {
         hue,
         strength,
