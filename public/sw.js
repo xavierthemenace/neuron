@@ -1,9 +1,12 @@
-const CACHE = "neuron-shell-v1";
+const CACHE = "neuron-shell-v2";
 const CORE = ["/", "/manifest.webmanifest", "/favicon.ico", "/neuron-icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting()),
+    caches
+      .open(CACHE)
+      .then((cache) => cache.addAll(CORE))
+      .then(() => self.skipWaiting()),
   );
 });
 
@@ -11,8 +14,27 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) =>
+        Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))),
+      )
       .then(() => self.clients.claim()),
+  );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type !== "CACHE_URLS" || !Array.isArray(event.data.urls)) return;
+  const urls = event.data.urls.filter((value) => {
+    if (typeof value !== "string") return false;
+    try {
+      return new URL(value, self.location.origin).origin === self.location.origin;
+    } catch {
+      return false;
+    }
+  });
+  event.waitUntil(
+    caches.open(CACHE).then(async (cache) => {
+      await Promise.allSettled(urls.map((url) => cache.add(url)));
+    }),
   );
 });
 
