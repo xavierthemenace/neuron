@@ -48,7 +48,7 @@ const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
 function Graph() {
   const { xpByNodeId, hydrated } = useProgress();
-  const { fitView, getZoom, setCenter } = useReactFlow<ConceptFlowNode>();
+  const { getZoom, setViewport } = useReactFlow<ConceptFlowNode>();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -105,16 +105,31 @@ function Graph() {
       const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
+      const isNarrow = window.innerWidth < 768;
       const targetZoom = Math.max(getZoom(), 1.55);
 
-      void setCenter(point.x, point.y, {
-        zoom: targetZoom,
-        duration: reducedMotion ? 0 : 720,
-        ease: focusEase,
-        interpolate: "smooth",
-      });
+      // The detail panel overlays the canvas. Aim the camera at the centre of
+      // the *visible* graph area so the focused node never lands beneath it.
+      const panelWidth = isNarrow ? 0 : 420;
+      const targetScreenX = (window.innerWidth - panelWidth) / 2;
+      const targetScreenY = isNarrow
+        ? Math.min(window.innerHeight * 0.2, 180)
+        : window.innerHeight / 2;
+
+      void setViewport(
+        {
+          x: targetScreenX - point.x * targetZoom,
+          y: targetScreenY - point.y * targetZoom,
+          zoom: targetZoom,
+        },
+        {
+          duration: reducedMotion ? 0 : 720,
+          ease: focusEase,
+          interpolate: "smooth",
+        },
+      );
     },
-    [getZoom, setCenter],
+    [getZoom, setViewport],
   );
 
   const onNodeClick = useCallback<NodeMouseHandler<ConceptFlowNode>>(
