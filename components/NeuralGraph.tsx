@@ -53,6 +53,10 @@ function Graph() {
   const { xpByNodeId, decayByNodeId, lastLogSignal, hydrated } = useProgress();
   const { fitView, getZoom, setViewport } = useReactFlow<ConceptFlowNode>();
 
+  // App-owned selection is the single source of truth. Do not mirror React
+  // Flow's internal selection back into this state via onSelectionChange: doing
+  // so can re-select a node while a close/switch update is propagating and form
+  // a render feedback loop.
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
@@ -193,14 +197,6 @@ function Graph() {
     [focusNode],
   );
 
-  const onSelectionChange = useCallback(
-    ({ nodes: selectedNodes }: { nodes: ConceptFlowNode[] }) => {
-      const nextId = selectedNodes[0]?.id;
-      if (nextId && nextId !== selectedId) focusNode(nextId);
-    },
-    [focusNode, selectedId],
-  );
-
   useEffect(() => {
     if (!selectedId) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -263,7 +259,6 @@ function Graph() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodeClick={onNodeClick}
-        onSelectionChange={onSelectionChange}
         onPaneClick={clearSelection}
         nodesDraggable={false}
         nodesConnectable={false}
