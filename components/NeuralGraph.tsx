@@ -18,43 +18,46 @@ import {
   buildNodes,
   indexBy,
   matchingNodeIds,
-  neighborsOf,
   positionOf,
   type ConceptFlowNode,
   type ConceptNodeData,
 } from "@/lib/graph";
+import { neighborsWithinDepth } from "@/lib/training";
 import type { IntelligenceData } from "@/lib/types";
+import { AnalyticsDashboard } from "./AnalyticsDashboard";
+import { ClusterBackdrop } from "./ClusterBackdrop";
+import { CommandPalette } from "./CommandPalette";
 import { ConceptNode } from "./ConceptNode";
+import { GraphNavigator } from "./GraphNavigator";
 import { ProgressProvider, useProgress } from "./ProgressProvider";
 import { SidePanel } from "./SidePanel";
 import { SynapseEdge } from "./SynapseEdge";
 import { TopBar } from "./TopBar";
 
 const data = rawData as IntelligenceData;
-
-// Declared at module scope: inline objects here make React Flow remount every
-// node on each render, which is a documented and very expensive mistake.
 const nodeTypes = { concept: ConceptNode };
 const edgeTypes = { synapse: SynapseEdge };
 
 const MINIMAP_STYLE = {
-  backgroundColor: "oklch(0.12 0.015 265 / 0.92)",
-  border: "1px solid oklch(1 0 0 / 0.09)",
+  backgroundColor: "oklch(0.105 0.015 265 / 0.96)",
+  border: "1px solid oklch(1 0 0 / 0.12)",
   borderRadius: 14,
-  boxShadow: "0 12px 36px oklch(0 0 0 / 0.22)",
+  boxShadow: "0 14px 42px oklch(0 0 0 / 0.3)",
 } as const;
 
 const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
 function Graph() {
-  const { xpByNodeId, hydrated } = useProgress();
-  const { getZoom, setViewport } = useReactFlow<ConceptFlowNode>();
+  const { xpByNodeId, decayByNodeId, lastLogSignal, hydrated } = useProgress();
+  const { fitView, getZoom, setViewport } = useReactFlow<ConceptFlowNode>();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     () => new Set(),
   );
+  const [focusMode, setFocusMode] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
 
   const categories = useMemo(() => indexBy(data.categories), []);
   const nodesById = useMemo(() => indexBy(data.nodes), []);
@@ -66,10 +69,16 @@ function Graph() {
 
   const focusIds = useMemo(() => {
     if (!selectedId) return null;
-    const ids = new Set<string>([selectedId]);
-    for (const neighbor of neighborsOf(data, selectedId)) ids.add(neighbor.id);
-    return ids;
-  }, [selectedId]);
+    return neighborsWithinDepth(data, selectedId, focusMode ? 2 : 1);
+  }, [focusMode, selectedId]);
+
+  const retentionByNodeId = useMemo(() => {
+    const retention: Record<string, number> = {};
+    for (const [nodeId, state] of Object.entries(decayByNodeId)) {
+      retention[nodeId] = state.retention;
+    }
+    return retention;
+  }, [decayByNodeId]);
 
   const nodes = useMemo(
     () =>
@@ -80,8 +89,18 @@ function Graph() {
         visible,
         selectedId,
         focusIds,
+        focusMode,
+        retentionByNodeId,
       ),
-    [xpByNodeId, categories, visible, selectedId, focusIds],
+    [
+      xpByNodeId,
+      categories,
+      visible,
+      selectedId,
+      focusIds,
+      focusMode,
+      retentionByNodeId,
+    ],
   );
 
   const edges = useMemo(
@@ -93,8 +112,20 @@ function Graph() {
         nodesById,
         visible,
         selectedId,
+        focusIds,
+        focusMode,
+        lastLogSignal,
       ),
-    [xpByNodeId, categories, nodesById, visible, selectedId],
+    [
+      xpByNodeId,
+      categories,
+      nodesById,
+      visible,
+      selectedId,
+      focusIds,
+      focusMode,
+      lastLogSignal,
+    ],
   );
 
   const focusNode = useCallback(
@@ -107,13 +138,10 @@ function Graph() {
       ).matches;
       const isNarrow = window.innerWidth < 768;
       const targetZoom = Math.max(getZoom(), 1.55);
-
-      // The detail panel overlays the canvas. Aim the camera at the centre of
-      // the *visible* graph area so the focused node never lands beneath it.
       const panelWidth = isNarrow ? 0 : 420;
       const targetScreenX = (window.innerWidth - panelWidth) / 2;
       const targetScreenY = isNarrow
-        ? Math.min(window.innerHeight * 0.2, 180)
+        ? Math.min(window.innerHeight * 0.18, 160)
         : window.innerHeight / 2;
 
       void setViewport(
@@ -131,6 +159,32 @@ function Graph() {
     },
     [getZoom, setViewport],
   );
+
+  const fitAll = useCallback(() => {
+    void fitView({ padding: 0.14, duration: 520, maxZoom: 1.1 });
+  }, [fitView]);
+
+  const setFocusModeAndFrame = useCallback(
+    (enabled: boolean) => {
+      setFocusMode(enabled);
+      if (!enabled || !selectedId) return;
+      const ids = Array.from(neighborsWithinDepth(data, selectedId, 2));
+      requestAnimationFrame(() => {
+        void fitView({
+          nodes: ids.map((id) => ({ id })),
+          padding: 0.58,
+          duration: 560,
+          maxZoom: 1.5,
+        });
+      });
+    },
+    [fitView, selectedId],
+  );
+
+  const clearSelection = useCallback(() => {
+    setSelectedId(null);
+    setFocusMode(false);
+  }, []);
 
   const onNodeClick = useCallback<NodeMouseHandler<ConceptFlowNode>>(
     (_event, node) => focusNode(node.id),
@@ -159,41 +213,43 @@ function Graph() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodeClick={onNodeClick}
-        onPaneClick={() => setSelectedId(null)}
+        onPaneClick={clearSelection}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable
-        // Deliberately NOT onlyRenderVisibleElements: it leaves offscreen nodes
-        // unmeasured, which empties the MiniMap and causes pop-in while panning.
-        // 100 nodes and 188 edges render fine without it.
         minZoom={0.12}
-        maxZoom={2.4}
+        maxZoom={2.6}
         fitView
-        fitViewOptions={{ padding: 0.12 }}
+        fitViewOptions={{ padding: 0.13 }}
         proOptions={{ hideAttribution: false }}
         className={hydrated ? "opacity-100" : "opacity-0"}
         style={{ transition: "opacity 400ms ease" }}
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={32}
-          size={1.15}
-          color="oklch(0.38 0.035 265)"
+          gap={31}
+          size={1.2}
+          color="oklch(0.42 0.035 265)"
         />
+        <ClusterBackdrop data={data} />
         <Controls
           showInteractive={false}
-          className="!bottom-4 !left-4 !border !border-white/10 !bg-black/50 !backdrop-blur-xl"
+          className="!bottom-3 !left-3 !border !border-white/12 !bg-black/65 !backdrop-blur-xl md:!bottom-4 md:!left-4"
         />
         <MiniMap
           pannable
           zoomable
           style={MINIMAP_STYLE}
-          maskColor="oklch(0.1 0.01 265 / 0.72)"
+          maskColor="oklch(0.08 0.01 265 / 0.7)"
+          nodeStrokeWidth={3}
           nodeColor={(node) => {
-            const d = node.data as ConceptNodeData;
-            return `oklch(${d.lightness} ${d.chroma} ${d.hue})`;
+            const nodeData = node.data as ConceptNodeData;
+            return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
           }}
-          className="!bottom-4 !right-4 hidden md:!block"
+          className={[
+            "!bottom-3 !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
+            selectedNode ? "md:!right-[436px]" : "md:!right-4",
+          ].join(" ")}
         />
       </ReactFlow>
 
@@ -202,17 +258,29 @@ function Graph() {
         search={search}
         onSearchChange={setSearch}
         onSelectNode={focusNode}
+        onOpenAnalytics={() => setAnalyticsOpen(true)}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
         onClearFilters={() => setActiveCategories(new Set())}
       />
 
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] text-neutral-500 shadow-lg backdrop-blur-xl lg:flex">
-        <span>Click a faculty to focus</span>
-        <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
-        <span>Drag to pan</span>
-        <span className="h-1 w-1 rounded-full bg-white/20" aria-hidden="true" />
-        <span>Scroll to zoom</span>
+      <GraphNavigator
+        data={data}
+        selectedNode={selectedNode}
+        nodesById={nodesById}
+        onSelectNode={focusNode}
+        onFitView={fitAll}
+        onOpenAnalytics={() => setAnalyticsOpen(true)}
+        focusMode={focusMode}
+        onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
+      />
+
+      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-[10px] text-neutral-400 shadow-lg backdrop-blur-xl xl:flex">
+        <span>Click faculty to focus</span>
+        <span className="h-1 w-1 rounded-full bg-white/25" aria-hidden="true" />
+        <span>Cmd/Ctrl K commands</span>
+        <span className="h-1 w-1 rounded-full bg-white/25" aria-hidden="true" />
+        <span>Map guide explains pathways</span>
       </div>
 
       <SidePanel
@@ -220,8 +288,26 @@ function Graph() {
         node={selectedNode}
         category={selectedCategory}
         nodesById={nodesById}
-        onClose={() => setSelectedId(null)}
+        onClose={clearSelection}
         onSelectNode={focusNode}
+        focusMode={focusMode}
+        onFocusModeChange={setFocusModeAndFrame}
+      />
+
+      <AnalyticsDashboard
+        data={data}
+        open={analyticsOpen}
+        onClose={() => setAnalyticsOpen(false)}
+      />
+
+      <CommandPalette
+        data={data}
+        selectedId={selectedId}
+        onSelectNode={focusNode}
+        onOpenAnalytics={() => setAnalyticsOpen(true)}
+        onFitView={fitAll}
+        focusMode={focusMode}
+        onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
       />
     </div>
   );
