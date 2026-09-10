@@ -26,13 +26,13 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
   const retainedOpacity = opacity * (0.76 + retention * 0.24);
   const visualOpacity = selected
     ? Math.max(retainedOpacity, 0.96)
-    : dimmed
-      ? 0.1
-      : contextDimmed
-        ? focusMode
-          ? 0.05
-          : Math.min(retainedOpacity, 0.26)
-        : retainedOpacity;
+    : contextDimmed && focusMode
+      ? 0.05
+      : dimmed
+        ? 0.1
+        : contextDimmed
+          ? Math.min(retainedOpacity, 0.26)
+          : retainedOpacity;
 
   return (
     <div
