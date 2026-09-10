@@ -82,11 +82,6 @@ export function AICoach({
       .catch(() => undefined);
   }, []);
 
-  useEffect(() => {
-    if (!selectedNode) return;
-    if (!firstId) setFirstId(selectedNode.id);
-  }, [firstId, selectedNode]);
-
   const first = useMemo(
     () => data.nodes.find((node) => node.id === (firstId || selectedNode?.id)),
     [data.nodes, firstId, selectedNode],
@@ -125,7 +120,7 @@ export function AICoach({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="pointer-events-auto absolute bottom-4 left-[11.5rem] z-30 rounded-full border border-violet-200/15 bg-[oklch(0.13_0.025_295_/_0.92)] px-3 py-2 text-[10px] font-medium text-violet-50/80 shadow-xl backdrop-blur-xl transition-colors hover:border-violet-200/30 hover:text-white max-md:hidden"
+        className="pointer-events-auto absolute bottom-14 left-16 z-30 rounded-full border border-violet-200/15 bg-[oklch(0.13_0.025_295_/_0.92)] px-3 py-2 text-[10px] font-medium text-violet-50/80 shadow-xl backdrop-blur-xl transition-colors hover:border-violet-200/30 hover:text-white md:bottom-4 md:left-[11.5rem]"
       >
         AI Coach
       </button>
