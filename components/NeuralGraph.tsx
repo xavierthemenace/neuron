@@ -11,7 +11,7 @@ import {
   type NodeMouseHandler,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import rawData from "@/data/intelligenceData.json";
 import {
   buildEdges,
@@ -24,10 +24,12 @@ import {
 } from "@/lib/graph";
 import { neighborsWithinDepth } from "@/lib/training";
 import type { IntelligenceData } from "@/lib/types";
+import { AICoach } from "./AICoach";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { ClusterBackdrop } from "./ClusterBackdrop";
 import { CommandPalette } from "./CommandPalette";
 import { ConceptNode } from "./ConceptNode";
+import { DailyWorkout } from "./DailyWorkout";
 import { GraphNavigator } from "./GraphNavigator";
 import { ProgressProvider, useProgress } from "./ProgressProvider";
 import { SidePanel } from "./SidePanel";
@@ -191,6 +193,54 @@ function Graph() {
     [focusNode],
   );
 
+  const onSelectionChange = useCallback(
+    ({ nodes: selectedNodes }: { nodes: ConceptFlowNode[] }) => {
+      const nextId = selectedNodes[0]?.id;
+      if (nextId && nextId !== selectedId) focusNode(nextId);
+    },
+    [focusNode, selectedId],
+  );
+
+  useEffect(() => {
+    if (!selectedId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest(".react-flow__node")) return;
+
+      const origin = positionOf(selectedId);
+      const candidates = data.nodes
+        .filter((node) => node.id !== selectedId)
+        .map((node) => {
+          const point = positionOf(node.id);
+          const dx = point.x - origin.x;
+          const dy = point.y - origin.y;
+          const valid =
+            (event.key === "ArrowRight" && dx > 8) ||
+            (event.key === "ArrowLeft" && dx < -8) ||
+            (event.key === "ArrowDown" && dy > 8) ||
+            (event.key === "ArrowUp" && dy < -8);
+          const primary = event.key === "ArrowLeft" || event.key === "ArrowRight" ? Math.abs(dx) : Math.abs(dy);
+          const cross = event.key === "ArrowLeft" || event.key === "ArrowRight" ? Math.abs(dy) : Math.abs(dx);
+          return { node, valid, score: primary + cross * 0.72 };
+        })
+        .filter((candidate) => candidate.valid)
+        .sort((a, b) => a.score - b.score);
+      const next = candidates[0]?.node;
+      if (!next) return;
+
+      event.preventDefault();
+      focusNode(next.id);
+      requestAnimationFrame(() => {
+        document
+          .querySelector<HTMLElement>(`.react-flow__node[data-id="${next.id}"]`)
+          ?.focus();
+      });
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [focusNode, selectedId]);
+
   const toggleCategory = useCallback((id: string) => {
     setActiveCategories((prev) => {
       const next = new Set(prev);
@@ -213,15 +263,25 @@ function Graph() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodeClick={onNodeClick}
+        onSelectionChange={onSelectionChange}
         onPaneClick={clearSelection}
         nodesDraggable={false}
         nodesConnectable={false}
+        nodesFocusable
+        edgesFocusable={false}
+        disableKeyboardA11y={false}
+        autoPanOnNodeFocus
         elementsSelectable
         minZoom={0.12}
         maxZoom={2.6}
         fitView
         fitViewOptions={{ padding: 0.13 }}
         proOptions={{ hideAttribution: false }}
+        ariaLabelConfig={{
+          "node.a11yDescription.default": "Press Enter to open this faculty. Use Tab to move through faculties, or arrow keys after selecting one to move spatially.",
+          "minimap.ariaLabel": "Neuron cognitive map overview",
+          "controls.ariaLabel": "Graph zoom and fit controls",
+        }}
         className={hydrated ? "opacity-100" : "opacity-0"}
         style={{ transition: "opacity 400ms ease" }}
       >
@@ -275,13 +335,8 @@ function Graph() {
         onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
       />
 
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-[10px] text-neutral-400 shadow-lg backdrop-blur-xl xl:flex">
-        <span>Click faculty to focus</span>
-        <span className="h-1 w-1 rounded-full bg-white/25" aria-hidden="true" />
-        <span>Cmd/Ctrl K commands</span>
-        <span className="h-1 w-1 rounded-full bg-white/25" aria-hidden="true" />
-        <span>Map guide explains pathways</span>
-      </div>
+      <DailyWorkout data={data} onSelectNode={focusNode} panelOpen={Boolean(selectedNode)} />
+      <AICoach data={data} selectedNode={selectedNode} onSelectNode={focusNode} />
 
       <SidePanel
         data={data}
