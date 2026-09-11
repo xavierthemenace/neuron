@@ -29,12 +29,18 @@ function SynapseEdgeComponent({
   const hue = data?.hue ?? 260;
   const strength = data?.strength ?? 0;
   const synergy = data?.synergy ?? false;
+  const inhibition = data?.inhibition ?? false;
   const dimmed = data?.dimmed ?? false;
   const highlighted = data?.highlighted ?? false;
   const contextDimmed = data?.contextDimmed ?? false;
   const burstKey = data?.burstKey ?? null;
+  // How sure the curriculum is about this relationship, 0.36 to 1. Opacity is
+  // the right channel for it: hue is already spent on category, and an edge
+  // nobody has replicated should not look as solid as one that has.
+  const certainty = data?.certainty ?? 0.55;
 
-  const baseOpacity = (synergy ? 0.28 : 0.4) + strength * (synergy ? 0.1 : 0.13);
+  const baseOpacity =
+    ((synergy ? 0.26 : 0.38) + strength * (synergy ? 0.1 : 0.13)) * certainty;
   const opacity = dimmed
     ? 0.04
     : contextDimmed
@@ -43,9 +49,12 @@ function SynapseEdgeComponent({
         ? Math.min(0.98, baseOpacity + 0.38)
         : Math.min(0.82, baseOpacity);
   const width = (synergy ? 1.15 : 1.55) + strength * 0.42 + (highlighted ? 1.25 : 0);
+  // Inhibition edges are a trade-off rather than a pathway, so they take a
+  // fixed warning hue instead of inheriting the source cluster's colour.
+  const edgeHue = inhibition ? 18 : hue;
   const lightness = highlighted ? 0.79 + strength * 0.03 : 0.7 + strength * 0.05;
   const chroma = (highlighted ? 0.13 : 0.09) + strength * 0.05;
-  const color = `oklch(${lightness} ${chroma} ${hue})`;
+  const color = `oklch(${lightness} ${inhibition ? 0.16 : chroma} ${edgeHue})`;
 
   return (
     <>
@@ -69,15 +78,17 @@ function SynapseEdgeComponent({
           stroke: color,
           strokeWidth: width,
           strokeOpacity: opacity,
-          strokeDasharray: synergy ? "5 7" : undefined,
+          strokeDasharray: inhibition ? "2 4" : synergy ? "5 7" : undefined,
         }}
       />
 
-      {strength > 0 && !dimmed && !contextDimmed && (
+      {/* Signal particles travel along pathways. An inhibition edge is not a
+          pathway — nothing flows along it — so it never animates. */}
+      {strength > 0 && !inhibition && !dimmed && !contextDimmed && (
         <circle
           className="motion-safe:visible motion-reduce:hidden"
           r={1.5 + strength * 0.55 + (highlighted ? 0.55 : 0)}
-          fill={`oklch(0.95 ${0.09 + strength * 0.06} ${hue})`}
+          fill={`oklch(0.95 ${0.09 + strength * 0.06} ${edgeHue})`}
           opacity={highlighted ? 0.76 : 0.3 + strength * 0.15}
         >
           <animateMotion

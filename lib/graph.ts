@@ -1,7 +1,9 @@
 import type { Edge, Node } from "@xyflow/react";
 import bakedLayout from "@/data/layout.json";
+import type { NodeEstimate } from "./competence.ts";
 import type { Point } from "./layout.ts";
 import { radiusForXp, tierForXp } from "./mastery.ts";
+import type { RetentionState } from "./retention.ts";
 import type {
   Category,
   ConceptNode,
@@ -24,6 +26,14 @@ export interface ConceptNodeData extends Record<string, unknown> {
   categoryLabel: string;
   retention: number;
   decaying: boolean;
+  /** 0-1 competence estimate. Drives the inner core's brightness. */
+  competence: number;
+  /** True when the estimate rests on nothing but self-report. */
+  unproven: boolean;
+  /** Highlighted as part of an active path or goal. */
+  onPath: boolean;
+  /** Flagged by the review inbox as needing attention. */
+  flagged: boolean;
   dimmed: boolean;
   contextDimmed: boolean;
   focusMode: boolean;
@@ -33,6 +43,10 @@ export interface SynapseEdgeData extends Record<string, unknown> {
   hue: number;
   strength: number;
   synergy: boolean;
+  inhibition: boolean;
+  relation: LinkRelation;
+  /** 0-1 from the edge's stated confidence. Drives opacity. */
+  certainty: number;
   dimmed: boolean;
   highlighted: boolean;
   contextDimmed: boolean;
@@ -47,16 +61,10 @@ const LAYOUT = bakedLayout as Record<string, Point>;
 /**
  * React Flow shallow-compares node/edge objects. These caches preserve identity
  * whenever a derived visual signature is unchanged, so logging one exercise
- * does not cause the other ~99 nodes or unrelated synapses to re-render.
+ * does not cause the other ~138 nodes or unrelated synapses to re-render.
  */
-const NODE_CACHE = new Map<
-  string,
-  { signature: string; value: ConceptFlowNode }
->();
-const EDGE_CACHE = new Map<
-  string,
-  { signature: string; value: SynapseFlowEdge }
->();
+const NODE_CACHE = new Map<string, { signature: string; value: ConceptFlowNode }>();
+const EDGE_CACHE = new Map<string, { signature: string; value: SynapseFlowEdge }>();
 
 export function positionOf(nodeId: string): Point {
   return LAYOUT[nodeId] ?? { x: 0, y: 0 };
@@ -81,7 +89,8 @@ export function matchingNodeIds(
     if (
       query &&
       !node.label.toLowerCase().includes(query) &&
-      !node.description.toLowerCase().includes(query)
+      !node.description.toLowerCase().includes(query) &&
+      !node.why.toLowerCase().includes(query)
     ) {
       continue;
     }
@@ -90,38 +99,88 @@ export function matchingNodeIds(
   return matches;
 }
 
+const CERTAINTY: Record<EvidenceConfidence, number> = {
+  strong: 1,
+  moderate: 0.78,
+  emerging: 0.55,
+  speculative: 0.36,
+};
+
+/**
+ * Visual encoding, deliberately layered rather than simultaneous.
+ *
+ * At rest the map shows category (hue) and practice (size) — the two things
+ * that make it navigable. Competence modulates the core's brightness, retention
+ * modulates the glow, and the low-confidence ring only appears on nodes with
+ * real practice behind an unproven estimate. Path and inbox highlighting are
+ * interaction states rather than permanent channels, because encoding all six
+ * at once produces a map nobody can read.
+ */
+export interface BuildNodesOptions {
+  xpByNodeId: Record<string, number>;
+  categories: Map<string, Category>;
+  estimates: Record<string, NodeEstimate>;
+  retentionByNodeId: Record<string, RetentionState>;
+  visible: Set<string> | null;
+  selectedId?: string | null;
+  focusIds?: Set<string> | null;
+  focusMode?: boolean;
+  pathIds?: Set<string> | null;
+  flaggedIds?: Set<string> | null;
+}
+
 export function buildNodes(
   data: IntelligenceData,
-  xpByNodeId: Record<string, number>,
-  categories: Map<string, Category>,
-  visible: Set<string> | null,
-  selectedId: string | null = null,
-  focusIds: Set<string> | null = null,
-  focusMode = false,
-  retentionByNodeId: Record<string, number> = {},
+  options: BuildNodesOptions,
 ): ConceptFlowNode[] {
+  const {
+    xpByNodeId,
+    categories,
+    estimates,
+    retentionByNodeId,
+    visible,
+    selectedId = null,
+    focusIds = null,
+    focusMode = false,
+    pathIds = null,
+    flaggedIds = null,
+  } = options;
+
   return data.nodes.map((node) => {
     const xp = xpByNodeId[node.id] ?? 0;
     const tier = tierForXp(xp);
     const radius = radiusForXp(xp);
     const category = categories.get(node.categoryId);
     const position = positionOf(node.id);
-    const retention = retentionByNodeId[node.id] ?? 1;
+    const estimate = estimates[node.id];
+    const retention = retentionByNodeId[node.id]?.retention ?? 1;
+    const trained = (retentionByNodeId[node.id]?.repetitions ?? 0) > 0;
+    const competence = estimate?.competence ?? 0;
+    const unproven = Boolean(
+      estimate && estimate.practice > 0.15 && estimate.strongObservations === 0,
+    );
     const selected = node.id === selectedId;
     const inFocusContext = focusIds?.has(node.id) ?? false;
+    const onPath = pathIds?.has(node.id) ?? false;
+    const flagged = flaggedIds?.has(node.id) ?? false;
     const dimmed = visible ? !visible.has(node.id) : false;
     const contextDimmed = focusIds ? !inFocusContext : false;
     const size = radius * 2;
 
     const signature = [
-      data.version,
+      data.curriculumVersion,
       node.label,
       category?.label ?? "",
       category?.hue ?? 0,
       position.x,
       position.y,
       xp,
-      retention.toFixed(4),
+      retention.toFixed(3),
+      competence.toFixed(3),
+      trained ? 1 : 0,
+      unproven ? 1 : 0,
+      onPath ? 1 : 0,
+      flagged ? 1 : 0,
       selected ? 1 : 0,
       dimmed ? 1 : 0,
       contextDimmed ? 1 : 0,
@@ -130,6 +189,18 @@ export function buildNodes(
     const cached = NODE_CACHE.get(node.id);
     if (cached?.signature === signature) return cached.value;
 
+    const decaying = trained && retention < 0.9;
+    const ariaParts = [
+      node.label,
+      category?.label ?? "faculty",
+      tier.name,
+      `${Math.round(competence * 100)} percent estimated competence`,
+      trained ? `${Math.round(retention * 100)} percent retention` : "never trained",
+    ];
+    if (unproven) ariaParts.push("no scored evidence yet");
+    if (onPath) ariaParts.push("on your active path");
+    if (flagged) ariaParts.push("needs review");
+
     const value = {
       id: node.id,
       type: "concept",
@@ -137,7 +208,7 @@ export function buildNodes(
       width: size,
       height: size,
       ariaRole: "button",
-      ariaLabel: `${node.label}, ${category?.label ?? "faculty"}, ${tier.name}, ${xp} effective XP${retention < 0.999 ? `, ${Math.round(retention * 100)} percent retention` : ""}`,
+      ariaLabel: ariaParts.join(", "),
       focusable: true,
       data: {
         label: node.label,
@@ -151,13 +222,17 @@ export function buildNodes(
         chroma: tier.chroma,
         categoryLabel: category?.label ?? "",
         retention,
-        decaying: retention < 0.999,
+        decaying,
+        competence,
+        unproven,
+        onPath,
+        flagged,
         dimmed,
         contextDimmed,
         focusMode,
       },
       selected,
-      zIndex: selected ? 20 : inFocusContext ? 10 : 0,
+      zIndex: selected ? 20 : inFocusContext || onPath ? 10 : 0,
       draggable: false,
     } satisfies ConceptFlowNode;
 
@@ -166,31 +241,67 @@ export function buildNodes(
   });
 }
 
+export interface BuildEdgesOptions {
+  xpByNodeId: Record<string, number>;
+  categories: Map<string, Category>;
+  nodesById: Map<string, ConceptNode>;
+  visible: Set<string> | null;
+  selectedId?: string | null;
+  focusIds?: Set<string> | null;
+  focusMode?: boolean;
+  burstSignal?: { id: string; nodeId: string } | null;
+  /** Relations the user has chosen to hide. */
+  hiddenRelations?: Set<LinkRelation>;
+  /** When a node is selected, lateral edges elsewhere are dropped entirely. */
+  declutter?: boolean;
+}
+
 export function buildEdges(
   data: IntelligenceData,
-  xpByNodeId: Record<string, number>,
-  categories: Map<string, Category>,
-  nodesById: Map<string, ConceptNode>,
-  visible: Set<string> | null,
-  selectedId: string | null = null,
-  focusIds: Set<string> | null = null,
-  focusMode = false,
-  burstSignal: { id: string; nodeId: string } | null = null,
+  options: BuildEdgesOptions,
 ): SynapseFlowEdge[] {
+  const {
+    xpByNodeId,
+    categories,
+    nodesById,
+    visible,
+    selectedId = null,
+    focusIds = null,
+    focusMode = false,
+    burstSignal = null,
+    hiddenRelations,
+    declutter = true,
+  } = options;
+
   return data.links.map((link) => {
     const edgeId = `${link.source}--${link.target}`;
+    const relation: LinkRelation =
+      link.relation ?? (link.type === "prereq" ? "prerequisite" : "synergy");
+    const type: LinkType = link.type;
     const sourceTier = tierForXp(xpByNodeId[link.source] ?? 0).index;
     const targetTier = tierForXp(xpByNodeId[link.target] ?? 0).index;
     const strength = Math.min(sourceTier, targetTier);
     const sourceCategory = nodesById.get(link.source)?.categoryId;
     const hue = categories.get(sourceCategory ?? "")?.hue ?? 0;
+    const certainty = CERTAINTY[link.confidence ?? "emerging"];
     const highlighted = Boolean(
       selectedId && (link.source === selectedId || link.target === selectedId),
     );
     const inFocusContext = focusIds
       ? focusIds.has(link.source) && focusIds.has(link.target)
       : highlighted;
-    const hidden = Boolean(focusMode && focusIds && !inFocusContext);
+
+    // Edge legibility: with 280 edges over 139 nodes, drawing every lateral
+    // relation at all times produces a hairball. Dependencies stay visible
+    // because they carry the map's structure; lateral edges become a selection
+    // affordance instead.
+    const lateral = type !== "prereq";
+    const suppressed = declutter && lateral && Boolean(selectedId) && !highlighted;
+    const hidden = Boolean(
+      (focusMode && focusIds && !inFocusContext) ||
+        hiddenRelations?.has(relation) ||
+        suppressed,
+    );
     const dimmed = visible
       ? !visible.has(link.source) || !visible.has(link.target)
       : false;
@@ -202,12 +313,13 @@ export function buildEdges(
     const burstKey = bursts && burstSignal ? burstSignal.id : null;
 
     const signature = [
-      data.version,
+      data.curriculumVersion,
       link.source,
       link.target,
-      link.type,
+      relation,
       hue,
       strength,
+      certainty.toFixed(2),
       hidden ? 1 : 0,
       dimmed ? 1 : 0,
       highlighted ? 1 : 0,
@@ -227,7 +339,10 @@ export function buildEdges(
       data: {
         hue,
         strength,
-        synergy: link.type === "synergy",
+        synergy: type === "synergy",
+        inhibition: type === "inhibition",
+        relation,
+        certainty,
         dimmed,
         highlighted,
         contextDimmed,

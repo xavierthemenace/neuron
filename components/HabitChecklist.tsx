@@ -1,23 +1,29 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  estimateExerciseMinutes,
-  exerciseResetState,
-} from "@/lib/mastery";
+import { adaptiveStateFor, difficultyXpFactor, isSaturated } from "@/lib/difficulty";
+import { estimateExerciseMinutes, exerciseResetState } from "@/lib/mastery";
 import {
   isTypableExercise,
   prerequisiteBuffSources,
   synergyMultiplierForNode,
 } from "@/lib/training";
-import type { ConceptNode, IntelligenceData } from "@/lib/types";
+import type { ConceptNode, EvidenceKind, IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
+import { Why, inputClass } from "./ui";
 
 const CADENCE_LABEL = {
   daily: "daily",
   weekly: "weekly",
   session: "4h session",
 } as const;
+
+const EVIDENCE_LABEL: Record<EvidenceKind, string> = {
+  "self-report": "Self-reported",
+  artifact: "Produced work",
+  scored: "Scored",
+  external: "Real-world",
+};
 
 function resetLabel(resetAt: Date | null): string {
   if (!resetAt) return "ready";
@@ -42,6 +48,7 @@ export function HabitChecklist({
   const [openExerciseFor, setOpenExerciseFor] = useState<string | null>(null);
   const [response, setResponse] = useState("");
   const [minutes, setMinutes] = useState("");
+  const [quality, setQuality] = useState(0.7);
   const logs = logsByNodeId[node.id] ?? [];
 
   const buffSources = useMemo(
@@ -53,11 +60,11 @@ export function HabitChecklist({
   function openExercise(exerciseId: string) {
     const exercise = node.exercises.find((item) => item.id === exerciseId);
     if (!exercise) return;
-    const state = exerciseResetState(logs, exercise.id, exercise.cadence);
-    if (!state.available) return;
+    if (!exerciseResetState(logs, exercise.id, exercise.cadence).available) return;
     setOpenExerciseFor((current) => (current === exerciseId ? null : exerciseId));
     setResponse("");
-    setMinutes(String(estimateExerciseMinutes(exercise)));
+    setQuality(0.7);
+    setMinutes(String(exercise.minutes ?? estimateExerciseMinutes(exercise)));
   }
 
   function commit(exerciseId: string) {
@@ -70,14 +77,22 @@ export function HabitChecklist({
     const typed = response.trim();
     if (typable && typed.length < 3) return;
 
+    const adaptive = adaptiveStateFor(exercise, logs);
     const parsedMinutes = Number(minutes);
+    const evidence: EvidenceKind =
+      typed.length >= 40 ? "artifact" : (exercise.evidence ?? "self-report");
+
     logExercise(node.id, exercise, typed || undefined, {
       multiplier,
       minutes:
         Number.isFinite(parsedMinutes) && parsedMinutes > 0
           ? Math.round(parsedMinutes)
-          : estimateExerciseMinutes(exercise),
+          : (exercise.minutes ?? estimateExerciseMinutes(exercise)),
       source: "panel",
+      difficulty: adaptive.level,
+      evidence,
+      quality,
+      xp: Math.round(exercise.xp * difficultyXpFactor(adaptive)),
     });
     setResponse("");
     setMinutes("");
@@ -95,9 +110,10 @@ export function HabitChecklist({
             color: `oklch(0.88 0.09 ${hue})`,
           }}
         >
-          <span className="font-semibold">+25% Synergy Buff active.</span>{" "}
+          <span className="font-semibold">+25% synergy buff active.</span>{" "}
           {buffSources.length} consolidated prerequisite
-          {buffSources.length === 1 ? "" : "s"} supporting this faculty.
+          {buffSources.length === 1 ? "" : "s"} supporting this faculty. This affects XP
+          only — it does not touch the competence estimate.
         </div>
       )}
 
@@ -107,7 +123,11 @@ export function HabitChecklist({
           const done = !reset.available;
           const open = openExerciseFor === exercise.id;
           const typable = isTypableExercise(exercise.label);
-          const awardedXp = Math.round(exercise.xp * multiplier);
+          const adaptive = adaptiveStateFor(exercise, logs);
+          const saturated = isSaturated(adaptive);
+          const awardedXp = Math.round(
+            exercise.xp * multiplier * difficultyXpFactor(adaptive),
+          );
           const canSubmit = !typable || response.trim().length >= 3;
 
           return (
@@ -117,9 +137,11 @@ export function HabitChecklist({
                 "rounded-xl border p-3 transition-[border-color,background-color,opacity]",
                 done
                   ? "border-white/6 bg-white/[0.015]"
-                  : open
-                    ? "border-white/20 bg-white/[0.045]"
-                    : "border-white/10 bg-white/[0.025] hover:border-white/20 hover:bg-white/[0.04]",
+                  : saturated
+                    ? "border-white/8 bg-white/[0.015]"
+                    : open
+                      ? "border-white/20 bg-white/[0.045]"
+                      : "border-white/10 bg-white/[0.025] hover:border-white/20 hover:bg-white/[0.04]",
               ].join(" ")}
             >
               <div className="flex items-start gap-3">
@@ -129,14 +151,14 @@ export function HabitChecklist({
                   onClick={() => openExercise(exercise.id)}
                   aria-label={
                     done
-                      ? `${exercise.label}, ${resetLabel(reset.nextResetAt)}`
-                      : `Open exercise: ${exercise.label}`
+                      ? `${adaptive.label}, ${resetLabel(reset.nextResetAt)}`
+                      : `Open exercise: ${adaptive.label}`
                   }
                   className={[
-                    "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border transition-all",
+                    "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-all",
                     done
                       ? "cursor-not-allowed"
-                      : "hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                      : "hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
                   ].join(" ")}
                   style={{
                     borderColor: done
@@ -147,9 +169,7 @@ export function HabitChecklist({
                       : open
                         ? `oklch(0.65 0.12 ${hue} / 0.18)`
                         : "transparent",
-                    boxShadow: done
-                      ? `0 0 12px oklch(0.72 0.17 ${hue} / 0.32)`
-                      : undefined,
+                    boxShadow: done ? `0 0 12px oklch(0.72 0.17 ${hue} / 0.32)` : undefined,
                   }}
                 >
                   {done ? (
@@ -184,33 +204,56 @@ export function HabitChecklist({
                         done ? "text-neutral-500" : "text-neutral-100",
                       ].join(" ")}
                     >
-                      {exercise.label}
+                      {adaptive.label}
                     </p>
                   </button>
 
                   <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-neutral-500">
                     <span>{CADENCE_LABEL[exercise.cadence]}</span>
                     <span aria-hidden="true">·</span>
+                    <span title="Your current working difficulty for this task">
+                      L{adaptive.level}/5
+                      {adaptive.level !== adaptive.anchor && (
+                        <span className="ml-0.5 text-neutral-600">
+                          ({adaptive.level > adaptive.anchor ? "+" : ""}
+                          {adaptive.level - adaptive.anchor})
+                        </span>
+                      )}
+                    </span>
+                    <span aria-hidden="true">·</span>
                     <span
                       className={done ? "text-neutral-600" : ""}
                       style={done ? undefined : { color: `oklch(0.8 0.13 ${hue})` }}
                     >
                       +{awardedXp} XP
-                      {multiplier > 1 && (
-                        <span className="ml-1 normal-case text-neutral-500">
-                          ({exercise.xp} × 1.25)
-                        </span>
-                      )}
                     </span>
                     <span className={done ? "text-neutral-500" : "text-emerald-300/70"}>
                       {done ? resetLabel(reset.nextResetAt) : "ready"}
                     </span>
-                    {typable && !done && (
-                      <span className="ml-auto normal-case tracking-normal text-neutral-500">
-                        can complete here
-                      </span>
-                    )}
+                    <span className="ml-auto normal-case tracking-normal text-neutral-600">
+                      {EVIDENCE_LABEL[exercise.evidence ?? "self-report"]}
+                    </span>
                   </div>
+
+                  {saturated && !done && (
+                    <p className="mt-1.5 rounded-lg border border-amber-200/15 bg-amber-200/[0.03] px-2 py-1.5 text-[10px] leading-relaxed text-amber-50/70">
+                      You pass this every time at the highest framing. Repeating it will add
+                      XP and change nothing else — a harder task elsewhere is a better use of
+                      the same twenty minutes.
+                    </p>
+                  )}
+
+                  {!done && (
+                    <Why summary="Why this difficulty?">
+                      <p>{adaptive.reason}</p>
+                      {adaptive.progressionIndex >= 0 && (
+                        <p className="mt-1.5 text-neutral-500">
+                          The harder framing comes from this exercise&apos;s own progression
+                          ladder, not from an arbitrary multiplier.
+                        </p>
+                      )}
+                    </Why>
+                  )}
 
                   {open && !done && (
                     <div className="mt-3 space-y-2.5 border-t border-white/8 pt-3">
@@ -231,15 +274,15 @@ export function HabitChecklist({
                           }}
                           placeholder={
                             typable
-                              ? "Work through the exercise here. Your response is saved with the XP log…"
-                              : "What did you do? Add details so the rep has evidence, not just a click…"
+                              ? "Work through the exercise here. Anything over 40 characters is filed as produced work, which counts as evidence…"
+                              : "What did you actually do? Specifics turn this from a tick into evidence…"
                           }
                           rows={typable ? 5 : 3}
-                          className="w-full resize-y rounded-lg border border-white/10 bg-black/35 px-3 py-2 text-xs leading-relaxed text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/25 focus:bg-black/50"
+                          className={`${inputClass} resize-y leading-relaxed`}
                         />
                       </label>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-3">
                         <label className="flex items-center gap-1.5 text-[10px] text-neutral-500">
                           <span>Minutes</span>
                           <input
@@ -251,10 +294,28 @@ export function HabitChecklist({
                             className="w-16 rounded-md border border-white/10 bg-black/35 px-2 py-1 text-xs tabular-nums text-neutral-200 outline-none focus:border-white/25"
                           />
                         </label>
+                        <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-[10px] text-neutral-500">
+                          <span className="shrink-0">How did it go?</span>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={Math.round(quality * 100)}
+                            onChange={(event) => setQuality(Number(event.target.value) / 100)}
+                            className="min-w-0 flex-1 accent-cyan-300"
+                            aria-label="Self-rated completion quality"
+                          />
+                          <span className="w-8 shrink-0 tabular-nums text-right">
+                            {Math.round(quality * 100)}%
+                          </span>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => setOpenExerciseFor(null)}
-                          className="ml-auto rounded-md px-2.5 py-1.5 text-xs text-neutral-500 transition-colors hover:bg-white/5 hover:text-neutral-300"
+                          className="rounded-md px-2.5 py-2 text-xs text-neutral-500 transition-colors hover:bg-white/5 hover:text-neutral-300"
                         >
                           Cancel
                         </button>
@@ -262,14 +323,16 @@ export function HabitChecklist({
                           type="button"
                           disabled={!canSubmit}
                           onClick={() => commit(exercise.id)}
-                          className="rounded-md px-3 py-1.5 text-xs font-semibold text-black transition-[opacity,transform] hover:-translate-y-px hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
+                          className="ml-auto rounded-md px-3 py-2 text-xs font-semibold text-black transition-[opacity,transform] hover:-translate-y-px hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
                           style={{ background: `oklch(0.8 0.14 ${hue})` }}
                         >
                           Complete · +{awardedXp} XP
                         </button>
                       </div>
-                      <p className="text-[9px] text-neutral-600">
-                        Ctrl/Cmd + Enter submits. This task cannot award XP again until its reset window opens.
+                      <p className="text-[9px] leading-relaxed text-neutral-600">
+                        Ctrl/Cmd + Enter submits. Your self-rating is recorded as a weak
+                        signal and discounted accordingly — it moves difficulty more than it
+                        moves competence.
                       </p>
                     </div>
                   )}

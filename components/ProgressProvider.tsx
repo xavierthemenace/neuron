@@ -386,6 +386,15 @@ function reducer(state: State, action: Action): State {
 
 interface ProgressContextValue extends LearnerModel {
   progress: Progress;
+  /**
+   * The app's shared clock, refreshed with the hourly decay tick.
+   *
+   * Views must read time from here rather than calling Date.now() during
+   * render: a per-component clock makes derived lists unstable across
+   * re-renders and lets two panels disagree about whether the same item is
+   * overdue.
+   */
+  nowMs: number;
   hydrated: boolean;
   migration: MigrationReport | null;
   lastLogSignal: LogSignal | null;
@@ -516,9 +525,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("pagehide", flush);
   }, [progress, hydrated]);
 
-  const model = useMemo(() => {
+  const { model, nowMs } = useMemo(() => {
     void decayTick;
-    return buildLearnerModel(progress, new Date());
+    const now = new Date();
+    return { model: buildLearnerModel(progress, now), nowMs: now.getTime() };
   }, [progress, decayTick]);
 
   const logExercise = useCallback(
@@ -625,6 +635,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     () => ({
       ...model,
       progress,
+      nowMs,
       hydrated,
       migration,
       lastLogSignal,
@@ -655,6 +666,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     [
       model,
       progress,
+      nowMs,
       hydrated,
       migration,
       lastLogSignal,

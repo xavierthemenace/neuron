@@ -12,7 +12,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import rawData from "@/data/intelligenceData.json";
+import { curriculum, pathsById } from "@/lib/curriculum";
 import {
   buildEdges,
   buildNodes,
@@ -22,21 +22,26 @@ import {
   type ConceptFlowNode,
   type ConceptNodeData,
 } from "@/lib/graph";
+import { buildInbox, inboxNodeIds } from "@/lib/inbox";
 import { neighborsWithinDepth } from "@/lib/training";
-import type { IntelligenceData } from "@/lib/types";
 import { AICoach } from "./AICoach";
-import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { ClusterBackdrop } from "./ClusterBackdrop";
 import { CommandPalette } from "./CommandPalette";
 import { ConceptNode } from "./ConceptNode";
-import { DailyWorkout } from "./DailyWorkout";
+import { DiagnosticRunner } from "./DiagnosticRunner";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { GraphNavigator } from "./GraphNavigator";
+import { CapstoneRunner, MissionRunner } from "./MissionRunner";
+import { MigrationNotice } from "./MigrationNotice";
+import { Onboarding } from "./Onboarding";
 import { ProgressProvider, useProgress } from "./ProgressProvider";
+import { SessionLauncher, SessionPlanner } from "./SessionPlanner";
 import { SidePanel } from "./SidePanel";
 import { SynapseEdge } from "./SynapseEdge";
 import { TopBar } from "./TopBar";
+import { Workbench, type WorkbenchTab } from "./Workbench";
 
-const data = rawData as IntelligenceData;
+const data = curriculum;
 const nodeTypes = { concept: ConceptNode };
 const edgeTypes = { synapse: SynapseEdge };
 
@@ -50,7 +55,9 @@ const MINIMAP_STYLE = {
 const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
 function Graph() {
-  const { xpByNodeId, decayByNodeId, lastLogSignal, hydrated } = useProgress();
+  const model = useProgress();
+  const { xpByNodeId, estimates, retentionByNodeId, lastLogSignal, hydrated, progress } =
+    model;
   const { fitView, getZoom, setViewport } = useReactFlow<ConceptFlowNode>();
 
   // App-owned selection is the single source of truth. Do not mirror React
@@ -59,14 +66,19 @@ function Graph() {
   // a render feedback loop.
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [activeCategories, setActiveCategories] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const [activeCategories, setActiveCategories] = useState<Set<string>>(() => new Set());
   const [focusMode, setFocusMode] = useState(false);
-  const [analyticsOpen, setAnalyticsOpen] = useState(false);
+  const [researchMode, setResearchMode] = useState(false);
+
+  const [workbench, setWorkbench] = useState<WorkbenchTab | null>(null);
+  const [plannerOpen, setPlannerOpen] = useState(false);
+  const [probeId, setProbeId] = useState<string | null>(null);
+  const [missionId, setMissionId] = useState<string | null>(null);
+  const [capstoneId, setCapstoneId] = useState<string | null>(null);
+  const [activePathId, setActivePathId] = useState<string | null>(null);
 
   const categories = useMemo(() => indexBy(data.categories), []);
-  const nodesById = useMemo(() => indexBy(data.nodes), []);
+  const nodesById = useMemo(() => indexBy(model.nodes), [model.nodes]);
 
   const visible = useMemo(
     () => matchingNodeIds(data, search, activeCategories),
@@ -78,41 +90,49 @@ function Graph() {
     return neighborsWithinDepth(data, selectedId, focusMode ? 2 : 1);
   }, [focusMode, selectedId]);
 
-  const retentionByNodeId = useMemo(() => {
-    const retention: Record<string, number> = {};
-    for (const [nodeId, state] of Object.entries(decayByNodeId)) {
-      retention[nodeId] = state.retention;
-    }
-    return retention;
-  }, [decayByNodeId]);
+  const pathIds = useMemo(() => {
+    if (activePathId) return new Set(pathsById.get(activePathId)?.nodeIds ?? []);
+    const active = progress.goals.filter((goal) => goal.status === "active");
+    if (active.length === 0) return null;
+    return new Set(active.flatMap((goal) => goal.nodeIds));
+  }, [activePathId, progress.goals]);
+
+  const flaggedIds = useMemo(
+    () => inboxNodeIds(buildInbox(model, progress)),
+    [model, progress],
+  );
 
   const nodes = useMemo(
     () =>
-      buildNodes(
-        data,
+      buildNodes(data, {
         xpByNodeId,
         categories,
+        estimates,
+        retentionByNodeId,
         visible,
         selectedId,
         focusIds,
         focusMode,
-        retentionByNodeId,
-      ),
+        pathIds,
+        flaggedIds,
+      }),
     [
       xpByNodeId,
       categories,
+      estimates,
+      retentionByNodeId,
       visible,
       selectedId,
       focusIds,
       focusMode,
-      retentionByNodeId,
+      pathIds,
+      flaggedIds,
     ],
   );
 
   const edges = useMemo(
     () =>
-      buildEdges(
-        data,
+      buildEdges(data, {
         xpByNodeId,
         categories,
         nodesById,
@@ -120,18 +140,9 @@ function Graph() {
         selectedId,
         focusIds,
         focusMode,
-        lastLogSignal,
-      ),
-    [
-      xpByNodeId,
-      categories,
-      nodesById,
-      visible,
-      selectedId,
-      focusIds,
-      focusMode,
-      lastLogSignal,
-    ],
+        burstSignal: lastLogSignal,
+      }),
+    [xpByNodeId, categories, nodesById, visible, selectedId, focusIds, focusMode, lastLogSignal],
   );
 
   const focusNode = useCallback(
@@ -139,12 +150,10 @@ function Graph() {
       setSelectedId(id);
 
       const point = positionOf(id);
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const isNarrow = window.innerWidth < 768;
       const targetZoom = Math.max(getZoom(), 1.55);
-      const panelWidth = isNarrow ? 0 : 420;
+      const panelWidth = isNarrow ? 0 : 440;
       const targetScreenX = (window.innerWidth - panelWidth) / 2;
       const targetScreenY = isNarrow
         ? Math.min(window.innerHeight * 0.18, 160)
@@ -187,6 +196,23 @@ function Graph() {
     [fitView, selectedId],
   );
 
+  const showPath = useCallback(
+    (pathId: string) => {
+      setActivePathId(pathId);
+      const ids = pathsById.get(pathId)?.nodeIds ?? [];
+      if (ids.length === 0) return;
+      requestAnimationFrame(() => {
+        void fitView({
+          nodes: ids.map((id) => ({ id })),
+          padding: 0.4,
+          duration: 620,
+          maxZoom: 1.2,
+        });
+      });
+    },
+    [fitView],
+  );
+
   const clearSelection = useCallback(() => {
     setSelectedId(null);
     setFocusMode(false);
@@ -216,8 +242,14 @@ function Graph() {
             (event.key === "ArrowLeft" && dx < -8) ||
             (event.key === "ArrowDown" && dy > 8) ||
             (event.key === "ArrowUp" && dy < -8);
-          const primary = event.key === "ArrowLeft" || event.key === "ArrowRight" ? Math.abs(dx) : Math.abs(dy);
-          const cross = event.key === "ArrowLeft" || event.key === "ArrowRight" ? Math.abs(dy) : Math.abs(dx);
+          const primary =
+            event.key === "ArrowLeft" || event.key === "ArrowRight"
+              ? Math.abs(dx)
+              : Math.abs(dy);
+          const cross =
+            event.key === "ArrowLeft" || event.key === "ArrowRight"
+              ? Math.abs(dy)
+              : Math.abs(dx);
           return { node, valid, score: primary + cross * 0.72 };
         })
         .filter((candidate) => candidate.valid)
@@ -251,6 +283,8 @@ function Graph() {
     ? (categories.get(selectedNode.categoryId) ?? null)
     : null;
 
+  const inboxCount = flaggedIds.size;
+
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[var(--surface)]">
       <ReactFlow<ConceptFlowNode>
@@ -267,13 +301,14 @@ function Graph() {
         disableKeyboardA11y={false}
         autoPanOnNodeFocus
         elementsSelectable
-        minZoom={0.12}
+        minZoom={0.08}
         maxZoom={2.6}
         fitView
         fitViewOptions={{ padding: 0.13 }}
         proOptions={{ hideAttribution: false }}
         ariaLabelConfig={{
-          "node.a11yDescription.default": "Press Enter to open this faculty. Use Tab to move through faculties, or arrow keys after selecting one to move spatially.",
+          "node.a11yDescription.default":
+            "Press Enter to open this faculty. Use Tab to move through faculties, or arrow keys after selecting one to move spatially. Press B for a full list view that does not require the map.",
           "minimap.ariaLabel": "Neuron cognitive map overview",
           "controls.ariaLabel": "Graph zoom and fit controls",
         }}
@@ -303,7 +338,7 @@ function Graph() {
           }}
           className={[
             "!bottom-3 !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
-            selectedNode ? "md:!right-[436px]" : "md:!right-4",
+            selectedNode ? "md:!right-[456px]" : "md:!right-4",
           ].join(" ")}
         />
       </ReactFlow>
@@ -313,10 +348,14 @@ function Graph() {
         search={search}
         onSearchChange={setSearch}
         onSelectNode={focusNode}
-        onOpenAnalytics={() => setAnalyticsOpen(true)}
+        onOpenWorkbench={setWorkbench}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
         onClearFilters={() => setActiveCategories(new Set())}
+        activePathId={activePathId}
+        onShowPath={showPath}
+        onClearPath={() => setActivePathId(null)}
+        inboxCount={inboxCount}
       />
 
       <GraphNavigator
@@ -325,13 +364,22 @@ function Graph() {
         nodesById={nodesById}
         onSelectNode={focusNode}
         onFitView={fitAll}
-        onOpenAnalytics={() => setAnalyticsOpen(true)}
+        onOpenAnalytics={() => setWorkbench("analytics")}
         focusMode={focusMode}
         onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
       />
 
-      <DailyWorkout data={data} onSelectNode={focusNode} panelOpen={Boolean(selectedNode)} />
-      <AICoach data={data} selectedNode={selectedNode} onSelectNode={focusNode} />
+      <SessionLauncher
+        data={data}
+        onOpen={() => setPlannerOpen(true)}
+        panelOpen={Boolean(selectedNode)}
+      />
+      <AICoach
+        data={data}
+        selectedNode={selectedNode}
+        onSelectNode={focusNode}
+        researchMode={researchMode}
+      />
 
       <SidePanel
         data={data}
@@ -342,22 +390,74 @@ function Graph() {
         onSelectNode={focusNode}
         focusMode={focusMode}
         onFocusModeChange={setFocusModeAndFrame}
+        onRunProbe={setProbeId}
+        onOpenMission={setMissionId}
+        onOpenCapstone={setCapstoneId}
+        onOpenPath={showPath}
+        researchMode={researchMode}
+        onResearchModeChange={setResearchMode}
       />
 
-      <AnalyticsDashboard
+      <SessionPlanner
         data={data}
-        open={analyticsOpen}
-        onClose={() => setAnalyticsOpen(false)}
+        open={plannerOpen}
+        onClose={() => setPlannerOpen(false)}
+        onSelectNode={focusNode}
+        researchMode={researchMode}
       />
+
+      <Workbench
+        open={workbench !== null}
+        tab={workbench ?? "review"}
+        onTabChange={setWorkbench}
+        onClose={() => setWorkbench(null)}
+        onSelectNode={focusNode}
+        onRunProbe={setProbeId}
+        onOpenMission={setMissionId}
+        selectedId={selectedId}
+      />
+
+      {/* Keyed by probe so switching probes remounts with fresh state rather
+          than an effect having to reset five pieces of state on change. */}
+      <DiagnosticRunner key={probeId ?? "none"} probeId={probeId} onClose={() => setProbeId(null)} />
+      <MissionRunner
+        missionId={missionId}
+        onClose={() => setMissionId(null)}
+        onSelectNode={(id) => {
+          setMissionId(null);
+          focusNode(id);
+        }}
+      />
+      <CapstoneRunner
+        capstoneId={capstoneId}
+        onClose={() => setCapstoneId(null)}
+        onSelectNode={(id) => {
+          setCapstoneId(null);
+          focusNode(id);
+        }}
+      />
+
+      <Onboarding
+        onSelectNode={focusNode}
+        onOpenWorkbench={setWorkbench}
+        onRunProbe={setProbeId}
+      />
+      <MigrationNotice />
 
       <CommandPalette
         data={data}
         selectedId={selectedId}
         onSelectNode={focusNode}
-        onOpenAnalytics={() => setAnalyticsOpen(true)}
+        onOpenWorkbench={setWorkbench}
+        onOpenPlanner={() => setPlannerOpen(true)}
+        onRunProbe={setProbeId}
+        onOpenMission={setMissionId}
+        onShowPath={showPath}
         onFitView={fitAll}
         focusMode={focusMode}
         onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
+        researchMode={researchMode}
+        onToggleResearchMode={() => setResearchMode((value) => !value)}
       />
     </div>
   );
@@ -365,10 +465,12 @@ function Graph() {
 
 export default function NeuralGraph() {
   return (
-    <ProgressProvider>
-      <ReactFlowProvider>
-        <Graph />
-      </ReactFlowProvider>
-    </ProgressProvider>
+    <ErrorBoundary>
+      <ProgressProvider>
+        <ReactFlowProvider>
+          <Graph />
+        </ReactFlowProvider>
+      </ProgressProvider>
+    </ErrorBoundary>
   );
 }

@@ -32,8 +32,38 @@ export interface CoachSettings {
   provider: "ollama" | "openai-compatible";
   endpoint: string;
   model: string;
+  /**
+   * Whether the API key may be written to disk.
+   *
+   * Off by default. IndexedDB is readable by any script running on this origin
+   * and survives until the profile is wiped, so a remote key stored there is a
+   * durable credential sitting in the browser. Session-only keeps it in memory
+   * for the tab and loses it on close, which is the correct default for a
+   * credential the app does not need to keep.
+   */
+  persistKey?: boolean;
+  /** Only ever populated when `persistKey` is explicitly true. */
   apiKey?: string;
 }
+
+/** What the coach is allowed to send, per category. All default to false. */
+export interface CoachConsent {
+  selectedNode: boolean;
+  estimates: boolean;
+  recentActivity: boolean;
+  diagnostics: boolean;
+  goals: boolean;
+  journal: boolean;
+}
+
+export const EMPTY_COACH_CONSENT: CoachConsent = {
+  selectedNode: false,
+  estimates: false,
+  recentActivity: false,
+  diagnostics: false,
+  goals: false,
+  journal: false,
+};
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 

@@ -18,6 +18,10 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
     retention,
     decaying,
     tierIndex,
+    competence,
+    unproven,
+    onPath,
+    flagged,
   } = data;
   const size = radius * 2;
 
@@ -38,7 +42,14 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
     <div
       className="group relative flex items-center justify-center"
       style={{ width: size, height: size }}
-      title={decaying ? `${data.label} · retention is decaying; train to refresh` : data.label}
+      title={[
+        data.label,
+        `${Math.round(competence * 100)}% estimated competence`,
+        decaying ? `${Math.round(retention * 100)}% retention — review is due` : null,
+        unproven ? "practised, but nothing scored yet" : null,
+      ]
+        .filter(Boolean)
+        .join(" · ")}
     >
       <Handle
         type="target"
@@ -65,8 +76,9 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
 
       <div
         className={[
-          "relative rounded-full transition-[opacity,box-shadow,transform,filter] duration-300 ease-out",
+          "relative rounded-full transition-[opacity,box-shadow,transform,filter] duration-300 ease-out motion-reduce:transition-none",
           selected ? "scale-[1.14]" : "group-hover:scale-110",
+          onPath && !selected ? "ring-2 ring-cyan-200/40 ring-offset-2 ring-offset-transparent" : "",
           contextDimmed && !selected ? "saturate-50" : "",
           tierIndex >= 3 && !contextDimmed && !decaying ? "animate-node-pulse" : "",
         ].join(" ")}
@@ -75,10 +87,10 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
           height: size,
           opacity: visualOpacity,
           background: `radial-gradient(circle at 32% 28%, oklch(${Math.min(
-            lightness + 0.18,
+            lightness + 0.1 + competence * 0.16,
             0.98,
           )} ${chroma * 0.85} ${hue}) 0%, oklch(${Math.min(
-            lightness + 0.08,
+            lightness + 0.04 + competence * 0.09,
             0.94,
           )} ${chroma} ${hue}) 24%, ${core} 60%, oklch(${Math.max(
             lightness - 0.17,
@@ -95,9 +107,33 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
         }}
       />
 
+      {/* Retention risk. The only status the map surfaces without interaction,
+          because it is the only one that gets worse while you are not looking. */}
       {decaying && !contextDimmed && !dimmed && (
         <span
           className="pointer-events-none absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-black/60 bg-amber-300/80 shadow-[0_0_8px_currentColor]"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Practice with no evidence behind it: a hollow ring rather than a
+          badge, so it reads as "incomplete" instead of "wrong". */}
+      {unproven && !contextDimmed && !dimmed && (
+        <span
+          className="pointer-events-none absolute rounded-full border border-dashed"
+          style={{
+            inset: -5,
+            borderColor: `oklch(0.8 0.06 ${hue} / 0.45)`,
+          }}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Inbox flag, and path membership. Both are interaction states rather
+          than permanent channels — they only appear while something is active. */}
+      {flagged && !dimmed && (
+        <span
+          className="pointer-events-none absolute -left-1 -top-1 h-2 w-2 rounded-full bg-cyan-200/90 shadow-[0_0_8px_currentColor]"
           aria-hidden="true"
         />
       )}

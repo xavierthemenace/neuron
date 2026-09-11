@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { decayStateForLogs, estimateExerciseMinutes } from "../../lib/mastery.ts";
+import { estimateExerciseMinutes } from "../../lib/mastery.ts";
 import {
   SYNERGY_MULTIPLIER,
   isTypableExercise,
