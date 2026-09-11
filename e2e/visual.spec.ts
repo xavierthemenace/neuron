@@ -30,6 +30,20 @@ async function stabilise(page: import("@playwright/test").Page) {
 }
 
 test.describe("visual regression", () => {
+  /**
+   * Pins the clock.
+   *
+   * The session planner mixes `stableNoise(daySeed)` into its ranking, where
+   * daySeed is the calendar date, so the planned exercises legitimately change
+   * every day — which silently rots any snapshot containing a plan. Freezing
+   * the date makes the plan deterministic without weakening what the snapshot
+   * checks. `setFixedTime` only freezes date reads; timers keep running, so
+   * React and React Flow behave normally.
+   */
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-03-02T09:00:00Z"));
+  });
+
   test("default graph", async ({ page }) => {
     await gotoApp(page);
     await page.locator(".react-flow__controls-fitview").click();

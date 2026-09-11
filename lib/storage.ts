@@ -19,6 +19,17 @@ import type {
 /** Legacy v1 localStorage key, retained solely for one-time migration/fallback. */
 export const STORAGE_KEY = "neuron.progress.v1";
 
+/**
+ * Crash-recovery snapshot key.
+ *
+ * Saves to IndexedDB are debounced, and an IndexedDB transaction opened from an
+ * unload handler is abandoned when the browser tears the page down — so a
+ * change made inside the debounce window was being lost silently on reload.
+ * localStorage writes are synchronous and do survive teardown, so unload drops
+ * a snapshot here and the next load promotes it into IndexedDB.
+ */
+export const PENDING_KEY = "neuron.progress.pending.v2";
+
 export function emptyProgress(): Progress {
   return {
     version: 2,
@@ -415,6 +426,39 @@ export function parseProgress(value: unknown): Progress | null {
   };
 }
 
+/**
+ * Writes an unload-safe snapshot. Synchronous on purpose: an unload handler is
+ * not given time to await anything, so this must not return a promise.
+ */
+export function flushProgressSync(progress: Progress): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PENDING_KEY, JSON.stringify(progress));
+  } catch {
+    // Quota exhaustion or a privacy mode. Nothing more can be done from here.
+  }
+}
+
+function loadPendingProgress(): Progress | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(PENDING_KEY);
+    if (!raw) return null;
+    return parseProgress(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+}
+
+function clearPendingProgress(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(PENDING_KEY);
+  } catch {
+    // Leaving it is harmless: the next successful save clears it.
+  }
+}
+
 function loadLegacyProgress(): Progress | null {
   if (typeof window === "undefined") return null;
   try {
@@ -427,13 +471,24 @@ function loadLegacyProgress(): Progress | null {
 }
 
 /**
- * IndexedDB is authoritative. On the first visit after an upgrade, a valid
+ * IndexedDB is authoritative, with two exceptions handled here.
+ *
+ * A crash-recovery snapshot always wins: it is only written by the unload
+ * handler while a save was still outstanding, so it is by construction newer
+ * than whatever IndexedDB holds. On the first visit after an upgrade, a valid
  * localStorage v1 payload is copied into IndexedDB and then removed after the
  * write succeeds.
  */
 export async function loadProgress(): Promise<Progress> {
   if (typeof window === "undefined") return emptyProgress();
+  const pending = loadPendingProgress();
   try {
+    if (pending) {
+      await putStoredProgress(pending);
+      clearPendingProgress();
+      return pending;
+    }
+
     const stored = parseProgress(await getStoredProgress());
     if (stored) return stored;
 
@@ -448,17 +503,19 @@ export async function loadProgress(): Promise<Progress> {
       return legacy;
     }
   } catch {
-    // IndexedDB can be blocked by browser policy. Fall back to the legacy store
-    // so the app remains usable instead of losing the entire session.
-    return loadLegacyProgress() ?? emptyProgress();
+    // IndexedDB can be blocked by browser policy. Fall back to whatever local
+    // copy exists so the app remains usable instead of losing the session.
+    return pending ?? loadLegacyProgress() ?? emptyProgress();
   }
-  return emptyProgress();
+  return pending ?? emptyProgress();
 }
 
 export async function saveProgress(progress: Progress): Promise<void> {
   if (typeof window === "undefined") return;
   try {
     await putStoredProgress(progress);
+    // The durable copy is now current, so the recovery snapshot is stale.
+    clearPendingProgress();
   } catch {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));

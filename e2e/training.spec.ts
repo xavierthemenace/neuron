@@ -43,6 +43,38 @@ test.describe("training", () => {
     await expect(panelOf(page).getByText(/resets in/).first()).toBeVisible();
   });
 
+  /**
+   * The unload-race regression.
+   *
+   * Saves to IndexedDB are debounced. Reloading immediately after logging work
+   * lands inside that window, so the rep only survives if the unload handler
+   * persists it synchronously — an async IndexedDB write started there is
+   * abandoned as the page is torn down, which silently reset the profile to
+   * zero XP. Nothing is awaited between the click and the reload on purpose.
+   */
+  test("survives a reload in the moment before the debounced save", async ({ page }) => {
+    await gotoApp(page);
+    await openNode(page, "log-estimation");
+
+    const panel = panelOf(page);
+    const before = await page.getByText(/\d+ XP/).first().textContent();
+
+    await panel.getByRole("button", { name: /^Open exercise:/ }).first().click();
+    await panel.locator("textarea").first().fill(
+      "Estimated the weight of a full shipping container at 25 tonnes; actual is about 30.",
+    );
+    await panel.getByRole("button", { name: /^Complete · \+\d+ XP$/ }).click();
+    await page.reload();
+
+    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    // The profile must not have silently reset to its pre-rep total.
+    await expect
+      .poll(async () => page.getByText(/\d+ XP/).first().textContent())
+      .not.toBe(before);
+    await selectNode(page, "log-estimation");
+    await expect(panelOf(page).getByText(/resets in/).first()).toBeVisible();
+  });
+
   test("separates practice from competence and explains the gap", async ({ page }) => {
     await gotoApp(page);
     await openNode(page, "log-estimation");
