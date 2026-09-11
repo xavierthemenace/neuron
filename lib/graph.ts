@@ -1,6 +1,7 @@
 import type { Edge, Node } from "@xyflow/react";
 import bakedLayout from "@/data/layout.json";
 import type { NodeEstimate } from "./competence.ts";
+import { countEdgeBuild, countNodeBuild } from "./devtools.ts";
 import type { Point } from "./layout.ts";
 import { radiusForXp, tierForXp } from "./mastery.ts";
 import type { RetentionState } from "./retention.ts";
@@ -188,6 +189,10 @@ export function buildNodes(
     ].join("|");
     const cached = NODE_CACHE.get(node.id);
     if (cached?.signature === signature) return cached.value;
+    // A cache miss means this node is about to be recreated, which costs React
+    // Flow a re-render. In development the counter makes a broken signature
+    // visible immediately instead of as unexplained sluggishness later.
+    countNodeBuild(node.id);
 
     const decaying = trained && retention < 0.9;
     const ariaParts = [
@@ -328,6 +333,7 @@ export function buildEdges(
     ].join("|");
     const cached = EDGE_CACHE.get(edgeId);
     if (cached?.signature === signature) return cached.value;
+    countEdgeBuild(edgeId);
 
     const value = {
       id: edgeId,

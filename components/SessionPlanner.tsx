@@ -324,7 +324,10 @@ export function SessionLauncher({
       onClick={onOpen}
       className={[
         "pointer-events-auto absolute bottom-4 left-16 z-30 flex min-h-[44px] items-center gap-2 rounded-full border border-cyan-200/15 bg-[oklch(0.13_0.02_245_/_0.92)] px-3.5 py-2 text-[11px] font-medium text-cyan-50/85 shadow-xl backdrop-blur-xl transition-colors hover:border-cyan-200/35 hover:text-white",
-        panelOpen ? "max-md:pointer-events-none max-md:opacity-0" : "",
+        // display:none rather than opacity-0. An invisible control that is
+        // still focusable is worse than a hidden one: keyboard and screen
+        // reader users hit it and cannot see what they have landed on.
+        panelOpen ? "max-md:hidden" : "",
       ].join(" ")}
       aria-label={`Plan a training session. ${plan.items.length} items ready.`}
     >

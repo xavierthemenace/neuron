@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { CURRICULUM_VERSION, nodesById } from "@/lib/curriculum";
+import { note } from "@/lib/devtools";
 import { buildLearnerModel, type LearnerModel } from "@/lib/learner";
 import { exerciseResetState } from "@/lib/mastery";
 import {
@@ -453,6 +454,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         loaded,
         CURRICULUM_VERSION,
         new Set(nodesById.keys()),
+      );
+      note(
+        "hydrate",
+        `${migrated.logs.length} logs, migrations ${report.applied.length}, rewritten ${report.rewrittenLogs}, orphans ${report.orphanedNodeIds.length}`,
       );
       dispatch({
         kind: "hydrate",

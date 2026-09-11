@@ -70,6 +70,8 @@ export interface MigrationReport {
   from: string | null;
   to: string;
   applied: Migration[];
+  /** Whether there was any user history for the migration to act on. */
+  hadData: boolean;
   /** Node ids in the progress that the current curriculum does not contain. */
   orphanedNodeIds: string[];
   /** Logs rewritten by a rename or merge. */
@@ -179,12 +181,19 @@ export function migrateProgress(
     }
   }
 
+  const hadData =
+    progress.logs.length > 0 ||
+    progress.goals.length > 0 ||
+    progress.diagnostics.length > 0 ||
+    progress.personalNodes.length > 0;
+
   return {
     progress: migrated,
     report: {
       from,
       to: targetVersion,
       applied: pending,
+      hadData,
       orphanedNodeIds: [...orphaned].sort(),
       rewrittenLogs,
       notes,
@@ -192,11 +201,15 @@ export function migrateProgress(
   };
 }
 
-/** True when there is anything worth telling the user about. */
+/**
+ * True when there is anything worth telling the user about.
+ *
+ * A fresh install has no `curriculumVersion`, which makes every declared
+ * migration look pending. Reporting those would greet a first-time user with a
+ * notice about an ontology change that predates their account and never touched
+ * a single one of their records.
+ */
 export function migrationIsNoteworthy(report: MigrationReport): boolean {
-  return (
-    report.applied.length > 0 ||
-    report.rewrittenLogs > 0 ||
-    report.orphanedNodeIds.length > 0
-  );
+  if (report.rewrittenLogs > 0 || report.orphanedNodeIds.length > 0) return true;
+  return report.applied.length > 0 && report.hadData;
 }

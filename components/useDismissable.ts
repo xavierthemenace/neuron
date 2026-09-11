@@ -78,12 +78,18 @@ export function useDismissable({ open, onClose, modal = false, container }: Opti
     return () => {
       cancelAnimationFrame(frame);
       node.removeEventListener("keydown", onKeyDown);
-      // Only reclaim focus if it is still inside the closing dialog; the user
-      // may have deliberately clicked elsewhere.
-      if (
-        previous?.isConnected &&
-        (!document.activeElement || node.contains(document.activeElement))
-      ) {
+      // Reclaim focus when it is still inside the closing dialog, or when it
+      // has been dropped entirely.
+      //
+      // The second case is the common one and used to be missed: React unmounts
+      // the dialog before this cleanup runs, so `document.activeElement` is
+      // already <body> and the old `node.contains(...)` check failed. Keyboard
+      // users were silently returned to the top of the document on every
+      // Escape. Focus is left alone only when it has genuinely moved somewhere
+      // else, which means the user put it there deliberately.
+      const active = document.activeElement;
+      const focusWasLost = !active || active === document.body;
+      if (previous?.isConnected && (focusWasLost || node.contains(active))) {
         previous.focus();
       }
     };

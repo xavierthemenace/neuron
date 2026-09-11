@@ -365,22 +365,13 @@ export function DiagnosticRunner({
               {result.perItem.filter((item) => item.correct).length} of {result.perItem.length}{" "}
               correct at difficulty {run.difficulty}.
             </p>
-            {history && (
-              <p className="mt-2 text-[11px] leading-relaxed text-neutral-400">
-                {probeHistory(run.id, [
-                  ...progress.diagnostics,
-                  {
-                    id: "pending",
-                    probeId: run.id,
-                    nodeIds: run.nodeIds,
-                    score: result.score,
-                    difficulty: run.difficulty,
-                    items: run.items.length,
-                    at: new Date().toISOString(),
-                  },
-                ]).summary}
-              </p>
-            )}
+            {/* `progress.diagnostics` already contains this run — recordDiagnostic
+                wrote it before this rendered. Appending a copy here counted the
+                same result twice and made a first run report a delta against
+                itself. */}
+            <p className="mt-2 text-[11px] leading-relaxed text-neutral-400">
+              {probeHistory(run.id, progress.diagnostics).summary}
+            </p>
           </div>
 
           <ul className="space-y-2">

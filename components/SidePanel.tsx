@@ -201,11 +201,16 @@ export function SidePanel({
 
   return (
     <aside
+      // aria-hidden removes the element from the accessibility tree entirely,
+      // so a role-based locator cannot assert on the closed state. The test id
+      // gives the browser suite something stable to check in both states.
+      data-testid="side-panel"
+      data-open={open ? "true" : "false"}
       aria-hidden={!open}
       aria-label={node ? `${node.label} detail` : undefined}
       className={[
         "fixed z-40 flex flex-col border-white/12 bg-[oklch(0.145_0.018_265_/_0.955)] shadow-2xl backdrop-blur-2xl",
-        "transition-transform duration-300 ease-out motion-reduce:transition-none",
+        "transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0",
         "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-2xl border-t",
         "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[440px] md:rounded-none md:border-l md:border-t-0",
         open

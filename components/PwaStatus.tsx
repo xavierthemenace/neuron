@@ -74,6 +74,14 @@ export function PwaStatus() {
           });
         });
 
+        // A worker that installed while the page was closed is already waiting
+        // when we register. Without this the update banner only ever appears
+        // for people who happen to be looking at the tab at the right moment.
+        if (registration.waiting && navigator.serviceWorker.controller) {
+          setUpdateReady(true);
+        }
+        void registration.update().catch(() => undefined);
+
         void navigator.serviceWorker.ready.then((ready) => {
           const urls = performance
             .getEntriesByType("resource")
@@ -105,15 +113,25 @@ export function PwaStatus() {
       {online ? (
         <button
           type="button"
-          onClick={() => window.location.reload()}
-          className="hover:text-white"
+          onClick={() => {
+            // Tell the waiting worker to take over before reloading. Reloading
+            // alone can land back on the old worker, which is how a user ends
+            // up clicking "update" repeatedly with nothing changing.
+            void navigator.serviceWorker
+              .getRegistration()
+              .then((registration) => {
+                registration?.waiting?.postMessage({ type: "SKIP_WAITING" });
+              })
+              .finally(() => window.location.reload());
+          }}
+          className="min-h-[32px] px-1 hover:text-white"
         >
-          Neuron update ready · reload
+          A new version of Neuron is ready · reload to use it
         </button>
       ) : (
         <span>
-          Offline mode · cached graph, journals, progress, and workouts remain
-          available
+          Offline · the map, your journals, progress, diagnostics and session
+          planning all work without a connection
         </span>
       )}
     </div>

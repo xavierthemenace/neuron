@@ -22,6 +22,7 @@ import {
   type ConceptFlowNode,
   type ConceptNodeData,
 } from "@/lib/graph";
+import { installDevTools, note } from "@/lib/devtools";
 import { buildInbox, inboxNodeIds } from "@/lib/inbox";
 import { neighborsWithinDepth } from "@/lib/training";
 import { AICoach } from "./AICoach";
@@ -54,6 +55,9 @@ const MINIMAP_STYLE = {
 
 const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
+const GRAPH_DESCRIPTION =
+  "Press Enter to open this capability. Use Tab to move between capabilities, or the arrow keys after selecting one to move across the map. Press B at any time for a full list view that does not require the map at all.";
+
 function Graph() {
   const model = useProgress();
   const { xpByNodeId, estimates, retentionByNodeId, lastLogSignal, hydrated, progress } =
@@ -76,6 +80,10 @@ function Graph() {
   const [missionId, setMissionId] = useState<string | null>(null);
   const [capstoneId, setCapstoneId] = useState<string | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(null);
+
+  useEffect(() => {
+    installDevTools();
+  }, []);
 
   const categories = useMemo(() => indexBy(data.categories), []);
   const nodesById = useMemo(() => indexBy(model.nodes), [model.nodes]);
@@ -147,6 +155,7 @@ function Graph() {
 
   const focusNode = useCallback(
     (id: string) => {
+      note("select", id);
       setSelectedId(id);
 
       const point = positionOf(id);
@@ -307,8 +316,12 @@ function Graph() {
         fitViewOptions={{ padding: 0.13 }}
         proOptions={{ hideAttribution: false }}
         ariaLabelConfig={{
-          "node.a11yDescription.default":
-            "Press Enter to open this faculty. Use Tab to move through faculties, or arrow keys after selecting one to move spatially. Press B for a full list view that does not require the map.",
+          // Both keys, deliberately. React Flow selects the "keyboardDisabled"
+          // string when keyboard accessibility is *enabled*, and its defaults
+          // describe dragging and deleting nodes — neither of which this map
+          // supports.
+          "node.a11yDescription.default": GRAPH_DESCRIPTION,
+          "node.a11yDescription.keyboardDisabled": GRAPH_DESCRIPTION,
           "minimap.ariaLabel": "Neuron cognitive map overview",
           "controls.ariaLabel": "Graph zoom and fit controls",
         }}

@@ -10,7 +10,10 @@
     "check:data": "node scripts/check-data.mjs",
     "bake:layout": "node scripts/bake-layout.mjs",
     "prebuild": "node scripts/check-data.mjs",
-    "test": "node --import ./scripts/tests/register.mjs --test \"scripts/tests/**/*.test.mjs\""
+    "test": "node --import ./scripts/tests/register.mjs --test \"scripts/tests/**/*.test.mjs\"",
+    "postbuild": "node scripts/build-sw.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@xyflow/react": "^12.11.6",
@@ -20,6 +23,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/d3-force": "^3.0.10",
     "@types/node": "^20",
