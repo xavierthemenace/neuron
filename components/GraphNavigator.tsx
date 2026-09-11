@@ -81,12 +81,12 @@ export function GraphNavigator({
   return (
     <div
       className={[
-        "pointer-events-auto absolute bottom-[126px] right-3 z-30 transition-[right] duration-300 md:bottom-[144px] md:right-4",
+        "pointer-events-auto absolute bottom-[196px] right-3 z-30 transition-[right] duration-300 md:bottom-[144px] md:right-4",
         rightClass,
       ].join(" ")}
     >
       {open && (
-        <div className="absolute bottom-11 right-0 w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-white/12 bg-[oklch(0.145_0.018_265_/_0.97)] p-3.5 shadow-2xl backdrop-blur-2xl">
+        <div className="absolute bottom-11 right-0 w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-white/12 bg-[rgb(255_255_255_/_0.97)] p-3.5 shadow-2xl backdrop-blur-2xl">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-semibold text-neutral-100">

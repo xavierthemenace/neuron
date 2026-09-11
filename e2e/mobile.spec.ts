@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { gotoApp, node, panelOf } from "./helpers";
+import { gotoApp, gotoToday, node, openMap, panelOf } from "./helpers";
 
 /**
  * Mobile as a first-class platform, not a shrunken desktop.
@@ -85,16 +85,17 @@ test.describe("mobile layout", () => {
     await expect(page.getByRole("tab", { name: "Browse" })).toBeInViewport();
   });
 
-  test("hides the session launcher behind the open panel on a phone", async ({ page }) => {
-    await gotoApp(page);
-    const launcher = page.getByRole("button", { name: /Plan a training session/ });
-    await expect(launcher).toBeVisible();
+  test("moves between screens from the bottom bar", async ({ page }) => {
+    await gotoToday(page);
+    // The bar is the only navigation on a phone, so it has to work before
+    // anything else does.
+    await expect(page.getByTestId("today-screen")).toBeVisible();
 
-    await node(page, "log-probability").click();
-    // With the bottom sheet up there is no room for a floating launcher over
-    // it, and it must be genuinely hidden rather than merely transparent —
-    // otherwise it stays in the tab order with nothing visible to land on.
-    await expect(launcher).toBeHidden();
+    await openMap(page);
+    await expect(page.getByTestId("today-screen")).toBeHidden();
+
+    await page.getByRole("button", { name: "Today", exact: true }).click();
+    await expect(page.getByTestId("today-screen")).toBeVisible();
   });
 
   test("runs a diagnostic on a touch viewport", async ({ page }) => {

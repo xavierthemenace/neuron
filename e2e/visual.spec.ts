@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { gotoApp, openNode, panelOf } from "./helpers";
+import { gotoApp, gotoToday, openNode, openPlanner, panelOf } from "./helpers";
 
 /**
  * Visual regression.
@@ -89,8 +89,8 @@ test.describe("visual regression", () => {
   });
 
   test("session planner", async ({ page }) => {
-    await gotoApp(page);
-    await page.getByRole("button", { name: /Plan a training session/ }).click();
+    await gotoToday(page);
+    await openPlanner(page);
     await page.waitForTimeout(500);
     await stabilise(page);
     await expect(page.getByRole("dialog", { name: "Plan a session" })).toHaveScreenshot(

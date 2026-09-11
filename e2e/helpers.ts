@@ -38,10 +38,34 @@ export async function waitForGraph(page: Page): Promise<void> {
   await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
 }
 
+/**
+ * Opens the app and moves to the map.
+ *
+ * The app now opens on Today, which covers the canvas; the graph specs all
+ * operate on the map, so the one navigation step lives here rather than at the
+ * top of twenty tests.
+ */
 export async function gotoApp(page: Page): Promise<void> {
+  await gotoToday(page);
+  await openMap(page);
+}
+
+/** Opens the app and stays on the front door. */
+export async function gotoToday(page: Page): Promise<void> {
   await skipOnboarding(page);
   await page.goto("/");
+  await expect(page.getByTestId("today-screen")).toBeVisible({ timeout: 30_000 });
+}
+
+export async function openMap(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Map", exact: true }).click();
   await waitForGraph(page);
+}
+
+/** Opens the session planner from Today, wherever the test happens to be. */
+export async function openPlanner(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Today", exact: true }).click();
+  await page.getByRole("button", { name: "Plan a longer session" }).click();
 }
 
 export function node(page: Page, id: string) {

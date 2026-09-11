@@ -54,7 +54,7 @@ function heatLevel(count: number): number {
 
 function heatColor(level: number): string {
   return [
-    "oklch(0.24 0.015 265)",
+    "#ddd8cf",
     "oklch(0.42 0.08 155)",
     "oklch(0.54 0.12 155)",
     "oklch(0.66 0.16 155)",
@@ -159,9 +159,9 @@ export function AnalyticsDashboard({
         role="dialog"
         aria-modal="true"
         aria-label="Cognitive analytics dashboard"
-        className="max-h-[94dvh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/12 bg-[oklch(0.15_0.018_265_/_0.98)] shadow-2xl"
+        className="max-h-[94dvh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/12 bg-[rgb(255_255_255_/_0.98)] shadow-2xl"
       >
-        <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-[oklch(0.15_0.018_265_/_0.94)] px-5 py-4 backdrop-blur-xl">
+        <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-[rgb(255_255_255_/_0.95)] px-5 py-4 backdrop-blur-xl">
           <div>
             <h2 className="text-lg font-semibold text-neutral-50">Cognitive analytics</h2>
             <p className="text-xs text-neutral-500">

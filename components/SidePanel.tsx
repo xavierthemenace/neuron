@@ -209,7 +209,7 @@ export function SidePanel({
       aria-hidden={!open}
       aria-label={node ? `${node.label} detail` : undefined}
       className={[
-        "fixed z-40 flex flex-col border-white/12 bg-[oklch(0.145_0.018_265_/_0.955)] shadow-2xl backdrop-blur-2xl",
+        "fixed z-40 flex flex-col border-white/12 bg-[rgb(255_255_255_/_0.96)] shadow-2xl backdrop-blur-2xl",
         "transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0",
         "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-2xl border-t",
         "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[440px] md:rounded-none md:border-l md:border-t-0",
@@ -223,7 +223,7 @@ export function SidePanel({
           <header
             className="relative shrink-0 border-b border-white/10 p-5"
             style={{
-              background: `linear-gradient(155deg, oklch(0.34 0.1 ${hue} / 0.36), oklch(0.17 0.02 265 / 0.72) 58%, transparent 100%)`,
+              background: `linear-gradient(155deg, oklch(0.80 0.10 ${hue} / 0.42), oklch(0.98 0.008 90 / 0.35) 58%, transparent 100%)`,
             }}
           >
             <button
@@ -246,8 +246,8 @@ export function SidePanel({
               <span
                 className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
                 style={{
-                  color: `oklch(0.9 0.12 ${hue})`,
-                  background: `oklch(0.7 0.15 ${hue} / 0.16)`,
+                  color: `oklch(0.42 0.13 ${hue})`,
+                  background: `oklch(0.74 0.12 ${hue} / 0.22)`,
                 }}
               >
                 {category?.label ?? "Personal"}
@@ -308,7 +308,7 @@ export function SidePanel({
             </Why>
 
             <div className="mt-3 flex items-baseline justify-between gap-3 text-[10px] text-neutral-500">
-              <span style={{ color: `oklch(0.88 0.13 ${hue})` }}>{tier.name}</span>
+              <span style={{ color: `oklch(0.44 0.13 ${hue})` }}>{tier.name}</span>
               <span className="tabular-nums">
                 {next ? `${Math.max(0, next.min - xp)} XP to ${next.name}` : "fully trained"}
               </span>
@@ -316,7 +316,7 @@ export function SidePanel({
             <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/10">
               <div
                 className="h-full rounded-full transition-[width] duration-500"
-                style={{ width: `${Math.round(fill * 100)}%`, background: `oklch(0.7 0.1 ${hue})` }}
+                style={{ width: `${Math.round(fill * 100)}%`, background: `oklch(0.55 0.11 ${hue})` }}
               />
             </div>
 
@@ -386,7 +386,7 @@ export function SidePanel({
                   </p>
                   <p
                     className="mt-3 border-l-2 pl-3 text-[13px] italic leading-relaxed text-neutral-400"
-                    style={{ borderColor: `oklch(0.72 0.15 ${hue} / 0.58)` }}
+                    style={{ borderColor: `oklch(0.56 0.13 ${hue} / 0.55)` }}
                   >
                     {node.why}
                   </p>
@@ -600,7 +600,7 @@ export function SidePanel({
                         >
                           <span
                             className="tabular-nums font-medium"
-                            style={{ color: `oklch(0.78 0.13 ${hue})` }}
+                            style={{ color: `oklch(0.44 0.13 ${hue})` }}
                           >
                             +{log.xp}
                           </span>

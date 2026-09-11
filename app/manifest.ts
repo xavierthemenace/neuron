@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "A local-first map of trainable intelligence with cognitive workouts, journals, analytics, and offline access.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0d0f16",
-    theme_color: "#0d0f16",
+    background_color: "#efece6",
+    theme_color: "#efece6",
     orientation: "any",
     categories: ["education", "productivity", "health"],
     icons: [

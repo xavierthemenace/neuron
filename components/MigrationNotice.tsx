@@ -20,7 +20,7 @@ export function MigrationNotice() {
   return (
     // Anchored to the top on phones: the bottom of a small viewport belongs to
     // the side panel, and a fixed notice there intercepts every tap meant for it.
-    <div className="pointer-events-auto fixed left-1/2 top-20 z-50 w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 rounded-xl border border-violet-300/20 bg-[oklch(0.15_0.03_295_/_0.97)] p-4 shadow-2xl backdrop-blur-xl md:bottom-4 md:top-auto">
+    <div className="pointer-events-auto fixed left-1/2 top-20 z-50 w-[min(30rem,calc(100vw-2rem))] -translate-x-1/2 rounded-xl border border-violet-300/20 bg-[rgb(255_255_255_/_0.97)] p-4 shadow-2xl backdrop-blur-xl md:bottom-4 md:top-auto">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <h2 className="text-xs font-semibold text-violet-50">
