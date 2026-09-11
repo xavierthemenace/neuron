@@ -9,7 +9,12 @@ import {
   prerequisiteBuffSources,
   synergyMultiplierForNode,
 } from "../../lib/training.ts";
-import { generateDailyWorkout } from "../../lib/workout.ts";
+import {
+  DEFAULT_CONSTRAINTS,
+  planSession,
+  rankCandidates,
+} from "../../lib/workout.ts";
+import { buildLearnerModel } from "../../lib/learner.ts";
 import { convexHull, paddedHull, smoothClosedPath } from "../../lib/hulls.ts";
 
 const curriculum = JSON.parse(
@@ -115,45 +120,74 @@ describe("isTypableExercise", () => {
   });
 });
 
-describe("generateDailyWorkout", () => {
+describe("session planner", () => {
   const now = new Date("2026-06-01T09:00:00.000Z");
-  const emptyDecay = {};
-  const noLogs = {};
 
-  it("returns three items from the real curriculum", () => {
-    const workout = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
-    assert.equal(workout.length, 3);
+  const emptyProgress = {
+    version: 2,
+    logs: [],
+    diagnostics: [],
+    predictions: [],
+    missions: [],
+    capstones: [],
+    personalNodes: [],
+    goals: [],
+    experiments: [],
+  };
+
+  const plan = (constraints = {}, progress = emptyProgress, goals = []) =>
+    planSession(
+      curriculum,
+      buildLearnerModel(progress, now),
+      { ...DEFAULT_CONSTRAINTS, ...constraints },
+      goals,
+      now,
+    );
+
+  it("fills a time budget without blowing past it", () => {
+    const session = plan({ minutes: 25 });
+    assert.ok(session.items.length > 0);
+    // One item is allowed to overrun slightly rather than leaving the budget
+    // unspent, so the assertion is on the overrun allowance, not on equality.
+    assert.ok(
+      session.totalMinutes <= 25 + 5,
+      `planned ${session.totalMinutes} minutes against a 25-minute budget`,
+    );
   });
 
-  it("never repeats a faculty within one routine", () => {
-    const workout = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
-    const ids = workout.map((item) => item.nodeId);
+  it("plans a longer session for a longer budget", () => {
+    assert.ok(plan({ minutes: 60 }).items.length > plan({ minutes: 15 }).items.length);
+  });
+
+  it("never repeats a faculty within one session", () => {
+    const ids = plan({ minutes: 90 }).items.map((item) => item.nodeId);
     assert.equal(new Set(ids).size, ids.length, `duplicate faculty in ${ids}`);
   });
 
-  it("cross-trains across categories rather than drilling one", () => {
-    const workout = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
-    const categories = workout.map((item) => item.categoryId);
-    assert.equal(new Set(categories).size, categories.length, `same category twice: ${categories}`);
+  it("cross-trains rather than drilling one cluster", () => {
+    const items = plan({ minutes: 90 }).items;
+    const counts = {};
+    for (const item of items) counts[item.categoryId] = (counts[item.categoryId] ?? 0) + 1;
+    assert.ok(
+      Object.values(counts).every((count) => count <= 2),
+      `a balanced session took more than two from one cluster: ${JSON.stringify(counts)}`,
+    );
   });
 
-  it("is stable for a given day so the routine does not reshuffle on reload", () => {
-    const a = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
-    const b = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
+  it("is stable within a day so the session does not reshuffle on reload", () => {
     assert.deepEqual(
-      a.map((i) => i.exercise.id),
-      b.map((i) => i.exercise.id),
+      plan().items.map((item) => item.exercise.id),
+      plan().items.map((item) => item.exercise.id),
     );
   });
 
   it("excludes exercises still inside their reset window", () => {
-    const first = generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now);
-    const blocked = first[0];
+    const first = plan();
+    const blocked = first.items[0];
     const node = curriculum.nodes.find((n) => n.id === blocked.nodeId);
-
-    // Log every exercise on that faculty today so none of them can be offered.
-    const logs = {
-      [blocked.nodeId]: node.exercises.map((exercise, index) => ({
+    const progress = {
+      ...emptyProgress,
+      logs: node.exercises.map((exercise, index) => ({
         id: `blocked-${index}`,
         nodeId: blocked.nodeId,
         exerciseId: exercise.id,
@@ -161,42 +195,97 @@ describe("generateDailyWorkout", () => {
         at: now.toISOString(),
       })),
     };
-
-    const next = generateDailyWorkout(curriculum, {}, emptyDecay, logs, now);
+    const next = plan({}, progress);
     assert.ok(
-      !next.some((item) => item.nodeId === blocked.nodeId),
+      !next.items.some((item) => item.nodeId === blocked.nodeId),
       `${blocked.nodeId} was offered again while on cooldown`,
     );
-    assert.equal(next.length, 3, "the routine should backfill to three items");
+    assert.ok(next.items.length > 0, "the session should backfill");
   });
 
-  it("prioritises a decaying faculty and says why", () => {
-    const target = curriculum.nodes[0];
-    const decayed = {
-      [target.id]: decayStateForLogs(
-        [
-          {
-            id: "stale",
-            nodeId: target.id,
-            exerciseId: target.exercises[0].id,
-            xp: 400,
-            at: new Date(now.getTime() - 200 * 864e5).toISOString(),
-          },
-        ],
-        now,
-      ),
+  it("surfaces a decaying faculty and says so in the factors", () => {
+    const target = curriculum.nodes.find((node) => node.kind === "knowledge");
+    const progress = {
+      ...emptyProgress,
+      logs: [1, 2, 3].map((n) => ({
+        id: `stale-${n}`,
+        nodeId: target.id,
+        exerciseId: target.exercises[0].id,
+        xp: 60,
+        at: new Date(now.getTime() - (40 + n * 4) * 864e5).toISOString(),
+      })),
     };
-    const workout = generateDailyWorkout(curriculum, { [target.id]: 400 }, decayed, noLogs, now);
-    const item = workout.find((entry) => entry.nodeId === target.id);
-    assert.ok(item, `${target.id} should be surfaced while its retention is decaying`);
-    assert.match(item.reason, /retention/i);
+    const candidates = rankCandidates(
+      curriculum,
+      buildLearnerModel(progress, now),
+      DEFAULT_CONSTRAINTS,
+      [],
+      now,
+    );
+    const item = candidates.find((candidate) => candidate.nodeId === target.id);
+    assert.ok(item, `${target.id} should still be a candidate`);
+    const retention = item.factors.find((factor) => factor.key === "retention");
+    assert.ok(retention.weight > 0, "decay should contribute positively to the score");
   });
 
-  it("always explains its choice", () => {
-    for (const item of generateDailyWorkout(curriculum, {}, emptyDecay, noLogs, now)) {
+  it("explains every selection with weighted factors", () => {
+    for (const item of plan({ minutes: 60 }).items) {
       assert.ok(item.reason.trim().length > 0, `${item.nodeId} had no reason`);
-      assert.ok(item.exercise?.id, `${item.nodeId} had no exercise`);
+      assert.ok(item.factors.length >= 3, `${item.nodeId} had too few factors`);
+      for (const factor of item.factors) {
+        assert.ok(factor.detail.trim().length > 0, `${factor.key} had no detail`);
+        assert.equal(typeof factor.weight, "number");
+      }
+      // The score must actually be the sum of the factors shown, or the
+      // explanation is decoration rather than a reason.
+      const sum = item.factors.reduce((total, factor) => total + factor.weight, 0);
+      assert.ok(Math.abs(sum - item.score) < 1e-9, `${item.nodeId} score does not match its factors`);
     }
+  });
+
+  it("respects a goal by ranking goal nodes above the rest", () => {
+    const goal = {
+      id: "g",
+      label: "Decision quality",
+      createdAt: now.toISOString(),
+      nodeIds: ["dec-calibration", "log-probability", "dec-journal"],
+      status: "active",
+    };
+    const session = plan({ minutes: 60, mode: "goal", goalId: "g" }, emptyProgress, [goal]);
+    assert.ok(
+      session.items.some((item) => goal.nodeIds.includes(item.nodeId)),
+      "a goal-mode session should contain goal nodes",
+    );
+  });
+
+  it("prefers harder work when the user says they have energy", () => {
+    const tired = plan({ minutes: 45, energy: "low" });
+    const sharp = plan({ minutes: 45, energy: "high", mode: "hard" });
+    const mean = (session) =>
+      session.items.reduce((sum, item) => sum + item.difficulty, 0) /
+      Math.max(1, session.items.length);
+    assert.ok(mean(sharp) >= mean(tired), "a hard session should not be easier than a tired one");
+  });
+
+  it("prefers evidence-producing tasks in evidence mode", () => {
+    const evidence = plan({ minutes: 60, mode: "evidence" });
+    const balanced = plan({ minutes: 60, mode: "balanced" });
+    const share = (session) =>
+      session.items.filter((item) => item.exercise.evidence !== "self-report").length /
+      Math.max(1, session.items.length);
+    assert.ok(share(evidence) >= share(balanced));
+  });
+
+  it("never plans an item that does not fit at all", () => {
+    for (const item of plan({ minutes: 10 }).items) {
+      assert.ok(item.minutes <= 15, `${item.exercise.id} needs ${item.minutes} minutes of a 10-minute budget`);
+    }
+  });
+
+  it("says so plainly when nothing is available", () => {
+    const session = plan({ minutes: 1 });
+    assert.equal(session.items.length, 0);
+    assert.match(session.rationale, /Nothing is available/);
   });
 });
 

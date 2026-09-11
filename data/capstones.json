@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "capstones": [
+    {
+      "id": "capstone-written-analysis",
+      "label": "Published written analysis",
+      "blurb": "A piece of analytical writing on a real question, put in front of people who could disagree with it.",
+      "clusterLabel": "Verbal reasoning and argument",
+      "nodeIds": ["ling-writing", "ling-reading", "epi-evidence-eval", "gc-quantitative-literacy", "ling-rhetoric"],
+      "requires": { "minCompetence": 0.35, "minNodes": 3 },
+      "evidencePrompt": "Link or attach the piece, and name where it was published or who read it.",
+      "rubric": [
+        { "id": "claim", "label": "The central claim is stated plainly and is falsifiable" },
+        { "id": "evidence", "label": "Evidence is weighted rather than merely cited" },
+        { "id": "counter", "label": "The strongest counterargument is engaged, not caricatured" },
+        { "id": "structure", "label": "A reader can reconstruct the argument from the structure alone" },
+        { "id": "uncertainty", "label": "Uncertainty is stated where it exists, without hedging everything" }
+      ]
+    },
+    {
+      "id": "capstone-unfamiliar-problem",
+      "label": "Solved problem from an unfamiliar domain",
+      "blurb": "A genuinely novel problem, solved from outside your usual field, with the approach documented as it happened.",
+      "clusterLabel": "Fluid reasoning and problem solving",
+      "nodeIds": ["gf-novel-problem", "aug-decomposition", "gf-analogy", "exec-planning", "log-deduction"],
+      "requires": { "minCompetence": 0.4, "minNodes": 3 },
+      "evidencePrompt": "Attach the working, including the approaches that failed and why you abandoned them.",
+      "rubric": [
+        { "id": "novelty", "label": "The problem was genuinely unfamiliar, not a variant of one you had solved" },
+        { "id": "decomposition", "label": "The decomposition is explicit and the parts were independently solvable" },
+        { "id": "deadends", "label": "Failed approaches are recorded with the reason they were dropped" },
+        { "id": "verification", "label": "The solution was checked by something other than your own satisfaction" }
+      ]
+    },
+    {
+      "id": "capstone-taught-it",
+      "label": "Taught to competence",
+      "blurb": "Someone else can now do the thing, unaided, because of you.",
+      "clusterLabel": "Explanation and interpersonal skill",
+      "nodeIds": ["inter-teaching", "gc-elaboration", "inter-active-listening", "aug-decomposition", "gc-domain-depth"],
+      "requires": { "minCompetence": 0.4, "minNodes": 3 },
+      "evidencePrompt": "Describe what the learner could do afterwards that they could not do before, and how you know.",
+      "rubric": [
+        { "id": "baseline", "label": "The learner's starting point was established before you began" },
+        { "id": "unaided", "label": "The final demonstration was unaided and delayed by at least a day" },
+        { "id": "adaptation", "label": "The explanation changed in response to what they did not understand" },
+        { "id": "transfer", "label": "They could apply it to a case you had not covered" }
+      ]
+    },
+    {
+      "id": "capstone-scored-predictions",
+      "label": "Thirty scored predictions",
+      "blurb": "A resolved forecasting record with a calibration curve. The strongest objective evidence available in this system.",
+      "clusterLabel": "Judgement under uncertainty",
+      "nodeIds": ["dec-calibration", "log-probability", "epi-bayesian", "eqa-bias-awareness", "dec-journal"],
+      "requires": { "minCompetence": 0.3, "minNodes": 2 },
+      "evidencePrompt": "Neuron computes this from your resolved predictions. Add a note on what your calibration curve shows.",
+      "rubric": [
+        { "id": "volume", "label": "At least thirty predictions, resolved on their stated dates" },
+        { "id": "spread", "label": "Probabilities span the range rather than clustering at 50%" },
+        { "id": "resolution", "label": "The Brier decomposition shows resolution, not just calibration" },
+        { "id": "honesty", "label": "Ambiguous outcomes were called at the time, not retrofitted" }
+      ]
+    },
+    {
+      "id": "capstone-experiment",
+      "label": "Pre-registered experiment with a reported null",
+      "blurb": "A real comparison you ran, reported as it came out — including if it came out against you.",
+      "clusterLabel": "Scientific reasoning",
+      "nodeIds": ["epi-experimental-design", "epi-causal-inference", "gf-hypothesis", "gc-quantitative-literacy", "epi-falsification"],
+      "requires": { "minCompetence": 0.4, "minNodes": 3 },
+      "evidencePrompt": "Attach the pre-registration and the result, in that order, with timestamps.",
+      "rubric": [
+        { "id": "prereg", "label": "The analysis was specified before the data existed" },
+        { "id": "power", "label": "The sample size was justified rather than convenient" },
+        { "id": "confound", "label": "The main confounders were identified and addressed or acknowledged" },
+        { "id": "reporting", "label": "The result is reported as it came out, with its uncertainty" }
+      ]
+    },
+    {
+      "id": "capstone-negotiation",
+      "label": "Negotiation with a pre-registered target",
+      "blurb": "A real negotiation where you wrote your reservation value and target down beforehand.",
+      "clusterLabel": "Social and emotional skill",
+      "nodeIds": ["inter-negotiation", "inter-perspective", "eqr-reappraisal", "eqm-trust-building", "eqs-social-context"],
+      "requires": { "minCompetence": 0.35, "minNodes": 3 },
+      "evidencePrompt": "Record the pre-written target and reservation value, then what actually happened.",
+      "rubric": [
+        { "id": "preparation", "label": "Target, reservation value and alternatives were written before the conversation" },
+        { "id": "interests", "label": "The other side's underlying interests were identified, not just their position" },
+        { "id": "regulation", "label": "You stayed on strategy when it became uncomfortable" },
+        { "id": "relationship", "label": "The relationship is intact and you would negotiate with them again" }
+      ]
+    },
+    {
+      "id": "capstone-shipped-project",
+      "label": "Shipped project with an iteration log",
+      "blurb": "Something real, finished and in front of users, with the cycles documented.",
+      "clusterLabel": "Creative and executive capability",
+      "nodeIds": ["cre-iteration", "cre-convergent", "exec-planning", "str-prioritization", "lrn-feedback"],
+      "requires": { "minCompetence": 0.4, "minNodes": 3 },
+      "evidencePrompt": "Link the finished thing and attach the log of what each cycle changed and why.",
+      "rubric": [
+        { "id": "shipped", "label": "It is finished and in front of someone other than you" },
+        { "id": "cycles", "label": "Each cycle changed the next version in response to real feedback" },
+        { "id": "killed", "label": "Something good was cut, on stated criteria" },
+        { "id": "scope", "label": "The final scope is defensible against the original plan" }
+      ]
+    },
+    {
+      "id": "capstone-research-synthesis",
+      "label": "Research synthesis in an unfamiliar field",
+      "blurb": "A summary of what is known and disputed in a field you did not know three weeks ago.",
+      "clusterLabel": "Epistemic capability",
+      "nodeIds": ["epi-evidence-eval", "epi-source-reliability", "aug-search", "gc-knowledge-breadth", "epi-model-uncertainty"],
+      "requires": { "minCompetence": 0.4, "minNodes": 3 },
+      "evidencePrompt": "Attach the synthesis and, if you can, a reaction from someone who works in that field.",
+      "rubric": [
+        { "id": "landmarks", "label": "The field's main results and main disagreement are correctly identified" },
+        { "id": "quality", "label": "Sources are weighted by evidence quality rather than by prominence" },
+        { "id": "limits", "label": "What could not be resolved is stated explicitly" },
+        { "id": "expert", "label": "Someone who works in the field would not find it embarrassing" }
+      ]
+    }
+  ]
+}

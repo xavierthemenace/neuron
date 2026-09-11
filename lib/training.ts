@@ -1,5 +1,5 @@
 import { tierForXp } from "./mastery.ts";
-import type { IntelligenceData } from "./types";
+import type { IntelligenceData } from "./types.ts";
 
 export const SYNERGY_MULTIPLIER = 1.25;
 

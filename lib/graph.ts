@@ -1,7 +1,7 @@
 import type { Edge, Node } from "@xyflow/react";
 import bakedLayout from "@/data/layout.json";
-import type { Point } from "./layout";
-import { radiusForXp, tierForXp } from "./mastery";
+import type { Point } from "./layout.ts";
+import { radiusForXp, tierForXp } from "./mastery.ts";
 import type {
   Category,
   ConceptNode,
@@ -9,7 +9,7 @@ import type {
   IntelligenceData,
   LinkRelation,
   LinkType,
-} from "./types";
+} from "./types.ts";
 
 export interface ConceptNodeData extends Record<string, unknown> {
   label: string;

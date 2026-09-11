@@ -1,4 +1,4 @@
-import { getStoredProgress, putStoredProgress } from "./db";
+import { getStoredProgress, putStoredProgress } from "./db.ts";
 import type {
   Cadence,
   CapstoneRecord,
@@ -14,7 +14,7 @@ import type {
   PersonalNode,
   Prediction,
   Progress,
-} from "./types";
+} from "./types.ts";
 
 /** Legacy v1 localStorage key, retained solely for one-time migration/fallback. */
 export const STORAGE_KEY = "neuron.progress.v1";

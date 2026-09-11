@@ -1,4 +1,4 @@
-import type { Cadence, Exercise, LogEntry, Progress } from "./types";
+import type { Cadence, Exercise, LogEntry, Progress } from "./types.ts";
 
 /** XP at which a node is considered fully trained. Caps the growth curve. */
 export const MAX_XP = 700;

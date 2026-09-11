@@ -1,0 +1,326 @@
+{
+  "version": 1,
+  "missions": [
+    {
+      "id": "mission-controversial-claim",
+      "label": "Investigate a controversial claim",
+      "blurb": "Take a claim you have an opinion about and do the work properly, in public, in writing.",
+      "estimatedMinutes": 150,
+      "difficulty": 4,
+      "nodeIds": [
+        "epi-source-reliability",
+        "epi-evidence-eval",
+        "log-probability",
+        "eqa-bias-awareness",
+        "gc-quantitative-literacy",
+        "ling-writing"
+      ],
+      "transferClaim": "Requires source triage, quantitative reading, probability and written argument to operate on the same problem at once. Performing each in isolation is not the same task.",
+      "steps": [
+        {
+          "id": "prior",
+          "prompt": "State the claim and your prior probability that it is true, as a number, before doing any research.",
+          "minWords": 25
+        },
+        {
+          "id": "sources",
+          "prompt": "Find three sources of different quality. For each, spend three minutes reading laterally and record what you learned about the source itself, not its content.",
+          "minWords": 90
+        },
+        {
+          "id": "numbers",
+          "prompt": "Identify the key quantity the claim depends on. State where it came from, how it was measured, and what would make it wrong.",
+          "minWords": 80
+        },
+        {
+          "id": "bias",
+          "prompt": "Name the bias you are most at risk of here and the specific step you took to counter it.",
+          "minWords": 40
+        },
+        {
+          "id": "posterior",
+          "prompt": "State your posterior probability and the size of the update. If you did not update, say what that tells you.",
+          "minWords": 40
+        },
+        {
+          "id": "writeup",
+          "prompt": "Write the 400-word summary you would send to someone who holds the opposite view, including the strongest point against your own conclusion.",
+          "minWords": 300
+        }
+      ]
+    },
+    {
+      "id": "mission-small-experiment",
+      "label": "Design and run a small experiment",
+      "blurb": "A real comparison on a real question, pre-registered before the data exists.",
+      "estimatedMinutes": 180,
+      "difficulty": 4,
+      "nodeIds": [
+        "gf-hypothesis",
+        "epi-causal-inference",
+        "epi-experimental-design",
+        "gc-quantitative-literacy",
+        "lrn-error-classification",
+        "epi-falsification"
+      ],
+      "transferClaim": "Hypothesis, design, measurement and error analysis have to hold together. A design that survives contact with your own data is evidence the pieces connect.",
+      "steps": [
+        {
+          "id": "question",
+          "prompt": "State one question about your own work or life that a comparison could actually settle.",
+          "minWords": 30
+        },
+        {
+          "id": "causal",
+          "prompt": "Draw the causal structure in words: what you think causes what, and the two most plausible confounders.",
+          "minWords": 70
+        },
+        {
+          "id": "design",
+          "prompt": "Pre-register it: the intervention, the outcome measure, how many observations, when you will stop, and what result would count against your hypothesis.",
+          "minWords": 110
+        },
+        {
+          "id": "run",
+          "prompt": "Run it. Paste the raw observations, including the ones you were tempted to leave out.",
+          "minWords": 40
+        },
+        {
+          "id": "analysis",
+          "prompt": "Report the result with its uncertainty, and state what you still cannot conclude from it.",
+          "minWords": 90
+        }
+      ]
+    },
+    {
+      "id": "mission-persuade-skeptic",
+      "label": "Persuade a sceptical audience",
+      "blurb": "Move someone who starts out disagreeing, without misrepresenting them or the evidence.",
+      "estimatedMinutes": 120,
+      "difficulty": 4,
+      "nodeIds": [
+        "inter-perspective",
+        "eqr-reappraisal",
+        "ling-rhetoric",
+        "ling-speaking",
+        "dec-calibration",
+        "inter-active-listening"
+      ],
+      "transferClaim": "Persuasion under real disagreement loads perspective taking, emotional regulation and argument construction simultaneously, with an external verdict you do not control.",
+      "steps": [
+        {
+          "id": "steelman",
+          "prompt": "Write the strongest version of the position you are arguing against, and get someone who holds it to confirm you represented it fairly.",
+          "minWords": 120
+        },
+        {
+          "id": "predict",
+          "prompt": "Predict, as a probability, that your audience will move. Name what would make them move and what would entrench them.",
+          "minWords": 50
+        },
+        {
+          "id": "deliver",
+          "prompt": "Make the case in person or in writing. Note where you felt the urge to overstate, and whether you did.",
+          "minWords": 80
+        },
+        {
+          "id": "outcome",
+          "prompt": "Record what actually happened, in their words rather than your impression, and score your prediction.",
+          "minWords": 60
+        }
+      ]
+    },
+    {
+      "id": "mission-teach-it",
+      "label": "Teach it to someone who does not have your background",
+      "blurb": "The comprehension test is their unaided performance, not your sense that it went well.",
+      "estimatedMinutes": 90,
+      "difficulty": 3,
+      "nodeIds": [
+        "inter-teaching",
+        "gc-elaboration",
+        "aug-decomposition",
+        "ling-speaking",
+        "lrn-feedback"
+      ],
+      "transferClaim": "Explaining to a genuine novice exposes gaps that re-reading never surfaces, and the learner's later performance is an external score.",
+      "steps": [
+        {
+          "id": "select",
+          "prompt": "Pick something you believe you understand well, and one person who does not.",
+          "minWords": 25
+        },
+        {
+          "id": "decompose",
+          "prompt": "Write the decomposition: the three things they must understand first, in order.",
+          "minWords": 60
+        },
+        {
+          "id": "teach",
+          "prompt": "Explain it without notes. Record every question you could not answer.",
+          "minWords": 70
+        },
+        {
+          "id": "test",
+          "prompt": "A day later, ask them to explain it back unaided. Record what survived and what did not.",
+          "minWords": 70
+        }
+      ]
+    },
+    {
+      "id": "mission-decision-under-uncertainty",
+      "label": "Make a real decision on the record",
+      "blurb": "One decision you are actually facing, decided in the open with the reasoning written down first.",
+      "estimatedMinutes": 75,
+      "difficulty": 3,
+      "nodeIds": [
+        "dec-journal",
+        "dec-expected-value",
+        "dec-opportunity-cost",
+        "dec-reversibility",
+        "dec-value-of-information",
+        "str-prioritization"
+      ],
+      "transferClaim": "The decision tools only interact under real stakes. Pricing the displaced option, the information you could buy, and the cost of unwinding it all at once is the actual skill.",
+      "steps": [
+        {
+          "id": "frame",
+          "prompt": "State the decision, the options you are genuinely considering, and the one you would take on instinct.",
+          "minWords": 50
+        },
+        {
+          "id": "cost",
+          "prompt": "Name what each option displaces, specifically. Not 'other work' — the actual thing.",
+          "minWords": 60
+        },
+        {
+          "id": "value",
+          "prompt": "What information would change your choice, what would it cost to get, and are you going to get it?",
+          "minWords": 60
+        },
+        {
+          "id": "reversibility",
+          "prompt": "Estimate the cost of unwinding each option if it turns out badly, in time and money.",
+          "minWords": 50
+        },
+        {
+          "id": "commit",
+          "prompt": "Commit: the choice, your confidence as a number, and the observation that would tell you it was wrong.",
+          "minWords": 50
+        }
+      ]
+    },
+    {
+      "id": "mission-forecast-tournament",
+      "label": "Run a personal forecasting round",
+      "blurb": "Ten dated predictions, resolved on schedule, scored honestly.",
+      "estimatedMinutes": 60,
+      "difficulty": 3,
+      "nodeIds": [
+        "dec-calibration",
+        "log-probability",
+        "epi-bayesian",
+        "eqa-bias-awareness",
+        "log-estimation"
+      ],
+      "transferClaim": "Calibration is one of the few capabilities here with a genuine objective score. Ten resolved forecasts is the smallest sample that says anything at all.",
+      "steps": [
+        {
+          "id": "write",
+          "prompt": "Write ten predictions with explicit probabilities and resolution dates within the next 90 days. At least three should be about your own work.",
+          "minWords": 150
+        },
+        {
+          "id": "reasoning",
+          "prompt": "For the three you are least sure about, write the base rate you started from and what moved you off it.",
+          "minWords": 90
+        },
+        {
+          "id": "resolve",
+          "prompt": "When they come due, resolve them all — including the ambiguous ones, with the reason you called them that way.",
+          "minWords": 80
+        },
+        {
+          "id": "score",
+          "prompt": "Report your Brier score and your direction of error. Are you over- or under-confident, and at which probability bands?",
+          "minWords": 70
+        }
+      ]
+    },
+    {
+      "id": "mission-tool-audit",
+      "label": "Audit your own tool-assisted work",
+      "blurb": "Find out what you have been accepting without checking.",
+      "estimatedMinutes": 90,
+      "difficulty": 4,
+      "nodeIds": [
+        "aug-ai-collaboration",
+        "aug-verification",
+        "exec-error-monitoring",
+        "epi-source-reliability",
+        "gc-technical-fluency"
+      ],
+      "transferClaim": "Requires domain knowledge and verification discipline together. Neither alone catches a plausible wrong answer inside your own competence.",
+      "steps": [
+        {
+          "id": "select",
+          "prompt": "Pick a recent piece of tool-assisted work that mattered. List every load-bearing claim in it.",
+          "minWords": 60
+        },
+        {
+          "id": "verify",
+          "prompt": "Verify each one independently. Record how many were wrong, how many you had already checked, and how long it took.",
+          "minWords": 80
+        },
+        {
+          "id": "boundary",
+          "prompt": "Describe precisely where the tool stopped being reliable on this task, and how you could have known earlier.",
+          "minWords": 70
+        },
+        {
+          "id": "policy",
+          "prompt": "Write the verification policy you will actually follow, including what you are deliberately choosing not to check.",
+          "minWords": 70
+        }
+      ]
+    },
+    {
+      "id": "mission-research-synthesis",
+      "label": "Synthesise a literature you do not know",
+      "blurb": "Enter a field cold and come out with a defensible summary of what is known and disputed.",
+      "estimatedMinutes": 240,
+      "difficulty": 5,
+      "nodeIds": [
+        "aug-search",
+        "epi-source-reliability",
+        "epi-evidence-eval",
+        "gc-knowledge-breadth",
+        "ling-writing",
+        "epi-model-uncertainty"
+      ],
+      "transferClaim": "Search, source triage, evidence weighting and written synthesis compound here. The output is inspectable by anyone who knows the field.",
+      "steps": [
+        {
+          "id": "question",
+          "prompt": "State a question in a field you do not work in, narrow enough to answer in a day.",
+          "minWords": 30
+        },
+        {
+          "id": "map",
+          "prompt": "Find the field's landmarks: the review article, the main disagreement, the most-cited primary result.",
+          "minWords": 90
+        },
+        {
+          "id": "weigh",
+          "prompt": "For the central claim, state the evidence quality and what a knowledgeable sceptic would say against it.",
+          "minWords": 110
+        },
+        {
+          "id": "synthesis",
+          "prompt": "Write 600 words that an expert in that field would not find embarrassing, including what you could not resolve.",
+          "minWords": 450
+        }
+      ]
+    }
+  ]
+}

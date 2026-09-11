@@ -4786,15 +4786,15 @@
     {
       "id": "gwm-updating",
       "categoryId": "gf-working-memory",
-      "label": "Updating & Inhibition",
+      "label": "Working Memory Updating",
       "tier": 1,
       "kind": "ability",
       "constructs": [
         "working-memory",
         "executive-control"
       ],
-      "description": "Replacing what is held in mind as new information arrives, and suppressing the now-irrelevant old contents — the suppression being the harder half.",
-      "why": "Stale contents that fail to clear are a common and invisible source of reasoning error.",
+      "description": "Replacing what is held in mind as new information arrives, and clearing the now-irrelevant old contents. The clearing is the harder half: stale items do not simply fade, they have to be displaced.",
+      "why": "Contents that fail to clear are a common and invisible source of reasoning error — you keep reasoning from a fact that stopped being true two steps ago.",
       "evidence": {
         "constructValidity": "strong",
         "trainability": "moderate",

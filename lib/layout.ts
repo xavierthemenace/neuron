@@ -8,7 +8,7 @@ import {
   type SimulationNodeDatum,
 } from "d3-force";
 import { MAX_DIAMETER } from "./mastery.ts";
-import type { Category, Domain, IntelligenceData } from "./types";
+import type { Category, Domain, IntelligenceData } from "./types.ts";
 
 export interface Point {
   x: number;

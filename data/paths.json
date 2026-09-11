@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "paths": [
+    {
+      "id": "path-learn-faster",
+      "label": "Learn Faster",
+      "hue": 74,
+      "blurb": "The control layer over your own practice: how hard, in what order, with what feedback, and how to tell whether it worked.",
+      "outcome": "You can take an unfamiliar body of material and design practice for it that survives a delayed test.",
+      "nodeIds": [
+        "gc-retrieval-practice",
+        "gc-spaced-repetition",
+        "lrn-difficulty",
+        "gc-interleaving",
+        "lrn-feedback",
+        "lrn-error-classification",
+        "gc-elaboration",
+        "lrn-practice-design",
+        "intra-metacognition",
+        "lrn-strategy-selection",
+        "gc-transfer"
+      ]
+    },
+    {
+      "id": "path-better-thinker",
+      "label": "Become a Better Thinker",
+      "hue": 188,
+      "blurb": "Argument structure, evidence weight, probability and the discipline of looking for the thing that would prove you wrong.",
+      "outcome": "You can take a contested claim and say precisely what would change your mind, then go and check.",
+      "nodeIds": [
+        "log-deduction",
+        "epi-evidence-eval",
+        "eqa-bias-awareness",
+        "log-probability",
+        "epi-falsification",
+        "epi-source-reliability",
+        "epi-bayesian",
+        "epi-causal-inference",
+        "dec-calibration",
+        "epi-model-uncertainty"
+      ]
+    },
+    {
+      "id": "path-scientist",
+      "label": "Think Like a Scientist",
+      "hue": 160,
+      "blurb": "From noticing something to designing the comparison that could settle it — and reporting the answer you did not want.",
+      "outcome": "You can design a study that would actually answer your question, and name the assumptions it still cannot test.",
+      "nodeIds": [
+        "nat-observation",
+        "gf-hypothesis",
+        "epi-falsification",
+        "epi-causal-inference",
+        "gc-quantitative-literacy",
+        "epi-experimental-design",
+        "epi-evidence-eval",
+        "ling-writing",
+        "epi-model-uncertainty"
+      ]
+    },
+    {
+      "id": "path-persuasive",
+      "label": "Become More Persuasive",
+      "hue": 300,
+      "blurb": "Persuasion as a listening problem first: read the room, model the other side honestly, then build the case.",
+      "outcome": "You can move a genuinely sceptical audience without misrepresenting either them or the evidence.",
+      "nodeIds": [
+        "inter-active-listening",
+        "inter-perspective",
+        "eqs-social-context",
+        "ling-writing",
+        "eqr-reappraisal",
+        "ling-rhetoric",
+        "ling-speaking",
+        "eqm-influence",
+        "dec-calibration",
+        "inter-negotiation"
+      ]
+    },
+    {
+      "id": "path-creative-output",
+      "label": "Improve Creative Output",
+      "hue": 350,
+      "blurb": "Generation and selection as separate disciplines, joined by fast cycles against real feedback.",
+      "outcome": "You reliably produce option sets that are genuinely different, then kill most of them on stated criteria.",
+      "nodeIds": [
+        "cre-divergent",
+        "cre-reframing",
+        "gf-analogy",
+        "cre-combination",
+        "cre-convergent",
+        "cre-iteration",
+        "lrn-feedback",
+        "gc-knowledge-breadth"
+      ]
+    },
+    {
+      "id": "path-emotional-regulation",
+      "label": "Improve Emotional Regulation",
+      "hue": 35,
+      "blurb": "Noticing the state early enough to have a choice about it, and building the conditions that make choice possible.",
+      "outcome": "You can name what you are feeling while it is happening, and reach for a strategy that fits the situation.",
+      "nodeIds": [
+        "eqa-interoception",
+        "eqa-emotion-granularity",
+        "eqa-trigger-mapping",
+        "eqr-recovery",
+        "kin-breath",
+        "eqr-impulse-control",
+        "eqr-reappraisal",
+        "eqr-distress-tolerance",
+        "exec-inhibition",
+        "intra-introspection"
+      ]
+    },
+    {
+      "id": "path-math-reasoning",
+      "label": "Improve Mathematical Reasoning",
+      "hue": 220,
+      "blurb": "From reading quantities correctly to constructing an argument that holds under scrutiny.",
+      "outcome": "You can read an unfamiliar quantitative claim correctly and prove a statement you have not seen before.",
+      "nodeIds": [
+        "gc-quantitative-literacy",
+        "log-estimation",
+        "log-deduction",
+        "log-probability",
+        "gwm-mental-manipulation",
+        "log-proof",
+        "gf-pattern-abstraction",
+        "log-algorithmic",
+        "epi-bayesian"
+      ]
+    },
+    {
+      "id": "path-founder",
+      "label": "Become a Better Founder",
+      "hue": 100,
+      "blurb": "Deciding under uncertainty with other people's time and money, over horizons longer than your visibility.",
+      "outcome": "You can state a diagnosis, commit to a guiding policy, and show the record of what you expected at the time.",
+      "nodeIds": [
+        "str-goal-decomposition",
+        "str-prioritization",
+        "dec-opportunity-cost",
+        "dec-expected-value",
+        "dec-journal",
+        "cre-iteration",
+        "str-resource-allocation",
+        "dec-reversibility",
+        "inter-negotiation",
+        "str-scenario-planning",
+        "str-strategy",
+        "eqm-trust-building"
+      ]
+    },
+    {
+      "id": "path-ai-augmented",
+      "label": "AI-Augmented Knowledge Worker",
+      "hue": 88,
+      "blurb": "Using tools hard without letting them take over the judgement you are still accountable for.",
+      "outcome": "You produce better work with tools than without them, and can show where you checked.",
+      "nodeIds": [
+        "aug-decomposition",
+        "aug-search",
+        "aug-external-cognition",
+        "gc-technical-fluency",
+        "aug-ai-collaboration",
+        "aug-verification",
+        "epi-source-reliability",
+        "gc-domain-depth",
+        "exec-error-monitoring"
+      ]
+    },
+    {
+      "id": "path-decision-quality",
+      "label": "Improve Decision Quality",
+      "hue": 128,
+      "blurb": "Separating the quality of a decision from the quality of its outcome, and keeping the record that lets you tell.",
+      "outcome": "You have thirty resolved, dated predictions and a calibration curve that is moving in the right direction.",
+      "nodeIds": [
+        "dec-journal",
+        "log-probability",
+        "dec-calibration",
+        "eqa-bias-awareness",
+        "dec-opportunity-cost",
+        "dec-expected-value",
+        "epi-bayesian",
+        "dec-value-of-information",
+        "dec-reversibility",
+        "exec-error-monitoring"
+      ]
+    },
+    {
+      "id": "path-executive-function",
+      "label": "Run Your Own Attention",
+      "hue": 8,
+      "blurb": "The control layer: starting, staying on target, stopping, switching when the situation changes, and catching your own errors.",
+      "outcome": "Your scheduled deep work actually starts, stays on the goal you set, and ends with errors you caught yourself.",
+      "nodeIds": [
+        "eqr-recovery",
+        "intra-attention",
+        "exec-goal-maintenance",
+        "exec-initiation",
+        "eqr-habit-design",
+        "exec-planning",
+        "exec-inhibition",
+        "exec-flexibility",
+        "gwm-dual-task",
+        "exec-error-monitoring"
+      ]
+    },
+    {
+      "id": "path-writing",
+      "label": "Write Clearly Under Pressure",
+      "hue": 200,
+      "blurb": "Precision of language, structure of argument, and the revision loop that turns a draft into something readable.",
+      "outcome": "You can produce a clear, defensible written argument on an unfamiliar topic inside a deadline.",
+      "nodeIds": [
+        "ling-vocab-depth",
+        "ling-reading",
+        "ling-writing",
+        "aug-decomposition",
+        "lrn-feedback",
+        "cre-iteration",
+        "ling-rhetoric",
+        "inter-teaching",
+        "epi-evidence-eval"
+      ]
+    }
+  ]
+}

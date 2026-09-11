@@ -1,6 +1,6 @@
-import { getAllJournals } from "./db";
-import { neighborsOf } from "./graph";
-import type { IntelligenceData } from "./types";
+import { getAllJournals } from "./db.ts";
+import { neighborsOf } from "./graph.ts";
+import type { IntelligenceData } from "./types.ts";
 
 function download(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);

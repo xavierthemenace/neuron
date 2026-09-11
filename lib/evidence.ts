@@ -5,7 +5,7 @@ import type {
   LinkRelation,
   NodeKind,
   RetentionModel,
-} from "./types";
+} from "./types.ts";
 
 /** Ordered weakest → strongest so bands can be compared numerically. */
 export const CONFIDENCE_ORDER: EvidenceConfidence[] = [

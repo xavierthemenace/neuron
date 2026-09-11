@@ -1,4 +1,4 @@
-import type { Progress } from "./types";
+import type { Progress } from "./types.ts";
 
 export const DB_NAME = "neuron.local.v2";
 export const DB_VERSION = 1;

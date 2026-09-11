@@ -1,0 +1,426 @@
+{
+  "probes": [
+    {
+      "id": "probe-estimation",
+      "nodeIds": ["log-estimation", "gc-quantitative-literacy"],
+      "items": [
+        {
+          "id": "est-seconds-year",
+          "kind": "numeric",
+          "prompt": "How many seconds are in a 365-day year?",
+          "answer": 31536000,
+          "explanation": "365 × 24 × 60 × 60 = 31,536,000."
+        },
+        {
+          "id": "est-moon-distance",
+          "kind": "numeric",
+          "prompt": "What is the average distance from the Earth to the Moon, in kilometres?",
+          "answer": 384400,
+          "explanation": "About 384,400 km — roughly thirty Earth diameters."
+        },
+        {
+          "id": "est-everest",
+          "kind": "numeric",
+          "prompt": "How tall is Mount Everest above sea level, in metres?",
+          "answer": 8849,
+          "explanation": "8,849 m by the 2020 Chinese–Nepali joint survey."
+        },
+        {
+          "id": "est-earth-surface",
+          "kind": "numeric",
+          "prompt": "What is the total surface area of the Earth, in square kilometres?",
+          "answer": 510000000,
+          "explanation": "About 510 million km², of which roughly 29% is land."
+        },
+        {
+          "id": "est-avogadro",
+          "kind": "numeric",
+          "prompt": "How many particles are in one mole of a substance?",
+          "answer": 6.02214076e23,
+          "explanation": "Avogadro's number, 6.022 × 10²³, now a defined constant."
+        },
+        {
+          "id": "est-nile",
+          "kind": "numeric",
+          "prompt": "How long is the Nile, in kilometres?",
+          "answer": 6650,
+          "explanation": "About 6,650 km, though the exact figure depends on which source is counted."
+        },
+        {
+          "id": "est-heartbeats",
+          "kind": "numeric",
+          "prompt": "Roughly how many times does a human heart beat in 80 years?",
+          "answer": 3000000000,
+          "explanation": "About 70 beats per minute × 60 × 24 × 365 × 80 ≈ 2.9 billion."
+        },
+        {
+          "id": "est-light-speed",
+          "kind": "numeric",
+          "prompt": "What is the speed of light in a vacuum, in metres per second?",
+          "answer": 299792458,
+          "explanation": "299,792,458 m/s exactly — the metre is defined from it."
+        },
+        {
+          "id": "est-earth-diameter",
+          "kind": "numeric",
+          "prompt": "What is the Earth's diameter at the equator, in kilometres?",
+          "answer": 12756,
+          "explanation": "12,756 km equatorial, about 43 km more than pole to pole."
+        },
+        {
+          "id": "est-air-mass",
+          "kind": "numeric",
+          "prompt": "What is the mass of the Earth's atmosphere, in kilograms?",
+          "answer": 5.15e18,
+          "explanation": "About 5.15 × 10¹⁸ kg — derivable from surface area × sea-level pressure ÷ g."
+        },
+        {
+          "id": "est-blood",
+          "kind": "numeric",
+          "prompt": "How many litres of blood does an average adult human have?",
+          "answer": 5,
+          "explanation": "About 5 litres, roughly 7% of body mass."
+        },
+        {
+          "id": "est-words-book",
+          "kind": "numeric",
+          "prompt": "Roughly how many words are in a typical 300-page novel?",
+          "answer": 90000,
+          "explanation": "About 300 words per page × 300 pages ≈ 90,000."
+        }
+      ]
+    },
+    {
+      "id": "probe-calibration",
+      "nodeIds": ["dec-calibration", "log-probability"],
+      "items": [
+        {
+          "id": "cal-wikipedia",
+          "kind": "interval",
+          "prompt": "In what year was Wikipedia launched?",
+          "answer": 2001,
+          "explanation": "15 January 2001."
+        },
+        {
+          "id": "cal-amazon",
+          "kind": "interval",
+          "prompt": "How long is the Amazon River, in kilometres?",
+          "answer": 6400,
+          "explanation": "About 6,400 km, depending on which headwater is used."
+        },
+        {
+          "id": "cal-nitrogen",
+          "kind": "interval",
+          "prompt": "What is the boiling point of nitrogen, in kelvin?",
+          "answer": 77,
+          "explanation": "77.4 K, or about −196 °C."
+        },
+        {
+          "id": "cal-eiffel",
+          "kind": "interval",
+          "prompt": "In what year was the Eiffel Tower completed?",
+          "answer": 1889,
+          "explanation": "1889, for the Exposition Universelle."
+        },
+        {
+          "id": "cal-iceland",
+          "kind": "interval",
+          "prompt": "What is the population of Iceland?",
+          "answer": 380000,
+          "explanation": "Around 380,000 — smaller than most people guess."
+        },
+        {
+          "id": "cal-mariana",
+          "kind": "interval",
+          "prompt": "How deep is the Mariana Trench at its deepest point, in metres?",
+          "answer": 10935,
+          "explanation": "About 10,935 m at Challenger Deep."
+        },
+        {
+          "id": "cal-elements",
+          "kind": "interval",
+          "prompt": "How many elements are on the periodic table?",
+          "answer": 118,
+          "explanation": "118, ending at oganesson."
+        },
+        {
+          "id": "cal-darwin",
+          "kind": "interval",
+          "prompt": "In what year was On the Origin of Species published?",
+          "answer": 1859,
+          "explanation": "24 November 1859."
+        },
+        {
+          "id": "cal-747",
+          "kind": "interval",
+          "prompt": "What is the wingspan of a Boeing 747-400, in metres?",
+          "answer": 64,
+          "explanation": "About 64 m — a little over half the length of a football pitch."
+        },
+        {
+          "id": "cal-mars",
+          "kind": "interval",
+          "prompt": "What is Mars's average distance from the Sun, in millions of kilometres?",
+          "answer": 228,
+          "explanation": "About 228 million km, roughly 1.52 astronomical units."
+        },
+        {
+          "id": "cal-newborn-bones",
+          "kind": "interval",
+          "prompt": "How many bones does a newborn human have?",
+          "answer": 300,
+          "explanation": "About 300, fusing to 206 in adulthood."
+        },
+        {
+          "id": "cal-gutenberg",
+          "kind": "interval",
+          "prompt": "In roughly what year did Gutenberg print his 42-line Bible?",
+          "answer": 1455,
+          "explanation": "Around 1455 in Mainz."
+        }
+      ]
+    },
+    {
+      "id": "probe-reading",
+      "nodeIds": ["ling-reading", "epi-evidence-eval"],
+      "items": [
+        {
+          "id": "read-transit",
+          "kind": "choice",
+          "prompt": "Passage: \"Cities that expanded their rail networks between 1990 and 2010 saw car ownership fall by an average of 8%. Cities that did not expand rail saw car ownership rise by 4%. Rail expansion is therefore an effective lever for reducing car dependence.\"\n\nWhich assumption is the argument load-bearing on?",
+          "options": [
+            "That cities which expanded rail were not already on a different trajectory for other reasons",
+            "That car ownership is measured the same way in every city",
+            "That rail is cheaper per passenger-kilometre than road",
+            "That 8% is a large effect"
+          ],
+          "answer": 0,
+          "explanation": "The comparison is observational. Cities that chose to expand rail may differ systematically — in density, politics or growth — and those differences could produce the whole gap."
+        },
+        {
+          "id": "read-antibiotic",
+          "kind": "choice",
+          "prompt": "Passage: \"In the trial, 62% of patients given the new antibiotic had cleared the infection by day 7, against 58% on the standard treatment. The difference was not statistically significant. The authors conclude the new drug is non-inferior.\"\n\nWhat is wrong with the conclusion as stated?",
+          "options": [
+            "Failing to find a difference is not the same as demonstrating non-inferiority, which needs a pre-specified margin",
+            "62% is too low a cure rate to be useful",
+            "The trial should have used a placebo arm",
+            "Day 7 is too early to measure clearance"
+          ],
+          "answer": 0,
+          "explanation": "Non-inferiority is a specific claim requiring a pre-specified margin and adequate power. Absence of a significant difference is not evidence of equivalence."
+        },
+        {
+          "id": "read-productivity",
+          "kind": "choice",
+          "prompt": "Passage: \"Teams that adopted the four-day week reported higher satisfaction and no drop in output. The trial ran for six months at 61 companies that volunteered to take part.\"\n\nWhich of these most limits how far the result generalises?",
+          "options": [
+            "Companies volunteered, so they were probably ones expecting it to work",
+            "Six months is a long time for a workplace trial",
+            "Satisfaction was measured by self-report",
+            "61 is a small number of companies"
+          ],
+          "answer": 0,
+          "explanation": "Self-selection is the dominant threat here. Firms that expected the policy to fail did not enter the trial at all, so the sample is not the population the result would be applied to."
+        },
+        {
+          "id": "read-language",
+          "kind": "choice",
+          "prompt": "Passage: \"Bilingual children in the study outperformed monolingual children on a task-switching measure. The authors suggest bilingualism confers an executive-function advantage.\"\n\nWhat would most strengthen this claim?",
+          "options": [
+            "Showing the advantage holds in a preregistered study with matched socioeconomic backgrounds",
+            "Finding the same advantage on a second task-switching measure",
+            "Recruiting a larger sample of bilingual children",
+            "Demonstrating the bilingual children also had larger vocabularies"
+          ],
+          "answer": 0,
+          "explanation": "The bilingual-advantage literature is dominated by confounding with socioeconomic status and by publication bias. Preregistration plus matching addresses both; more items on the same task addresses neither."
+        },
+        {
+          "id": "read-crime",
+          "kind": "choice",
+          "prompt": "Passage: \"After the new patrol scheme began in March, reported burglaries in the district fell 22% by September compared with the previous September.\"\n\nWhat is the most important missing comparison?",
+          "options": [
+            "What happened to burglaries in comparable districts without the scheme over the same period",
+            "How many officers were assigned to the scheme",
+            "Whether the previous September was unusually warm",
+            "Whether residents felt safer"
+          ],
+          "answer": 0,
+          "explanation": "Without a control district, any region-wide or seasonal trend is indistinguishable from the intervention's effect."
+        },
+        {
+          "id": "read-nutrition",
+          "kind": "choice",
+          "prompt": "Passage: \"People who eat nuts regularly live longer. In a cohort of 120,000 followed for 30 years, the highest-intake group had 20% lower all-cause mortality after adjusting for age, smoking, exercise and BMI.\"\n\nWhat does the adjustment NOT rule out?",
+          "options": [
+            "That nut-eaters differ on some other health-related variable nobody measured",
+            "That the association is due to chance",
+            "That smoking explains the effect",
+            "That the effect is small"
+          ],
+          "answer": 0,
+          "explanation": "Statistical adjustment handles only the confounders you measured. Residual and unmeasured confounding is precisely what observational nutrition epidemiology cannot exclude."
+        }
+      ]
+    },
+    {
+      "id": "probe-source",
+      "nodeIds": ["epi-source-reliability", "aug-search"],
+      "items": [
+        {
+          "id": "src-lateral",
+          "kind": "choice",
+          "prompt": "You land on a professional-looking site you have never heard of, making a strong claim about a drug. What is the highest-value first move?",
+          "options": [
+            "Open a new tab and find out what other sources say about this organisation",
+            "Read the About page carefully",
+            "Check whether the site has citations and follow one",
+            "Check whether the design and writing look professional"
+          ],
+          "answer": 0,
+          "explanation": "Lateral reading — leaving the page to check the source elsewhere — outperforms close reading of the page itself, which is exactly what a well-constructed unreliable source is designed to survive."
+        },
+        {
+          "id": "src-funding",
+          "kind": "choice",
+          "prompt": "A study finding a product safe was funded by the company selling it. What follows?",
+          "options": [
+            "Industry funding predicts more favourable results on average, so the finding needs independent replication before it carries full weight",
+            "The study should be discarded",
+            "Funding is irrelevant if the methods are sound",
+            "The result is probably fabricated"
+          ],
+          "answer": 0,
+          "explanation": "Funding source is a well-documented moderator of published results, mostly through design and reporting choices rather than fraud. It is a reason to downweight and seek replication, not to dismiss."
+        },
+        {
+          "id": "src-preprint",
+          "kind": "choice",
+          "prompt": "A striking result is circulating as a preprint. How should you treat it relative to a peer-reviewed paper?",
+          "options": [
+            "Somewhat more cautiously, while remembering that peer review catches less than it is credited with",
+            "As equivalent, since peer review is unreliable anyway",
+            "As unusable until it is published",
+            "As more trustworthy, since it has not been filtered by journals"
+          ],
+          "answer": 0,
+          "explanation": "Peer review provides a weak filter, not a guarantee. Preprints deserve extra caution without being dismissed, and published papers deserve less deference than they usually get."
+        },
+        {
+          "id": "src-chain",
+          "kind": "choice",
+          "prompt": "A news article cites a think-tank report, which cites a survey. The striking number appears in all three. What is the most informative check?",
+          "options": [
+            "Read the survey's actual question wording and sample",
+            "Check whether the think tank is politically aligned",
+            "See whether other outlets reported the same number",
+            "Check the article's publication date"
+          ],
+          "answer": 0,
+          "explanation": "Numbers mutate along citation chains, and question wording is where most survey surprises come from. Repetition across outlets is evidence of copying, not of accuracy."
+        },
+        {
+          "id": "src-expert",
+          "kind": "choice",
+          "prompt": "A Nobel laureate in physics makes a confident public claim about nutrition. How much should their credential move you?",
+          "options": [
+            "Very little — expertise is domain-specific and eminent scientists are not reliable outside their field",
+            "Substantially, since they are trained in rigorous thinking",
+            "Not at all, since credentials never matter",
+            "It depends on how confidently they state it"
+          ],
+          "answer": 0,
+          "explanation": "The pattern is common enough to have a name. Credentials transfer far less than intuition suggests, and confidence is not a reliability signal in either direction."
+        },
+        {
+          "id": "src-consensus",
+          "kind": "choice",
+          "prompt": "You find a claim contradicted by a large professional consensus. What is the best next step?",
+          "options": [
+            "Find out what evidence the consensus rests on and whether the dissenting claim engages with it",
+            "Accept the consensus, since it represents most experts",
+            "Take the dissent seriously, since consensus suppresses innovation",
+            "Look for which side has more publications"
+          ],
+          "answer": 0,
+          "explanation": "Both reflexive deference and reflexive contrarianism skip the same step. What matters is whether the dissent addresses the evidence the consensus actually rests on."
+        }
+      ]
+    },
+    {
+      "id": "probe-evidence",
+      "nodeIds": ["epi-evidence-eval", "epi-causal-inference", "gc-quantitative-literacy"],
+      "items": [
+        {
+          "id": "ev-basenrate",
+          "kind": "choice",
+          "prompt": "A test for a condition affecting 1 in 1,000 people has a 5% false-positive rate and catches essentially every true case. Someone tests positive. Roughly what is the chance they have it?",
+          "options": ["About 2%", "About 50%", "About 95%", "About 80%"],
+          "answer": 0,
+          "explanation": "Out of 10,000 people: 10 true cases, and about 500 false positives. 10 / 510 ≈ 2%. The base rate dominates."
+        },
+        {
+          "id": "ev-collider",
+          "kind": "choice",
+          "prompt": "Among hospitalised patients, smoking appears to be associated with *lower* risk of a second disease, though it raises risk in the general population. What is the most likely explanation?",
+          "options": [
+            "Conditioning on hospitalisation — a common effect of both — induces a spurious association",
+            "Smoking has a protective effect in sick populations",
+            "The sample was too small",
+            "Hospital records under-report smoking"
+          ],
+          "answer": 0,
+          "explanation": "This is collider bias, the classic Berkson's paradox. Conditioning on a common effect of two causes creates an association between them where none existed."
+        },
+        {
+          "id": "ev-relative",
+          "kind": "choice",
+          "prompt": "A treatment cuts the risk of an outcome by 50%. The outcome occurs in 2 people per 10,000 without treatment. How many people must be treated to prevent one case?",
+          "options": ["About 10,000", "About 50", "About 200", "About 2"],
+          "answer": 0,
+          "explanation": "Absolute risk falls from 2 to 1 per 10,000, so preventing one case requires treating about 10,000 people. Relative risk reductions hide this completely."
+        },
+        {
+          "id": "ev-regression",
+          "kind": "choice",
+          "prompt": "Students scoring worst on a test are given extra coaching and improve markedly on the retest. What must be ruled out before crediting the coaching?",
+          "options": [
+            "Regression to the mean — extreme scores move toward average on retest regardless of intervention",
+            "That the retest was easier",
+            "That the students studied on their own",
+            "That the coaching was delivered by different teachers"
+          ],
+          "answer": 0,
+          "explanation": "Selecting on an extreme score guarantees apparent improvement on retest. Without a control group selected the same way, the effect is uninterpretable."
+        },
+        {
+          "id": "ev-power",
+          "kind": "choice",
+          "prompt": "A small study reports a large, statistically significant effect. Why should you expect the true effect to be smaller?",
+          "options": [
+            "In a low-powered design, only unusually large estimates clear significance, so published effects are inflated",
+            "Small studies use worse measurement instruments",
+            "Small samples are less representative",
+            "Large effects are rare in general"
+          ],
+          "answer": 0,
+          "explanation": "This is the winner's curse, or type-M error. Low power does not just make findings less likely; it makes the findings that do appear systematically overstated."
+        },
+        {
+          "id": "ev-multiplicity",
+          "kind": "choice",
+          "prompt": "A paper reports one significant result out of twenty outcomes tested, with no correction for multiplicity. How should you read it?",
+          "options": [
+            "As roughly what chance alone would produce at p < 0.05, so essentially no evidence",
+            "As weak but real evidence",
+            "As strong evidence for that specific outcome",
+            "As evidence the other nineteen outcomes are null"
+          ],
+          "answer": 0,
+          "explanation": "Twenty tests at α = 0.05 yield one false positive on average. Without correction or preregistration of the outcome, the finding carries essentially no information."
+        }
+      ]
+    }
+  ]
+}
