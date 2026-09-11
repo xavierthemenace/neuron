@@ -60,5 +60,15 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-  snapshotPathTemplate: "{testDir}/__screenshots__/{arg}{ext}",
+  /**
+   * Baselines are per-platform.
+   *
+   * Glyph rasterisation differs between the Linux CI runner and a developer
+   * machine — same fonts, same metrics (next/font self-hosts them, so nothing
+   * reflows), but antialiased edges land differently and a text-heavy dialog
+   * drifts 3-4% against a 2% tolerance. Loosening the tolerance to cover that
+   * would blind the suite to real regressions, so each platform keeps its own
+   * baselines instead. Re-bake Linux ones with the bake-snapshots workflow.
+   */
+  snapshotPathTemplate: "{testDir}/__screenshots__/{platform}/{arg}{ext}",
 });

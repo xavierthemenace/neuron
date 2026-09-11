@@ -27,6 +27,12 @@ Reliability fixes. No curriculum change.
 - **Camera framing ignored `prefers-reduced-motion`.** Panning to a selection
   honoured it, but fit-all, Focus Mode and path framing still ran half-second
   tweens.
+- **Visual baselines are now per-platform.** Glyph rasterisation differs between
+  the Linux CI runner and a developer machine — same fonts and same metrics, so
+  nothing reflows, but antialiased edges drift a text-heavy dialog 3-4% against
+  a 2% tolerance. Baselines live under `e2e/__screenshots__/{platform}/` rather
+  than the tolerance being loosened to hide it, and the `bake-snapshots`
+  workflow regenerates the Linux set, which no developer machine can produce.
 - **Visual snapshots rotted by the calendar.** The session planner seeds its
   ranking noise from the current date, so any snapshot containing a plan drifted
   day to day. The visual suite now pins the clock, and the whole browser suite
