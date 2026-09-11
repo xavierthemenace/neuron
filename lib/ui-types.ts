@@ -13,5 +13,6 @@ export type WorkbenchTabId =
   | "experiments"
   | "evidence"
   | "analytics"
+  | "compare"
   | "personal"
   | "browse";

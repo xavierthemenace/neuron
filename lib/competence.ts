@@ -145,12 +145,41 @@ function signalForLog(log: LogEntry): number {
   return Math.min(1, 0.55 * difficultyFactor(difficulty));
 }
 
+/**
+ * A cheap fingerprint of a rep's written work.
+ *
+ * Case- and whitespace-insensitive so that reformatting does not defeat it,
+ * and truncated so that appending a word to the same paragraph does not mint a
+ * fresh observation.
+ */
+function artifactFingerprint(note: string): string {
+  return note.toLowerCase().replace(/\s+/g, " ").trim().slice(0, 400);
+}
+
 export function estimateNode(input: EstimateInput, now = new Date()): NodeEstimate {
   const nowMs = now.getTime();
   const observations: CompetenceObservation[] = [];
 
+  /**
+   * Anti-gaming: the same written work, submitted again, is not a second
+   * observation.
+   *
+   * Without this, pasting one good paragraph into a weekly exercise four times
+   * produces four artifact-weighted observations and a competence estimate
+   * built on one piece of work. The rep still counts as practice — it happened,
+   * and the XP is not clawed back — but it stops being evidence about ability.
+   */
+  const seenArtifacts = new Set<string>();
+
   for (const log of input.logs) {
-    const kind = log.evidence ?? "self-report";
+    let kind = log.evidence ?? "self-report";
+
+    if ((kind === "artifact" || kind === "external") && log.note) {
+      const fingerprint = artifactFingerprint(log.note);
+      if (seenArtifacts.has(fingerprint)) kind = "self-report";
+      else seenArtifacts.add(fingerprint);
+    }
+
     const weight = EVIDENCE_WEIGHT[kind] * recencyWeight(log.at, nowMs);
     if (weight <= 0) continue;
     observations.push({
@@ -158,7 +187,7 @@ export function estimateNode(input: EstimateInput, now = new Date()): NodeEstima
       signal: signalForLog(log),
       weight,
       at: log.at,
-      source: "Logged practice",
+      source: kind === (log.evidence ?? "self-report") ? "Logged practice" : "Repeated work",
     });
   }
 

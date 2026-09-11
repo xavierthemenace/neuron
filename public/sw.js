@@ -2,7 +2,7 @@
  * Neuron's service worker.
  *
  * Generated from this template by scripts/build-sw.mjs, which replaces
- * 7cbdca36dfb0 with a hash of the build output. Do not edit public/sw.js
+ * 090d374845b8 with a hash of the build output. Do not edit public/sw.js
  * directly — it is overwritten on every build.
  *
  * Caching strategy, by request kind:
@@ -20,7 +20,7 @@
  * hand-maintained version string meant any release where someone forgot to
  * bump it kept serving the old application shell forever.
  */
-const BUILD = "7cbdca36dfb0";
+const BUILD = "090d374845b8";
 const CACHE = `neuron-${BUILD}`;
 const CORE = ["/", "/manifest.webmanifest", "/favicon.ico", "/neuron-icon.svg"];
 

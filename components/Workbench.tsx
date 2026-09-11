@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sheet } from "./ui";
 import { AnalyticsTab } from "./workbench/AnalyticsTab";
 import { BrowseTab } from "./workbench/BrowseTab";
+import { CompareTab } from "./workbench/CompareTab";
 import { EvidenceTab } from "./workbench/EvidenceTab";
 import { ExperimentsTab } from "./workbench/ExperimentsTab";
 import { GoalsTab } from "./workbench/GoalsTab";
@@ -28,6 +29,7 @@ export type WorkbenchTab =
   | "experiments"
   | "evidence"
   | "analytics"
+  | "compare"
   | "personal"
   | "browse";
 
@@ -39,6 +41,7 @@ const TABS: { id: WorkbenchTab; label: string; subtitle: string }[] = [
   { id: "experiments", label: "Experiments", subtitle: "n-of-1 tests on your own practice. Cautiously reported." },
   { id: "evidence", label: "Evidence", subtitle: "What you can actually show for it." },
   { id: "analytics", label: "Analytics", subtitle: "Trajectories, not totals." },
+  { id: "compare", label: "Compare", subtitle: "Today against a past version of your own record." },
   { id: "personal", label: "Personal", subtitle: "Capabilities specific to your work and life." },
   { id: "browse", label: "Browse", subtitle: "The whole graph as a list. Complete keyboard alternative to the map." },
 ];
@@ -164,6 +167,15 @@ export function Workbench({
 
       {tab === "analytics" && (
         <AnalyticsTab
+          onSelectNode={(id) => {
+            onSelectNode(id);
+            onClose();
+          }}
+        />
+      )}
+
+      {tab === "compare" && (
+        <CompareTab
           onSelectNode={(id) => {
             onSelectNode(id);
             onClose();

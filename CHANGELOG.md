@@ -1,0 +1,130 @@
+# Changelog
+
+Application versions and curriculum versions move independently. The curriculum
+has its own semantic version in `data/intelligenceData.json`, because the
+ontology changing is a different kind of event from the app changing, and users
+need to know which one happened.
+
+## App 0.2.0 — Curriculum 2.0.0
+
+The map became a learner model. Previously Neuron tracked XP and drew a graph;
+it now separates what you have practised from what you can demonstrate, records
+how much it actually knows about each capability, and says so.
+
+### Curriculum 2.0.0
+
+- **139 canonical nodes**, up from 100, across 23 categories. The 39 new nodes
+  cover executive control, epistemic intelligence, decision intelligence,
+  creative cognition, augmented cognition, learning control and long-horizon
+  cognition — the capabilities that were missing rather than the ones that were
+  easy to add. The core is now capped at 140 and the validator enforces it.
+- **Node kinds.** Every node declares whether it is a cognitive ability, a
+  meta-skill, a learned competency, a knowledge asset, a physiological enabler,
+  a social-emotional skill or an augmentation skill. These are measured
+  differently, they decay differently, and the data model now reflects that.
+- **Scientific taxonomy overlay.** Nodes map onto CHC broad abilities.
+  `executive-control` and `socio-emotional` are flagged as outside the CHC core
+  rather than quietly presented as equivalent.
+- **Three-pillar evidence on every node**: construct validity, trainability and
+  transfer, recorded separately because conflating them is how brain training
+  gets sold. Plus a measurement method, a required statement of what training
+  will *not* do, and real citations — several of which are the negative result
+  for the node they are attached to.
+- **Richer edges.** Relation, strength, confidence, mechanism and conditional.
+  Inhibition edges are representable and four genuine trade-offs are drawn.
+- **Exercises** gain difficulty anchors, evidence kind, duration and a
+  progression ladder.
+
+**Migration:** `gwm-updating` ("Updating & Inhibition") was split. Practice
+history stays with working-memory updating, because that is what its exercises
+trained; the new `exec-inhibition` node starts empty. That is not missing data
+— it is data that was never collected. The migration is declared in
+`lib/migrations.ts`, runs once, and never deletes a log.
+
+### Learner model
+
+- **Practice and competence are separate numbers.** XP remains the progression
+  signal and is labelled as one. Competence is estimated only from observations
+  that could have gone badly — scored probes, judged artifacts, completed
+  missions, capstones — weighted by evidence kind, difficulty and recency.
+- **Estimate confidence** is capped by the node's construct validity. No volume
+  of evidence buys a confident number about something nobody can measure well.
+- **Six retention models** instead of one forgetting curve: FSRS-style
+  stability for knowledge, fluency decay for procedural skill, recency for
+  executive habits, detraining for physical capability, demonstration recency
+  for social skill, application frequency for meta-skills. Each explains itself
+  in plain language.
+- **Adaptive difficulty** targeting a 45–85% success band, replayed from the
+  log rather than stored. Attempts at an easier framing cannot promote you.
+
+### Measurement
+
+- **Eleven diagnostic probes** — reasoning, working memory, processing speed,
+  estimation, calibration, retrieval, planning, mental rotation, reading,
+  source evaluation and evidence interpretation. Items are generated per run
+  where generation is defensible and drawn from authored banks where it is not.
+- Results are compared **only to your own history**, and only when the change
+  clears a noise floor derived from the standard error of a proportion. A
+  5-point move on ten items is reported as noise, because it is.
+- **Predictions and calibration** with Brier scores and Murphy's decomposition,
+  so hedging at the base rate cannot masquerade as skill.
+
+### Training
+
+- **Session planner** replaces the fixed Daily Workout: state a time budget,
+  your energy and an emphasis, and get a packed session back. Fourteen weighted
+  ranking factors, all shown. The displayed score is asserted to equal the sum
+  of the factors shown, so the explanation cannot drift from the decision.
+- **Goals** route plain language to curated paths, pull in weak prerequisites,
+  and order a plan topologically.
+- **12 curated paths**, **8 missions**, **8 capstones**.
+- **Review inbox** ranking what is actually going stale, with per-kind caps so
+  a user returning after two months does not get forty retention rows.
+- **Graph intelligence**: bottlenecks, prerequisite gaps, isolated strengths,
+  unproven practice and cluster imbalance — each with the numbers attached.
+
+### Personal layer
+
+- **Personal nodes** train, decay, plan and export exactly like core nodes.
+- **Skill packs** with a validated third-party schema. Specialised expertise
+  anchors into the core instead of enlarging it.
+- **Journal as a thinking system**: `[[links]]`, backlinks, tags, templates and
+  five line markers, any of which converts into a prediction or a capability.
+- **Full versioned backup** including journals and attachments.
+
+### AI
+
+- Per-category consent, and the exact payload shown before sending.
+- API keys are **session-only by default**, with the persistence trade-off
+  spelled out rather than buried.
+- Generated exercises are drafts. They land in personal nodes on request, never
+  in the reviewed curriculum, and never award XP or move a competence estimate.
+
+### Production hardening
+
+- **79 Playwright tests** across selection, training, workbench, persistence,
+  offline, accessibility, mobile, visual regression and performance budgets.
+  They run against a production build.
+- The render-loop class of bug has an **explicit regression test**.
+- **159 unit tests**, up from 45.
+- Service worker is generated and stamped with a hash of the build output,
+  replacing a hand-maintained cache version that served a stale application
+  shell after every release where someone forgot to bump it.
+- WCAG 2.2 AA work, including a complete non-spatial view of the whole graph.
+
+### Bugs fixed, found by the new tests
+
+- Focus was never restored after closing a modal with Escape.
+- Screen readers were told they could drag and delete graph nodes.
+- A diagnostic result was counted twice in its own history.
+- New users were shown a migration notice about a change that predated them.
+- The mobile session launcher was invisible but still focusable.
+- An unanswered multiple-choice item scored as if the first option had been
+  picked.
+
+---
+
+## App 0.1.0 — Curriculum 1.0.0
+
+Initial release. 100 nodes, 16 categories, XP, decay, daily workout, journal,
+analytics, PWA.

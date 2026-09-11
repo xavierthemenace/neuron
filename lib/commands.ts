@@ -132,6 +132,13 @@ export function buildCommands(
       run: () => handlers.openWorkbench("analytics"),
     },
     {
+      id: "compare",
+      label: "Compare with a past version of your record",
+      group: "view",
+      keywords: "progress over time diff delta history before after",
+      run: () => handlers.openWorkbench("compare"),
+    },
+    {
       id: "personal",
       label: "Create a personal capability",
       group: "record",

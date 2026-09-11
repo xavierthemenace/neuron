@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { nodesById } from "@/lib/curriculum";
 import { KIND_BLURB, KIND_LABEL } from "@/lib/evidence";
+import {
+  BUNDLED_PACKS,
+  materialisePack,
+  packNodeIds,
+  readPackFile,
+  type SkillPack,
+} from "@/lib/packs";
 import { newId } from "@/lib/storage";
 import type { NodeKind, PersonalNode } from "@/lib/types";
 import { useProgress } from "../ProgressProvider";
@@ -186,6 +193,8 @@ export function PersonalTab({ onSelectNode }: { onSelectNode: (id: string) => vo
         </div>
       </Section>
 
+      <PacksSection />
+
       <Section title={`Your capabilities (${progress.personalNodes.length})`}>
         {progress.personalNodes.length === 0 ? (
           <EmptyState
@@ -280,5 +289,126 @@ function PersonalCard({
         </button>
       </div>
     </li>
+  );
+}
+
+/**
+ * Skill packs.
+ *
+ * Installing a pack materialises its nodes as personal nodes, so from every
+ * other part of the app they are indistinguishable from capabilities the user
+ * added by hand — same training, same retention model, same planner, same
+ * export. Uninstalling removes the definitions and leaves the practice history
+ * alone, because the logs are a record of work that actually happened.
+ */
+function PacksSection() {
+  const { progress, addPersonalNode, deletePersonalNode, setPackInstalled } = useProgress();
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const installed = new Set(progress.installedPacks ?? []);
+
+  const install = (pack: SkillPack) => {
+    // Dedupe on (packId, label) rather than on the pack's namespaced id: the
+    // store mints its own ids, so the namespaced one never survives the round
+    // trip and a re-install would otherwise duplicate every node.
+    const existing = new Set(
+      progress.personalNodes
+        .filter((node) => node.packId === pack.id)
+        .map((node) => node.label),
+    );
+    let added = 0;
+    for (const node of materialisePack(pack)) {
+      if (existing.has(node.label)) continue;
+      const { id: _generated, createdAt: _created, ...rest } = node;
+      void _generated;
+      void _created;
+      addPersonalNode(rest);
+      added += 1;
+    }
+    setPackInstalled(pack.id, true);
+    setError(null);
+    setNotice(
+      `Installed ${pack.label} ${pack.version}: ${added} capabilit${added === 1 ? "y" : "ies"}, anchored into the core graph.`,
+    );
+  };
+
+  const uninstall = (packId: string) => {
+    for (const id of packNodeIds(packId, progress.personalNodes)) {
+      deletePersonalNode(id);
+    }
+    setPackInstalled(packId, false);
+    setNotice("Pack removed. Your logged practice against it is untouched and still exports.");
+  };
+
+  return (
+    <Section
+      title="Skill packs"
+      hint="Specialised expertise lives in optional packs that anchor into the core. The core itself stays capped at 140 nodes."
+    >
+      <div className="space-y-2">
+        {BUNDLED_PACKS.map((pack) => (
+          <div key={pack.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+            <div className="flex items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-xs font-medium text-neutral-100">{pack.label}</span>
+                  <Chip>{pack.version}</Chip>
+                  <Chip>{pack.nodes.length} capabilities</Chip>
+                </div>
+                <p className="mt-1 text-[10px] leading-relaxed text-neutral-500">{pack.blurb}</p>
+                <p className="mt-1 text-[10px] leading-relaxed text-neutral-600">{pack.scope}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  installed.has(pack.id) ? uninstall(pack.id) : install(pack)
+                }
+                className={installed.has(pack.id) ? buttonClass : primaryButtonClass}
+              >
+                {installed.has(pack.id) ? "Remove" : "Install"}
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={() => fileInput.current?.click()} className={buttonClass}>
+            Install a pack from a file
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (!file) return;
+              void readPackFile(file)
+                .then(install)
+                .catch((cause: unknown) =>
+                  setError(cause instanceof Error ? cause.message : "That pack could not be read."),
+                );
+            }}
+          />
+        </div>
+
+        {notice && <p className="text-[11px] text-emerald-200/80">{notice}</p>}
+        {error && (
+          <pre className="whitespace-pre-wrap rounded-lg border border-rose-300/20 bg-rose-300/[0.05] p-3 text-[10px] leading-relaxed text-rose-100/80">
+            {error}
+          </pre>
+        )}
+
+        <Caveat>
+          A pack is third-party content. It is validated against a schema on
+          install — every node must state what it trains, what core capability it
+          builds on, and what it will not do — but Neuron cannot check whether its
+          claims are true.
+        </Caveat>
+      </div>
+    </Section>
   );
 }

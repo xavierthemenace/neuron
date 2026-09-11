@@ -10,6 +10,7 @@ import {
   type AttachmentRecord,
 } from "@/lib/db";
 import { newId } from "@/lib/storage";
+import { JournalTools } from "./JournalTools";
 
 function MarkdownPreview({ markdown }: { markdown: string }) {
   const blocks = useMemo(() => {
@@ -76,10 +77,18 @@ function MarkdownPreview({ markdown }: { markdown: string }) {
   );
 }
 
-export function MarkdownJournal({ nodeId, hue }: { nodeId: string; hue: number }) {
+export function MarkdownJournal({
+  nodeId,
+  hue,
+  onSelectNode,
+}: {
+  nodeId: string;
+  hue: number;
+  onSelectNode: (id: string) => void;
+}) {
   const [markdown, setMarkdown] = useState("");
   const [attachments, setAttachments] = useState<AttachmentRecord[]>([]);
-  const [mode, setMode] = useState<"edit" | "preview">("edit");
+  const [mode, setMode] = useState<"edit" | "preview" | "links">("edit");
   const [loadedNodeId, setLoadedNodeId] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const fileInput = useRef<HTMLInputElement>(null);
@@ -150,10 +159,12 @@ export function MarkdownJournal({ nodeId, hue }: { nodeId: string; hue: number }
       <div className="flex items-center gap-2">
         <div>
           <h3 className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">Journal</h3>
-          <p className="mt-0.5 text-[9px] text-neutral-600">IndexedDB · autosaved per faculty</p>
+          <p className="mt-0.5 text-[9px] text-neutral-600">
+            Local Markdown · autosaved · [[links]] and markers
+          </p>
         </div>
         <div className="ml-auto flex rounded-lg border border-white/8 bg-black/20 p-0.5">
-          {(["edit", "preview"] as const).map((item) => (
+          {(["edit", "preview", "links"] as const).map((item) => (
             <button
               key={item}
               type="button"
@@ -170,17 +181,32 @@ export function MarkdownJournal({ nodeId, hue }: { nodeId: string; hue: number }
       </div>
 
       <div className="mt-3 min-h-36">
-        {mode === "edit" ? (
+        {mode === "edit" && (
           <textarea
             value={markdown}
             onChange={(event) => setMarkdown(event.target.value)}
-            placeholder="# Notes\nCapture ideas, observations, references, or learning logs…"
-            aria-label="Faculty Markdown journal"
-            className="min-h-40 w-full resize-y rounded-lg border border-white/10 bg-black/30 p-3 font-mono text-xs leading-relaxed text-neutral-200 outline-none placeholder:text-neutral-650 focus:border-white/25"
+            placeholder={
+              "# Notes\n\n? a question   ! an insight   ~ a prediction\n[[Another capability]] links to it and creates a backlink there"
+            }
+            aria-label="Capability journal, Markdown"
+            className="min-h-40 w-full resize-y rounded-lg border border-white/10 bg-black/30 p-3 font-mono text-xs leading-relaxed text-neutral-200 outline-none placeholder:text-neutral-600 focus:border-white/25"
           />
-        ) : (
+        )}
+        {mode === "preview" && (
           <div className="min-h-40 rounded-lg border border-white/8 bg-black/20 p-3">
             <MarkdownPreview markdown={markdown} />
+          </div>
+        )}
+        {mode === "links" && (
+          <div className="min-h-40 rounded-lg border border-white/8 bg-black/20 p-3">
+            <JournalTools
+              nodeId={nodeId}
+              markdown={markdown}
+              onSelectNode={onSelectNode}
+              onInsert={(text) =>
+                setMarkdown((current) => (current.trim() ? `${current}\n\n${text}` : text))
+              }
+            />
           </div>
         )}
       </div>

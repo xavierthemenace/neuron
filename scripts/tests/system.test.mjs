@@ -26,8 +26,26 @@ import {
   seedNodesForPhrase,
   suggestPaths,
 } from "../../lib/goals.ts";
-import { buildLearnerModel } from "../../lib/learner.ts";
+import {
+  buildLearnerModel,
+  compareModels,
+  progressAsOf,
+} from "../../lib/learner.ts";
 import { capstones, curriculum, missions, paths } from "../../lib/curriculum.ts";
+import {
+  TEMPLATES,
+  buildBacklinks,
+  parseLinks,
+  resolveLink,
+  suggestNodeForLink,
+  summariseJournal,
+} from "../../lib/journal.ts";
+import {
+  BUNDLED_PACKS,
+  materialisePack,
+  packNodeIds,
+  validatePack,
+} from "../../lib/packs.ts";
 
 const NOW = new Date("2026-06-01T12:00:00.000Z");
 const DAY = 864e5;
@@ -558,5 +576,243 @@ describe("prerequisite graph shape", () => {
   it("gives foundational nodes no prerequisites", () => {
     const roots = curriculum.nodes.filter((node) => directPrerequisites(node.id).length === 0);
     assert.ok(roots.length > 5, "a graph with no roots cannot be entered");
+  });
+});
+
+describe("skill packs", () => {
+  it("accepts the bundled pack", () => {
+    for (const pack of BUNDLED_PACKS) {
+      const result = validatePack(pack);
+      assert.deepEqual(result.errors, [], `${pack.id} failed validation`);
+      assert.equal(result.ok, true);
+    }
+  });
+
+  it("requires every pack node to anchor into the real core", () => {
+    for (const pack of BUNDLED_PACKS) {
+      for (const node of pack.nodes) {
+        assert.ok(node.anchors.length > 0, `${node.id} anchors to nothing`);
+        for (const anchor of node.anchors) {
+          assert.ok(
+            curriculum.nodes.some((core) => core.id === anchor),
+            `${node.id} anchors to unknown core node ${anchor}`,
+          );
+        }
+      }
+    }
+  });
+
+  it("rejects a pack that anchors to a node that does not exist", () => {
+    const broken = structuredClone(BUNDLED_PACKS[0]);
+    broken.nodes[0].anchors = ["not-a-real-node"];
+    const result = validatePack(broken);
+    assert.equal(result.ok, false);
+    assert.ok(result.errors.some((error) => error.includes("unknown core node")));
+  });
+
+  it("rejects a pack node with no stated limitations", () => {
+    const broken = structuredClone(BUNDLED_PACKS[0]);
+    delete broken.nodes[0].limitations;
+    const result = validatePack(broken);
+    assert.equal(result.ok, false);
+    assert.ok(result.errors.some((error) => error.includes("limitations")));
+  });
+
+  it("rejects a pack from an unsupported schema version", () => {
+    const broken = structuredClone(BUNDLED_PACKS[0]);
+    broken.schemaVersion = 99;
+    assert.equal(validatePack(broken).ok, false);
+  });
+
+  it("warns when a pack node can never produce evidence", () => {
+    const weak = structuredClone(BUNDLED_PACKS[0]);
+    for (const exercise of weak.nodes[0].exercises) exercise.evidence = "self-report";
+    const result = validatePack(weak);
+    assert.equal(result.ok, true, "this is a warning, not an error");
+    assert.ok(result.warnings.some((warning) => warning.includes("self-reported")));
+  });
+
+  it("materialises into personal nodes that carry the pack id and anchors", () => {
+    const pack = BUNDLED_PACKS[0];
+    const nodes = materialisePack(pack, NOW);
+    assert.equal(nodes.length, pack.nodes.length);
+    for (const node of nodes) {
+      assert.equal(node.packId, pack.id);
+      assert.ok(node.id.startsWith(`pack:${pack.id}:`));
+      assert.ok(node.linkedNodeIds.length > 0);
+      assert.ok(node.exercises.length > 0);
+      // The limitations travel with the node rather than staying in the file.
+      assert.match(node.notes ?? "", /Limitations:/);
+    }
+  });
+
+  it("finds a pack's nodes for uninstall without touching anything else", () => {
+    const pack = BUNDLED_PACKS[0];
+    const mine = {
+      id: "personal-mine",
+      label: "Mine",
+      description: "",
+      kind: "competency",
+      linkedNodeIds: [],
+      createdAt: NOW.toISOString(),
+      exercises: [],
+    };
+    const all = [...materialisePack(pack, NOW), mine];
+    const ids = packNodeIds(pack.id, all);
+    assert.equal(ids.length, pack.nodes.length);
+    assert.ok(!ids.includes("personal-mine"));
+  });
+});
+
+describe("journal as a thinking system", () => {
+  it("resolves wiki links by label and by id", () => {
+    const links = parseLinks("See [[Bayesian Updating]] and [[log-probability]] here.");
+    assert.equal(links.length, 2);
+    assert.equal(links[0].nodeId, "epi-bayesian");
+    assert.equal(links[1].nodeId, "log-probability");
+  });
+
+  it("is forgiving about case and punctuation in a link", () => {
+    assert.equal(resolveLink("bayesian updating"), "epi-bayesian");
+    assert.equal(resolveLink("Working-Memory  Updating"), "gwm-updating");
+  });
+
+  it("reports an unresolvable link rather than silently dropping it", () => {
+    const summary = summariseJournal("A note about [[Quantum Telepathy]].");
+    assert.equal(summary.links.length, 1);
+    assert.equal(summary.unresolvedLinks.length, 1);
+    assert.equal(summary.unresolvedLinks[0].raw, "Quantum Telepathy");
+  });
+
+  it("suggests the nearest real node for a near-miss link", () => {
+    const suggestion = suggestNodeForLink("Bayesian Updating Rules");
+    assert.equal(suggestion.nearest, "epi-bayesian");
+  });
+
+  it("parses markers without mistaking headings for tags", () => {
+    const markdown = [
+      "# Heading with #realtag",
+      "? What is the base rate here",
+      "! Overconfidence shows up mostly on work estimates",
+      "~ The migration lands before Friday",
+      "TODO: find the primary source",
+      "> A quoted line",
+      "Ordinary prose.",
+    ].join("\n");
+
+    const summary = summariseJournal(markdown);
+    assert.deepEqual(
+      summary.markers.map((marker) => marker.kind),
+      ["question", "insight", "prediction", "unresolved", "quote"],
+    );
+    assert.deepEqual(summary.tags, ["realtag"]);
+  });
+
+  it("builds backlinks from other notes and never from the note itself", () => {
+    const journals = [
+      { nodeId: "log-probability", markdown: "Feeds [[Bayesian Updating]] directly.", updatedAt: "" },
+      { nodeId: "dec-calibration", markdown: "Scoring needs [[Bayesian Updating]] too.", updatedAt: "" },
+      { nodeId: "epi-bayesian", markdown: "This is [[Bayesian Updating]] itself.", updatedAt: "" },
+    ];
+    const backlinks = buildBacklinks(journals).get("epi-bayesian") ?? [];
+    assert.equal(backlinks.length, 2, "a note must not link to itself");
+    assert.deepEqual(
+      backlinks.map((link) => link.fromNodeId).sort(),
+      ["dec-calibration", "log-probability"],
+    );
+    assert.match(backlinks[0].excerpt, /Bayesian Updating/);
+  });
+
+  it("resolves links to personal nodes too", () => {
+    const personal = new Map([["dockercompose", "personal-1"]]);
+    const links = parseLinks("Learned [[Docker Compose]] today.", personal);
+    assert.equal(links[0].nodeId, "personal-1");
+  });
+
+  it("ships templates that carry markers, so a note is convertible later", () => {
+    for (const template of TEMPLATES) {
+      assert.ok(template.body.length > 40, `${template.id} is too thin`);
+    }
+    const decision = TEMPLATES.find((template) => template.id === "decision");
+    const markers = summariseJournal(decision.body).markers.map((marker) => marker.kind);
+    assert.ok(markers.includes("prediction"));
+    assert.ok(markers.includes("question"));
+  });
+
+  it("counts words without choking on an empty journal", () => {
+    assert.equal(summariseJournal("").words, 0);
+    assert.equal(summariseJournal("  ").words, 0);
+    assert.equal(summariseJournal("three little words").words, 3);
+  });
+});
+
+describe("comparison over time", () => {
+  const logAt = (nodeId, daysAgo, extra = {}) => ({
+    id: `${nodeId}-${daysAgo}`,
+    nodeId,
+    exerciseId: `${nodeId}-1`,
+    xp: 20,
+    difficulty: 3,
+    at: new Date(NOW.getTime() - daysAgo * DAY).toISOString(),
+    ...extra,
+  });
+
+  it("truncates every collection at the cutoff, not just the logs", () => {
+    const progress = progressWith({
+      logs: [logAt("log-estimation", 60), logAt("log-estimation", 5)],
+      diagnostics: [
+        {
+          id: "d1",
+          probeId: "probe-estimation",
+          nodeIds: ["log-estimation"],
+          score: 0.5,
+          difficulty: 3,
+          items: 10,
+          at: new Date(NOW.getTime() - 3 * DAY).toISOString(),
+        },
+      ],
+    });
+    const past = progressAsOf(progress, new Date(NOW.getTime() - 30 * DAY));
+    assert.equal(past.logs.length, 1);
+    assert.equal(past.diagnostics.length, 0, "a later diagnostic must not leak backwards");
+  });
+
+  it("recomputes retention as of the past date rather than reusing today's", () => {
+    const progress = progressWith({ logs: [logAt("gc-spaced-repetition", 40)] });
+    const thirtyDaysAgo = new Date(NOW.getTime() - 30 * DAY);
+    const past = buildLearnerModel(progressAsOf(progress, thirtyDaysAgo), thirtyDaysAgo);
+    const now = buildLearnerModel(progress, NOW);
+
+    // Ten days after the session versus forty: the past model must show more
+    // retained, which only works if the curve was recomputed at that date.
+    assert.ok(
+      past.retentionByNodeId["gc-spaced-repetition"].retention >
+        now.retentionByNodeId["gc-spaced-repetition"].retention,
+    );
+  });
+
+  it("reports practice and competence separately so unproven work is visible", () => {
+    const progress = progressWith({
+      logs: Array.from({ length: 12 }, (_, index) =>
+        logAt("ling-writing", index * 2, { evidence: "self-report" }),
+      ),
+    });
+    const thirtyDaysAgo = new Date(NOW.getTime() - 30 * DAY);
+    const before = buildLearnerModel(progressAsOf(progress, thirtyDaysAgo), NOW);
+    const after = buildLearnerModel(progress, NOW);
+
+    const row = compareModels(before, after).find((entry) => entry.nodeId === "ling-writing");
+    assert.ok(row, "a changed node should appear in the comparison");
+    assert.ok(row.practiceDelta > 0, "practice went up");
+    assert.equal(row.evidenceDelta, 0, "and none of it was evidence");
+    assert.ok(
+      row.competenceDelta < row.practiceDelta,
+      "so competence must not have moved as far as practice",
+    );
+  });
+
+  it("returns nothing when nothing changed", () => {
+    const model = buildLearnerModel(progressWith(), NOW);
+    assert.deepEqual(compareModels(model, model), []);
   });
 });

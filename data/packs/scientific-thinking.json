@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "id": "scientific-thinking",
+  "label": "Scientific Thinking",
+  "version": "1.0.0",
+  "author": "Neuron core curriculum",
+  "blurb": "The working practices of research: reading a paper properly, reviewing one, handling data honestly, and writing up what you found including the parts you did not want.",
+  "scope": "Domain practices, not cognitive constructs. Nothing here claims to be a latent ability or to have transfer evidence — these are craft skills with clear success criteria, which is exactly why they belong in a pack rather than in the core.",
+  "nodes": [
+    {
+      "id": "read-a-paper",
+      "label": "Reading a Paper Properly",
+      "kind": "competency",
+      "description": "Working through a primary research paper in the order that actually tells you whether to believe it: methods and sample first, then results, then the abstract last, checking what the authors claim against what they measured.",
+      "anchors": ["epi-evidence-eval", "ling-reading", "gc-quantitative-literacy"],
+      "limitations": "Reading well does not substitute for domain knowledge. In an unfamiliar field you will miss the methodological problems that are obvious to everyone who works in it.",
+      "exercises": [
+        {
+          "id": "read-methods-first",
+          "label": "Read one paper's methods before its abstract and predict the effect size",
+          "xp": 20,
+          "cadence": "weekly",
+          "difficulty": 3,
+          "evidence": "scored",
+          "minutes": 30
+        },
+        {
+          "id": "read-claim-gap",
+          "label": "Write the gap between what a paper measured and what its abstract claims",
+          "xp": 22,
+          "cadence": "weekly",
+          "difficulty": 4,
+          "evidence": "artifact",
+          "minutes": 35
+        }
+      ],
+      "resources": [
+        { "title": "How to Read a Paper — Trisha Greenhalgh", "type": "book" },
+        { "title": "Why Most Published Research Findings Are False — Ioannidis (2005)", "type": "paper" }
+      ]
+    },
+    {
+      "id": "peer-review",
+      "label": "Writing a Review",
+      "kind": "competency",
+      "description": "Producing a review that would improve the paper: specific, prioritised, separating fatal problems from fixable ones, and stating what evidence would change your recommendation.",
+      "anchors": ["epi-evidence-eval", "ling-writing", "lrn-feedback"],
+      "requires": ["read-a-paper"],
+      "limitations": "Reviewing trains critique, not production. Reviewers routinely miss errors they would make themselves, and a good review does not imply you could have written a better paper.",
+      "exercises": [
+        {
+          "id": "review-structured",
+          "label": "Write a structured review of a preprint: fatal, major, minor, in that order",
+          "xp": 26,
+          "cadence": "weekly",
+          "difficulty": 4,
+          "evidence": "artifact",
+          "minutes": 60
+        }
+      ],
+      "resources": [
+        { "title": "Estimating the Reproducibility of Psychological Science — OSC (2015)", "type": "paper" }
+      ]
+    },
+    {
+      "id": "data-hygiene",
+      "label": "Data Hygiene",
+      "kind": "competency",
+      "description": "Keeping analysis honest and reproducible: a raw dataset that is never edited, a script that regenerates every figure, and every exclusion recorded with its reason at the time it was made.",
+      "anchors": ["epi-experimental-design", "gc-quantitative-literacy", "exec-error-monitoring"],
+      "limitations": "Reproducibility is not correctness. A perfectly reproducible pipeline can implement the wrong analysis flawlessly.",
+      "exercises": [
+        {
+          "id": "data-rerun",
+          "label": "Regenerate every figure in one analysis from raw data with a single command",
+          "xp": 24,
+          "cadence": "weekly",
+          "difficulty": 4,
+          "evidence": "artifact",
+          "minutes": 50
+        },
+        {
+          "id": "data-exclusions",
+          "label": "Write the exclusion log for one dataset, with the reason recorded before seeing the result",
+          "xp": 18,
+          "cadence": "weekly",
+          "difficulty": 3,
+          "evidence": "artifact",
+          "minutes": 25
+        }
+      ],
+      "resources": [
+        { "title": "The Turing Way: Guide for Reproducible Research", "type": "course", "url": "https://the-turing-way.netlify.app/" }
+      ]
+    },
+    {
+      "id": "write-up",
+      "label": "Writing Up a Null Result",
+      "kind": "competency",
+      "description": "Reporting what you found when it is not what you hoped: stating the result with its uncertainty, distinguishing 'no effect' from 'no evidence of an effect', and resisting the reframe that makes it publishable.",
+      "anchors": ["ling-writing", "epi-model-uncertainty", "epi-falsification"],
+      "requires": ["data-hygiene"],
+      "limitations": "This is a writing and integrity skill. It does not make null results easier to publish, which remains the actual obstacle.",
+      "exercises": [
+        {
+          "id": "writeup-null",
+          "label": "Write up a result that went against you, without softening the conclusion",
+          "xp": 28,
+          "cadence": "weekly",
+          "difficulty": 5,
+          "evidence": "artifact",
+          "minutes": 70,
+          "progression": [
+            "Send it to someone who wanted the other result and record their response"
+          ]
+        }
+      ],
+      "resources": [
+        { "title": "Error and the Growth of Experimental Knowledge — Mayo (1996)", "type": "book" }
+      ]
+    }
+  ]
+}

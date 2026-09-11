@@ -531,3 +531,84 @@ describe("evidence helpers", () => {
     );
   });
 });
+
+describe("anti-gaming", () => {
+  const base = {
+    node: { id: "n", evidence: { constructValidity: "strong" } },
+    diagnostics: [],
+    missions: [],
+    capstones: [],
+    missionNodeIds: () => [],
+    retention: retentionStateFor([], "procedural", NOW),
+  };
+
+  const artifact = (day, note) =>
+    daysAgo(day, { evidence: "artifact", note, quality: 0.8, difficulty: 3 });
+
+  it("counts the same written work once, however many times it is submitted", () => {
+    const text = "A careful two hundred word analysis that took real effort to produce.";
+    const repeated = estimateNode(
+      {
+        ...base,
+        logs: [artifact(1, text), artifact(3, text), artifact(5, text), artifact(7, text)],
+        xp: 80,
+      },
+      NOW,
+    );
+    const distinct = estimateNode(
+      {
+        ...base,
+        logs: [
+          artifact(1, `${text} One.`),
+          artifact(3, `${text} Two, and different.`),
+          artifact(5, `${text} Three, also different.`),
+          artifact(7, `${text} Four, distinct again.`),
+        ],
+        xp: 80,
+      },
+      NOW,
+    );
+
+    assert.equal(repeated.strongObservations, 1, "only the first submission is evidence");
+    assert.equal(distinct.strongObservations, 4);
+    assert.ok(distinct.competence > repeated.competence);
+  });
+
+  it("is not defeated by reformatting or by trailing whitespace", () => {
+    const text = "The same paragraph, merely re-wrapped.";
+    const estimate = estimateNode(
+      {
+        ...base,
+        logs: [artifact(1, text), artifact(2, `  ${text.replace(/, /g, ",\n")}  `)],
+        xp: 40,
+      },
+      NOW,
+    );
+    assert.equal(estimate.strongObservations, 1);
+  });
+
+  it("still counts the repeat as practice rather than erasing it", () => {
+    const text = "Identical work.";
+    const estimate = estimateNode(
+      { ...base, logs: [artifact(1, text), artifact(2, text)], xp: 40 },
+      NOW,
+    );
+    // Two observations exist; only one of them is strong.
+    assert.equal(estimate.observations.length, 2);
+    assert.equal(estimate.strongObservations, 1);
+    assert.ok(estimate.practice > 0, "the practice volume is untouched");
+  });
+
+  it("never lets self-reported volume alone reach a confident estimate", () => {
+    const ticks = Array.from({ length: 200 }, (_, index) =>
+      daysAgo(index * 0.5, { evidence: "self-report" }),
+    );
+    const estimate = estimateNode({ ...base, logs: ticks, xp: 700 }, NOW);
+    assert.equal(estimate.strongObservations, 0);
+    assert.equal(estimate.confidence, "low");
+    assert.ok(
+      estimate.competence < 0.65,
+      `200 ticks should not imply mastery, got ${estimate.competence}`,
+    );
+  });
+});

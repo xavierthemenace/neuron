@@ -131,3 +131,77 @@ export function practiceWithoutProof(
     .sort((a, b) => b.practice - a.practice)
     .slice(0, limit);
 }
+
+/**
+ * The user's history as it stood at a past moment.
+ *
+ * Rebuilding the whole learner model from a truncated log is the only honest
+ * way to answer "where was I a month ago": the retention curves, the competence
+ * estimates and the confidence bands all have to be recomputed as of that date,
+ * not read off today's numbers with a smaller XP total.
+ */
+export function progressAsOf(progress: Progress, at: Date): Progress {
+  const cutoff = at.toISOString();
+  return {
+    ...progress,
+    logs: progress.logs.filter((log) => log.at <= cutoff),
+    diagnostics: progress.diagnostics.filter((result) => result.at <= cutoff),
+    predictions: progress.predictions.filter(
+      (prediction) => prediction.createdAt <= cutoff,
+    ),
+    missions: progress.missions.filter((mission) => mission.startedAt <= cutoff),
+    capstones: progress.capstones.filter((capstone) => capstone.submittedAt <= cutoff),
+    personalNodes: progress.personalNodes.filter((node) => node.createdAt <= cutoff),
+    goals: progress.goals.filter((goal) => goal.createdAt <= cutoff),
+    experiments: progress.experiments.filter(
+      (experiment) => experiment.startedAt <= cutoff,
+    ),
+  };
+}
+
+export interface NodeComparison {
+  nodeId: string;
+  label: string;
+  categoryId: string;
+  practiceDelta: number;
+  competenceDelta: number;
+  retentionDelta: number;
+  /** Whether the competence estimate gained real evidence, not just reps. */
+  evidenceDelta: number;
+}
+
+/**
+ * Compares two learner models node by node.
+ *
+ * Deliberately reports competence and practice separately rather than merging
+ * them into a single "progress" figure: a month of heavy practice with no
+ * evidence should show up as exactly that, and a merged number would hide it.
+ */
+export function compareModels(
+  before: LearnerModel,
+  after: LearnerModel,
+): NodeComparison[] {
+  return after.nodes
+    .map((node) => {
+      const past = before.estimates[node.id];
+      const now = after.estimates[node.id];
+      return {
+        nodeId: node.id,
+        label: node.label,
+        categoryId: node.categoryId,
+        practiceDelta: (now?.practice ?? 0) - (past?.practice ?? 0),
+        competenceDelta: (now?.competence ?? 0) - (past?.competence ?? 0),
+        retentionDelta:
+          (after.retentionByNodeId[node.id]?.retention ?? 1) -
+          (before.retentionByNodeId[node.id]?.retention ?? 1),
+        evidenceDelta:
+          (now?.strongObservations ?? 0) - (past?.strongObservations ?? 0),
+      };
+    })
+    .filter(
+      (row) =>
+        Math.abs(row.practiceDelta) > 0.001 ||
+        Math.abs(row.competenceDelta) > 0.001 ||
+        Math.abs(row.retentionDelta) > 0.01,
+    );
+}

@@ -589,7 +589,7 @@ export function SidePanel({
 
             {tab === "notes" && (
               <>
-                <MarkdownJournal nodeId={node.id} hue={hue} />
+                <MarkdownJournal nodeId={node.id} hue={hue} onSelectNode={onSelectNode} />
                 {logs.length > 0 && (
                   <Section title="Recent activity">
                     <ul className="flex flex-col gap-1">
