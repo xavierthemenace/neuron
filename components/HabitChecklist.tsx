@@ -177,7 +177,7 @@ export function HabitChecklist({
                       <path
                         d="M2.5 6.2 4.8 8.5 9.5 3.8"
                         fill="none"
-                        stroke="oklch(0.13 0.02 265)"
+                        stroke="#ffffff"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"

@@ -27,6 +27,7 @@ import { buildInbox, inboxNodeIds } from "@/lib/inbox";
 import { matchingNodeIdsFor } from "@/lib/search";
 import { neighborsWithinDepth } from "@/lib/training";
 import { AICoach } from "./AICoach";
+import { AppNav, type Screen } from "./AppNav";
 import { ClusterBackdrop } from "./ClusterBackdrop";
 import { CommandPalette } from "./CommandPalette";
 import { ConceptNode } from "./ConceptNode";
@@ -37,9 +38,10 @@ import { CapstoneRunner, MissionRunner } from "./MissionRunner";
 import { MigrationNotice } from "./MigrationNotice";
 import { Onboarding } from "./Onboarding";
 import { ProgressProvider, useProgress } from "./ProgressProvider";
-import { SessionLauncher, SessionPlanner } from "./SessionPlanner";
+import { SessionPlanner } from "./SessionPlanner";
 import { SidePanel } from "./SidePanel";
 import { SynapseEdge } from "./SynapseEdge";
+import { Today } from "./Today";
 import { TopBar } from "./TopBar";
 import { Workbench, type WorkbenchTab } from "./Workbench";
 
@@ -95,6 +97,11 @@ function Graph() {
   const [missionId, setMissionId] = useState<string | null>(null);
   const [capstoneId, setCapstoneId] = useState<string | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(null);
+  // The app opens on Today. The map is a destination, not the front door.
+  const [screen, setScreen] = useState<Screen>("today");
+  // Closing the workbench returns you where you opened it from: arriving back
+  // on Today would lose the map you were reading.
+  const [returnScreen, setReturnScreen] = useState<Screen>("today");
 
   useEffect(() => {
     installDevTools();
@@ -122,10 +129,8 @@ function Graph() {
     return new Set(active.flatMap((goal) => goal.nodeIds));
   }, [activePathId, progress.goals]);
 
-  const flaggedIds = useMemo(
-    () => inboxNodeIds(buildInbox(model, progress)),
-    [model, progress],
-  );
+  const inbox = useMemo(() => buildInbox(model, progress), [model, progress]);
+  const flaggedIds = useMemo(() => inboxNodeIds(inbox), [inbox]);
 
   const nodes = useMemo(
     () =>
@@ -303,12 +308,26 @@ function Graph() {
     });
   }, []);
 
+  const openWorkbench = useCallback((tab: WorkbenchTab | null) => {
+    setWorkbench(tab);
+    if (!tab) return;
+    setScreen((current) => {
+      if (current !== "data") setReturnScreen(current);
+      return "data";
+    });
+  }, []);
+
+  const closeWorkbench = useCallback(() => {
+    setWorkbench(null);
+    setScreen(returnScreen);
+  }, [returnScreen]);
+
   const selectedNode = selectedId ? (nodesById.get(selectedId) ?? null) : null;
   const selectedCategory = selectedNode
     ? (categories.get(selectedNode.categoryId) ?? null)
     : null;
 
-  const inboxCount = flaggedIds.size;
+  const inboxCount = inbox.length;
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[var(--surface)]">
@@ -353,7 +372,7 @@ function Graph() {
         <ClusterBackdrop data={data} />
         <Controls
           showInteractive={false}
-          className="!bottom-3 !left-3 !border !border-white/12 !bg-black/65 !backdrop-blur-xl md:!bottom-4 md:!left-4"
+          className="!bottom-[72px] !left-3 !border !border-white/12 !bg-black/80 !backdrop-blur-xl md:!bottom-4 md:!left-4"
         />
         <MiniMap
           pannable
@@ -366,18 +385,20 @@ function Graph() {
             return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
           }}
           className={[
-            "!bottom-3 !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
+            "!bottom-[72px] !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
             selectedNode ? "md:!right-[456px]" : "md:!right-4",
           ].join(" ")}
         />
       </ReactFlow>
 
+      {(screen === "map" || (screen === "data" && returnScreen === "map")) && (
+        <>
       <TopBar
         data={data}
         search={search}
         onSearchChange={setSearch}
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenWorkbench={openWorkbench}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
         onClearFilters={() => setActiveCategories(new Set())}
@@ -393,21 +414,54 @@ function Graph() {
         nodesById={nodesById}
         onSelectNode={focusNode}
         onFitView={fitAll}
-        onOpenAnalytics={() => setWorkbench("analytics")}
+        onOpenAnalytics={() => openWorkbench("analytics")}
         focusMode={focusMode}
         onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
       />
 
-      <SessionLauncher
-        data={data}
-        onOpen={() => setPlannerOpen(true)}
-        panelOpen={Boolean(selectedNode)}
-      />
       <AICoach
         data={data}
         selectedNode={selectedNode}
         onSelectNode={focusNode}
         researchMode={researchMode}
+      />
+
+        </>
+      )}
+
+      {/* Paper covers the map plate on every screen that is not the map, so a
+          sheet opened from the bar reads as a destination rather than a modal
+          floating over a graph nobody asked to see. */}
+      {screen !== "map" && (
+        <div
+          className="absolute inset-0 z-20 overflow-y-auto bg-[var(--paper)] pt-[var(--safe-top)] pb-[calc(68px+var(--safe-bottom))] sm:pt-14 sm:pb-10"
+          data-testid={screen === "today" ? "today-screen" : "data-screen"}
+        >
+          {screen === "today" && (
+          <Today
+            data={data}
+            onSelectNode={focusNode}
+            onOpenPlanner={() => setPlannerOpen(true)}
+            onOpenReview={() => openWorkbench("review")}
+            onRunProbe={setProbeId}
+            onOpenMission={setMissionId}
+            onOpenMap={() => setScreen("map")}
+          />
+          )}
+        </div>
+      )}
+
+      <AppNav
+        screen={screen}
+        onChange={(next) => {
+          if (next === "data") setReturnScreen(screen);
+          setScreen(next);
+          setWorkbench(next === "data" ? "review" : null);
+          // Opening the map on whatever the camera was last pointed at reads as
+          // a broken screen; with nothing selected, show the whole thing.
+          if (next === "map" && !selectedId) fitAll();
+        }}
+        badge={inboxCount}
       />
 
       <SidePanel
@@ -438,8 +492,8 @@ function Graph() {
       <Workbench
         open={workbench !== null}
         tab={workbench ?? "review"}
-        onTabChange={setWorkbench}
-        onClose={() => setWorkbench(null)}
+        onTabChange={openWorkbench}
+        onClose={closeWorkbench}
         onSelectNode={focusNode}
         onRunProbe={setProbeId}
         onOpenMission={setMissionId}
@@ -468,7 +522,7 @@ function Graph() {
 
       <Onboarding
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenWorkbench={openWorkbench}
         onRunProbe={setProbeId}
       />
       <MigrationNotice />
@@ -477,7 +531,7 @@ function Graph() {
         data={data}
         selectedId={selectedId}
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenWorkbench={openWorkbench}
         onOpenPlanner={() => setPlannerOpen(true)}
         onRunProbe={setProbeId}
         onOpenMission={setMissionId}

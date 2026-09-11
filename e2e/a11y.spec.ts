@@ -57,6 +57,9 @@ test.describe("focus management", () => {
   test("shows a visible focus indicator on interactive controls", async ({ page }) => {
     await gotoApp(page);
     const button = page.getByRole("button", { name: /^Review/ });
+    // Chromium only paints :focus-visible when the most recent input was a
+    // keyboard one, and reaching the map is a click.
+    await page.keyboard.press("Tab");
     await button.focus();
 
     const outline = await button.evaluate((element) => {

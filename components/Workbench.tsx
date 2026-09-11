@@ -80,7 +80,7 @@ export function Workbench({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title={active.label} subtitle={active.subtitle} wide>
+    <Sheet open={open} onClose={onClose} title={active.label} subtitle={active.subtitle} wide asScreen>
       <div
         role="tablist"
         aria-label="Workbench sections"

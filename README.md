@@ -11,8 +11,9 @@ competence, retention, and how much the competence figure deserves to be
 believed. They are allowed to disagree, and when they do, that is the
 information.
 
-**What should I train next?** — Tell it how long you have and what state you
-are in. It fits a session to that, weighted by what is decaying, what gates the
+**What should I train next?** — The app opens on Today: one thing to do now,
+the numbers behind it, and what is going stale underneath. Tell it how long you
+have and what state you are in. It fits a session to that, weighted by what is decaying, what gates the
 most, what you are weakest at, and what you have neglected.
 
 **Why that?** — Every recommendation shows the weighted factors that produced
@@ -127,8 +128,12 @@ prediction or a capability.
 ### Stack
 
 Next.js 16 App Router, React 19, TypeScript, React Flow, IndexedDB, Tailwind 4,
-dark OKLCH palette, offline-first PWA. No state library, no UI kit, no
-analytics.
+offline-first PWA. No state library, no UI kit, no analytics.
+
+The app is paper — a warm off-white ground, ink text, deep green for what to do
+next and one orange for the action itself. The map keeps a dark canvas, because
+a 139-node network needs a dark ground to read against; treating it as an inset
+plate rather than as the page is the one deliberate contrast in the design.
 
 ---
 

@@ -240,7 +240,7 @@ export function CommandPalette({
         role="dialog"
         aria-modal="true"
         aria-label="Neuron command palette"
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[oklch(0.145_0.018_265_/_0.985)] shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[rgb(255_255_255_/_0.985)] shadow-2xl"
       >
         <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
           <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-neutral-500" aria-hidden="true">

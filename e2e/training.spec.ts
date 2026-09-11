@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { gotoApp, openNode, panelOf, selectNode } from "./helpers";
+import { openMap, gotoApp, gotoToday, openNode, openPlanner, panelOf, selectNode } from "./helpers";
 
 /**
  * The training loop: logging work, reset gating, persistence and the
@@ -38,7 +38,7 @@ test.describe("training", () => {
     await expect(panel.getByText(/resets in/).first()).toBeVisible();
 
     await page.reload();
-    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    await openMap(page);
     await selectNode(page, "gc-retrieval-practice");
     await expect(panelOf(page).getByText(/resets in/).first()).toBeVisible();
   });
@@ -66,7 +66,7 @@ test.describe("training", () => {
     await panel.getByRole("button", { name: /^Complete · \+\d+ XP$/ }).click();
     await page.reload();
 
-    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    await openMap(page);
     // The profile must not have silently reset to its pre-rep total.
     await expect
       .poll(async () => page.getByText(/\d+ XP/).first().textContent())
@@ -119,8 +119,8 @@ test.describe("training", () => {
 
 test.describe("session planner", () => {
   test("plans a session that respects the time budget and explains itself", async ({ page }) => {
-    await gotoApp(page);
-    await page.getByRole("button", { name: /Plan a training session/ }).click();
+    await gotoToday(page);
+    await openPlanner(page);
 
     const dialog = page.getByRole("dialog", { name: "Plan a session" });
     await expect(dialog).toBeVisible();
@@ -133,8 +133,8 @@ test.describe("session planner", () => {
   });
 
   test("changes the session when the constraints change", async ({ page }) => {
-    await gotoApp(page);
-    await page.getByRole("button", { name: /Plan a training session/ }).click();
+    await gotoToday(page);
+    await openPlanner(page);
     const dialog = page.getByRole("dialog", { name: "Plan a session" });
 
     await dialog.getByRole("button", { name: "I have 15 minutes" }).click();

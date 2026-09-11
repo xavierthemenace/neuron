@@ -350,7 +350,7 @@ export function AICoach({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="pointer-events-auto absolute bottom-14 left-16 z-30 min-h-[44px] rounded-full border border-violet-200/15 bg-[oklch(0.13_0.025_295_/_0.92)] px-3.5 py-2 text-[11px] font-medium text-violet-50/85 shadow-xl backdrop-blur-xl transition-colors hover:border-violet-200/30 hover:text-white md:bottom-4 md:left-[13rem]"
+        className="pointer-events-auto absolute bottom-[72px] left-14 z-30 min-h-[44px] rounded-full border border-violet-200/15 bg-[rgb(255_255_255_/_0.93)] px-3.5 py-2 text-[11px] font-medium text-violet-50/85 shadow-xl backdrop-blur-xl transition-colors hover:border-violet-200/30 hover:text-white md:bottom-4 md:left-14"
       >
         AI Coach
       </button>
@@ -359,7 +359,7 @@ export function AICoach({
 
   return (
     <div
-      className="fixed inset-0 z-[75] flex items-center justify-center bg-black/65 p-3 backdrop-blur-sm"
+      className="fixed inset-0 z-[75] flex items-center justify-center bg-[rgb(25_22_20_/_0.34)] p-3 backdrop-blur-sm"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) setOpen(false);
@@ -370,7 +370,7 @@ export function AICoach({
         role="dialog"
         aria-modal="true"
         aria-label="AI cognitive coach"
-        className="max-h-[92dvh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/12 bg-[oklch(0.14_0.018_265_/_0.985)] shadow-2xl"
+        className="max-h-[92dvh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/12 bg-[rgb(255_255_255_/_0.985)] shadow-2xl"
       >
         <header className="flex items-start gap-3 border-b border-white/10 px-5 py-4">
           <div className="min-w-0 flex-1">

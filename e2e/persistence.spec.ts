@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { gotoApp, openNode, panelOf, selectNode } from "./helpers";
+import { openMap, gotoApp, openNode, panelOf, selectNode } from "./helpers";
 
 /**
  * Storage, sync, export/import and offline behaviour.
@@ -24,7 +24,7 @@ test.describe("persistence", () => {
     await page.waitForTimeout(1200);
 
     await page.reload();
-    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    await openMap(page);
     await selectNode(page, "intra-metacognition");
     await panelOf(page).getByRole("tab", { name: "Notes" }).click();
     await expect(panelOf(page).locator("textarea").first()).toHaveValue(
@@ -115,7 +115,7 @@ test.describe("offline", () => {
     await context.setOffline(true);
     await page.reload();
 
-    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    await openMap(page);
     await expect(page.getByText(/\d+ XP/).first()).toBeVisible();
 
     await context.setOffline(false);

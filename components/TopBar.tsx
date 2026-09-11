@@ -166,7 +166,7 @@ export function TopBar({
           </div>
 
           {search.trim() && (
-            <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
+            <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
               {searchResults.length > 0 ? (
                 searchResults.map((result, index) => {
                   const node = data.nodes.find((item) => item.id === result.id);
@@ -181,7 +181,7 @@ export function TopBar({
                       <span
                         className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]"
                         style={{
-                          color: `oklch(0.78 0.16 ${category?.hue ?? 260})`,
+                          color: `oklch(0.46 0.14 ${category?.hue ?? 260})`,
                           background: "currentColor",
                         }}
                       />
@@ -240,7 +240,7 @@ export function TopBar({
             Paths
           </button>
           {pathsOpen && (
-            <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
               {activePathId && (
                 <button
                   type="button"
@@ -290,7 +290,7 @@ export function TopBar({
           Filter{activeCategories.size > 0 && ` (${activeCategories.size})`}
         </button>
 
-        <div className="relative ml-auto">
+        <div className="relative sm:ml-auto">
           <button
             type="button"
             onClick={() => setDataOpen((value) => !value)}
@@ -300,7 +300,7 @@ export function TopBar({
             Data
           </button>
           {dataOpen && (
-            <div className="absolute right-0 top-full z-40 mt-2 w-56 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute right-0 top-full z-40 mt-2 w-56 rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
               <button
                 type="button"
                 onClick={() => {
@@ -428,17 +428,17 @@ export function TopBar({
                   className="flex min-h-[26px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-all"
                   style={{
                     borderColor: active
-                      ? `oklch(0.75 0.15 ${category.hue})`
+                      ? `oklch(0.52 0.14 ${category.hue})`
                       : "oklch(1 0 0 / 0.14)",
                     background: active
-                      ? `oklch(0.7 0.15 ${category.hue} / 0.18)`
+                      ? `oklch(0.72 0.13 ${category.hue} / 0.22)`
                       : "oklch(1 0 0 / 0.025)",
-                    color: active ? `oklch(0.92 0.1 ${category.hue})` : "oklch(0.74 0.01 265)",
+                    color: active ? `oklch(0.38 0.13 ${category.hue})` : "oklch(0.44 0.01 265)",
                   }}
                 >
                   <span
                     className="h-2 w-2 rounded-full"
-                    style={{ background: `oklch(0.78 0.16 ${category.hue})` }}
+                    style={{ background: `oklch(0.58 0.15 ${category.hue})` }}
                     aria-hidden="true"
                   />
                   {category.label}

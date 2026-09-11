@@ -78,8 +78,8 @@ export function Meter({
           className="h-full rounded-full transition-[width] duration-500"
           style={{
             width: `${percent}%`,
-            background: `oklch(0.76 ${emphasis ? 0.16 : 0.1} ${hue})`,
-            boxShadow: emphasis ? `0 0 10px oklch(0.74 0.15 ${hue} / 0.6)` : undefined,
+            background: `oklch(0.56 ${emphasis ? 0.15 : 0.09} ${hue})`,
+            boxShadow: undefined,
           }}
         />
       </div>
@@ -101,9 +101,9 @@ export function ConfidenceChip({
       title={CONFIDENCE_BLURB[band]}
       className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider"
       style={{
-        borderColor: `oklch(0.7 0.14 ${hue} / 0.3)`,
-        background: `oklch(0.6 0.12 ${hue} / 0.1)`,
-        color: `oklch(0.87 0.11 ${hue})`,
+        borderColor: `oklch(0.55 0.12 ${hue} / 0.38)`,
+        background: `oklch(0.72 0.11 ${hue} / 0.18)`,
+        color: `oklch(0.42 0.12 ${hue})`,
       }}
     >
       {prefix && <span className="font-normal normal-case opacity-70">{prefix}</span>}
@@ -203,6 +203,7 @@ export function Sheet({
   children,
   footer,
   wide = false,
+  asScreen = false,
 }: {
   open: boolean;
   onClose: () => void;
@@ -211,6 +212,13 @@ export function Sheet({
   children: ReactNode;
   footer?: ReactNode;
   wide?: boolean;
+  /**
+   * A destination reached from the navigation bar rather than something
+   * stacked over the screen you were on. It drops the scrim and fills the
+   * phone, because dimming the page behind a place you deliberately went is
+   * how a modal looks, not how a screen looks.
+   */
+  asScreen?: boolean;
 }) {
   const dialogRef = useRef<HTMLElement | null>(null);
   useDismissable({ open, onClose, modal: true, container: dialogRef });
@@ -219,7 +227,15 @@ export function Sheet({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:p-4"
+      className={[
+        "fixed inset-0 z-[80] flex justify-center sm:items-center sm:p-4",
+        // A screen starts at the top and stops above the navigation bar; a
+        // modal rises from the bottom edge.
+        asScreen ? "items-start" : "items-end",
+        asScreen
+          ? "bg-[var(--paper)] sm:bg-[rgb(25_22_20_/_0.28)] sm:backdrop-blur-sm"
+          : "bg-[rgb(25_22_20_/_0.34)] backdrop-blur-sm",
+      ].join(" ")}
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -231,8 +247,11 @@ export function Sheet({
         aria-modal="true"
         aria-label={title}
         className={[
-          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[oklch(0.14_0.018_265_/_0.985)] shadow-2xl",
+          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[rgb(255_255_255_/_0.985)] shadow-2xl",
           "rounded-t-2xl border-t sm:rounded-2xl sm:border",
+          asScreen
+            ? "max-h-none h-[calc(100dvh-68px-var(--safe-bottom))] rounded-t-none border-t-0 sm:h-auto sm:max-h-[92dvh] sm:rounded-2xl sm:border"
+            : "",
           wide ? "sm:max-w-5xl" : "sm:max-w-2xl",
         ].join(" ")}
       >
