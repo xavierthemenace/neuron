@@ -5,6 +5,34 @@ has its own semantic version in `data/intelligenceData.json`, because the
 ontology changing is a different kind of event from the app changing, and users
 need to know which one happened.
 
+## Unreleased
+
+Reliability fixes. No curriculum change.
+
+### Fixed
+
+- **Progress could be lost on reload.** Saves to IndexedDB are debounced, and
+  the unload handler started an async IndexedDB write that the browser abandons
+  as it tears the page down. Logging an exercise and reloading within that
+  window silently reset the profile to zero XP. Unload now writes a synchronous
+  localStorage recovery snapshot, which the next load promotes into IndexedDB
+  ahead of anything older and then clears. Covered by unit tests and a browser
+  regression test that reloads without awaiting the save.
+- **Standalone `tsc --noEmit` failed on a clean checkout.** `app/layout.tsx`
+  used the generated `LayoutProps<"/">` global, which only exists after
+  `next dev`/`next build`/`next typegen` has written `.next/dev/types` — a file
+  no CI checkout has before the build step. The root layout is now typed
+  explicitly; it has no dynamic params and no parallel-route slots, so nothing
+  is given up.
+- **Camera framing ignored `prefers-reduced-motion`.** Panning to a selection
+  honoured it, but fit-all, Focus Mode and path framing still ran half-second
+  tweens.
+- **Visual snapshots rotted by the calendar.** The session planner seeds its
+  ranking noise from the current date, so any snapshot containing a plan drifted
+  day to day. The visual suite now pins the clock, and the whole browser suite
+  pins the timezone, so a run in UTC CI and a run on a developer machine agree
+  on what day it is. Existing baselines are unchanged.
+
 ## App 0.2.0 — Curriculum 2.0.0
 
 The map became a learner model. Previously Neuron tracked XP and drew a graph;

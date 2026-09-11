@@ -21,6 +21,7 @@ import {
 } from "@/lib/migrations";
 import {
   emptyProgress,
+  flushProgressSync,
   loadProgress,
   newId,
   parseProgress,
@@ -521,10 +522,14 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
+    // Synchronous by necessity. An IndexedDB write started here is abandoned
+    // mid-transaction as the page is torn down, which silently dropped any
+    // change made inside the save debounce window. `dirty` stays set: the data
+    // is in the recovery snapshot, not yet in the durable store, and if the
+    // page survives (bfcache) the debounced save should still run.
     const flush = () => {
       if (!dirty.current) return;
-      dirty.current = false;
-      void saveProgress(progress);
+      flushProgressSync(progress);
     };
     window.addEventListener("pagehide", flush);
     return () => window.removeEventListener("pagehide", flush);

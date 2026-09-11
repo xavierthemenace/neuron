@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PwaStatus } from "@/components/PwaStatus";
 import "./globals.css";
@@ -36,7 +37,13 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// Typed explicitly rather than with the generated `LayoutProps<"/">` global:
+// that helper only exists after `next dev`/`next build`/`next typegen` has
+// written .next/dev/types, so a clean standalone `tsc --noEmit` (as CI runs
+// before the build step) cannot see it. The root route has no dynamic params
+// and no parallel-route slots, so this type is exactly what the helper would
+// have inferred -- no checking is given up.
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"

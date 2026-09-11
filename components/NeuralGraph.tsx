@@ -56,6 +56,20 @@ const MINIMAP_STYLE = {
 
 const focusEase = (t: number) => 1 - Math.pow(1 - t, 4);
 
+/**
+ * Duration for a camera move, honouring the user's motion preference.
+ *
+ * Every camera move routes through here. Panning to a selection already
+ * respected `prefers-reduced-motion`, but the framing sweeps (fit-all, Focus
+ * Mode, path framing) did not, so a user who asked for reduced motion still got
+ * half-second camera tweens.
+ */
+const cameraDuration = (ms: number) =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? 0
+    : ms;
+
 const GRAPH_DESCRIPTION =
   "Press Enter to open this capability. Use Tab to move between capabilities, or the arrow keys after selecting one to move across the map. Press B at any time for a full list view that does not require the map at all.";
 
@@ -162,7 +176,6 @@ function Graph() {
       setSelectedId(id);
 
       const point = positionOf(id);
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const isNarrow = window.innerWidth < 768;
       const targetZoom = Math.max(getZoom(), 1.55);
       const panelWidth = isNarrow ? 0 : 440;
@@ -178,7 +191,7 @@ function Graph() {
           zoom: targetZoom,
         },
         {
-          duration: reducedMotion ? 0 : 720,
+          duration: cameraDuration(720),
           ease: focusEase,
           interpolate: "smooth",
         },
@@ -188,7 +201,7 @@ function Graph() {
   );
 
   const fitAll = useCallback(() => {
-    void fitView({ padding: 0.14, duration: 520, maxZoom: 1.1 });
+    void fitView({ padding: 0.14, duration: cameraDuration(520), maxZoom: 1.1 });
   }, [fitView]);
 
   const setFocusModeAndFrame = useCallback(
@@ -200,7 +213,7 @@ function Graph() {
         void fitView({
           nodes: ids.map((id) => ({ id })),
           padding: 0.58,
-          duration: 560,
+          duration: cameraDuration(560),
           maxZoom: 1.5,
         });
       });
@@ -217,7 +230,7 @@ function Graph() {
         void fitView({
           nodes: ids.map((id) => ({ id })),
           padding: 0.4,
-          duration: 620,
+          duration: cameraDuration(620),
           maxZoom: 1.2,
         });
       });

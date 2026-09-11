@@ -35,6 +35,10 @@ export default defineConfig({
     // no caret blink, no reduced-motion ambiguity.
     reducedMotion: "reduce",
     colorScheme: "dark",
+    // The planner seeds its ranking noise from the *local* calendar date, so an
+    // unpinned zone makes a run in UTC CI and a run on a developer machine
+    // disagree about what day it is. Pinning the zone removes that variable.
+    timezoneId: "UTC",
   },
   projects: [
     {

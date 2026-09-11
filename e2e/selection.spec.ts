@@ -84,7 +84,12 @@ test.describe("node selection", () => {
    * floods the console — both of which fail here.
    */
   test("survives rapid selection churn without a render loop", async ({ page }) => {
-    test.slow();
+    // ~21 real selections, each re-fitting the camera across a 139-node map,
+    // plus three Focus Mode re-frames. `test.slow()`'s 3x multiplier was
+    // calibrated when the map was smaller and now runs out under parallel
+    // workers, so the budget is stated explicitly with headroom. The point of
+    // this test is that nothing loops, not that it finishes quickly.
+    test.setTimeout(300_000);
     const errors = collectPageErrors(page);
     await gotoApp(page);
 
