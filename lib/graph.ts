@@ -75,26 +75,26 @@ export function indexBy<T extends { id: string }>(items: T[]): Map<string, T> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
+/**
+ * Which nodes survive the current filters.
+ *
+ * Text matching is delegated to `lib/search.ts` via `searchMatches`, so the
+ * map dims to the same set the search box lists — including synonym hits. A
+ * separate substring check here would quietly disagree with the results the
+ * user is looking at.
+ */
 export function matchingNodeIds(
   data: IntelligenceData,
-  search: string,
+  searchMatches: Set<string> | null,
   activeCategories: Set<string>,
 ): Set<string> | null {
-  const query = search.trim().toLowerCase();
   const filteringByCategory = activeCategories.size > 0;
-  if (!query && !filteringByCategory) return null;
+  if (!searchMatches && !filteringByCategory) return null;
 
   const matches = new Set<string>();
   for (const node of data.nodes) {
     if (filteringByCategory && !activeCategories.has(node.categoryId)) continue;
-    if (
-      query &&
-      !node.label.toLowerCase().includes(query) &&
-      !node.description.toLowerCase().includes(query) &&
-      !node.why.toLowerCase().includes(query)
-    ) {
-      continue;
-    }
+    if (searchMatches && !searchMatches.has(node.id)) continue;
     matches.add(node.id);
   }
   return matches;

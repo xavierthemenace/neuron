@@ -24,6 +24,7 @@ import {
 } from "@/lib/graph";
 import { installDevTools, note } from "@/lib/devtools";
 import { buildInbox, inboxNodeIds } from "@/lib/inbox";
+import { matchingNodeIdsFor } from "@/lib/search";
 import { neighborsWithinDepth } from "@/lib/training";
 import { AICoach } from "./AICoach";
 import { ClusterBackdrop } from "./ClusterBackdrop";
@@ -88,10 +89,12 @@ function Graph() {
   const categories = useMemo(() => indexBy(data.categories), []);
   const nodesById = useMemo(() => indexBy(model.nodes), [model.nodes]);
 
-  const visible = useMemo(
-    () => matchingNodeIds(data, search, activeCategories),
-    [search, activeCategories],
-  );
+  const visible = useMemo(() => {
+    const matches = search.trim()
+      ? matchingNodeIdsFor(search, progress.personalNodes)
+      : null;
+    return matchingNodeIds(data, matches, activeCategories);
+  }, [search, activeCategories, progress.personalNodes]);
 
   const focusIds = useMemo(() => {
     if (!selectedId) return null;

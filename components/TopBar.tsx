@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { paths } from "@/lib/curriculum";
 import { exportAnkiCsv, exportObsidianVault } from "@/lib/knowledge-export";
 import { exportBackup, importBackup } from "@/lib/backup";
+import { search as conceptSearch } from "@/lib/search";
 import { TIERS, tierForXp } from "@/lib/mastery";
 import type { Category, IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
@@ -61,17 +62,17 @@ export function TopBar({
   );
 
   const searchResults = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) return [];
-    return data.nodes
-      .filter((node) => {
-        if (activeCategories.size > 0 && !activeCategories.has(node.categoryId)) return false;
-        return `${node.label} ${node.description} ${node.why}`
-          .toLowerCase()
-          .includes(query);
+    if (!search.trim()) return [];
+    const nodesByIdLocal = new Map(data.nodes.map((node) => [node.id, node]));
+    return conceptSearch(search, progress.personalNodes, 8)
+      .filter((result) => result.kind === "node")
+      .filter((result) => {
+        if (activeCategories.size === 0) return true;
+        const node = nodesByIdLocal.get(result.id);
+        return node ? activeCategories.has(node.categoryId) : true;
       })
       .slice(0, 6);
-  }, [activeCategories, data.nodes, search]);
+  }, [activeCategories, data.nodes, progress.personalNodes, search]);
 
   const awake = data.nodes.length - tierCounts[0];
 
@@ -167,13 +168,14 @@ export function TopBar({
           {search.trim() && (
             <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
               {searchResults.length > 0 ? (
-                searchResults.map((node, index) => {
-                  const category = categoriesById.get(node.categoryId);
+                searchResults.map((result, index) => {
+                  const node = data.nodes.find((item) => item.id === result.id);
+                  const category = node ? categoriesById.get(node.categoryId) : undefined;
                   return (
                     <button
-                      key={node.id}
+                      key={result.id}
                       type="button"
-                      onClick={() => chooseSearchResult(node.id)}
+                      onClick={() => chooseSearchResult(result.id)}
                       className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/[0.07] focus:bg-white/[0.07] focus:outline-none"
                     >
                       <span
@@ -185,10 +187,15 @@ export function TopBar({
                       />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-xs font-medium text-neutral-100">
-                          {node.label}
+                          {result.label}
                         </span>
                         <span className="block truncate text-[10px] text-neutral-500">
-                          {category?.label ?? "Faculty"}
+                          {category?.label ?? result.detail}
+                          {/* A synonym hit is not obvious from the label, so say
+                              why it is in the list rather than looking arbitrary. */}
+                          {result.matchedOn?.startsWith('"') && (
+                            <span className="text-neutral-600"> · matched {result.matchedOn}</span>
+                          )}
                         </span>
                       </span>
                       {index === 0 && <span className="text-[9px] text-neutral-600">Enter</span>}

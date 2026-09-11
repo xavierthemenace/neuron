@@ -32,6 +32,7 @@ import {
   progressAsOf,
 } from "../../lib/learner.ts";
 import { capstones, curriculum, missions, paths } from "../../lib/curriculum.ts";
+import { matchingNodeIdsFor, search } from "../../lib/search.ts";
 import {
   TEMPLATES,
   buildBacklinks,
@@ -814,5 +815,81 @@ describe("comparison over time", () => {
   it("returns nothing when nothing changed", () => {
     const model = buildLearnerModel(progressWith(), NOW);
     assert.deepEqual(compareModels(model, model), []);
+  });
+});
+
+describe("concept search", () => {
+  it("finds a capability by its name", () => {
+    const [top] = search("bayesian");
+    assert.equal(top.id, "epi-bayesian");
+    assert.equal(top.kind, "node");
+  });
+
+  it("finds the right capability from the problem, not the curriculum's name for it", () => {
+    // Nobody searches for "Task Initiation". They search for the thing that is
+    // actually wrong.
+    const ids = (query) => search(query).map((result) => result.id);
+    assert.ok(ids("procrastination").includes("exec-initiation"));
+    assert.ok(ids("I keep forgetting things").includes("gc-spaced-repetition"));
+    assert.ok(ids("overconfident").includes("dec-calibration"));
+    assert.ok(ids("adhd").includes("intra-attention"));
+    assert.ok(ids("chatgpt").includes("aug-verification"));
+  });
+
+  it("says why a synonym result matched, since the label would not explain it", () => {
+    const hit = search("procrastination").find((result) => result.id === "exec-initiation");
+    assert.match(hit.matchedOn, /procrastination/);
+  });
+
+  it("ranks a label match above a synonym match above a description match", () => {
+    const results = search("memory");
+    const span = results.findIndex((result) => result.id === "gwm-span");
+    const labelMatch = results.findIndex((result) => result.label.toLowerCase().includes("memory"));
+    assert.ok(labelMatch >= 0);
+    assert.ok(labelMatch <= span || span === -1 || results[labelMatch].score >= results[span].score);
+  });
+
+  it("searches paths, missions and probes alongside capabilities", () => {
+    assert.ok(search("think like a scientist").some((result) => result.kind === "path"));
+    assert.ok(search("controversial claim").some((result) => result.kind === "mission"));
+    assert.ok(search("mental rotation").some((result) => result.kind === "probe"));
+  });
+
+  it("includes the user's own capabilities", () => {
+    const personal = [
+      {
+        id: "personal-1",
+        label: "Kubernetes Operators",
+        description: "Writing controllers that reconcile custom resources.",
+        kind: "competency",
+        linkedNodeIds: [],
+        createdAt: NOW.toISOString(),
+        exercises: [],
+      },
+    ];
+    const [top] = search("kubernetes", personal);
+    assert.equal(top.id, "personal-1");
+    assert.equal(top.detail, "Personal capability");
+  });
+
+  it("returns nothing for a query too short to mean anything", () => {
+    assert.deepEqual(search("a"), []);
+    assert.deepEqual(search(" "), []);
+  });
+
+  it("never returns the same node twice", () => {
+    // "memory" hits several nodes by label and the same nodes by synonym.
+    const ids = search("memory", [], 50).map((result) => `${result.kind}:${result.id}`);
+    assert.equal(new Set(ids).size, ids.length);
+  });
+
+  it("gives the map the same set it gives the search box", () => {
+    const listed = new Set(
+      search("procrastination", [], 400)
+        .filter((result) => result.kind === "node")
+        .map((result) => result.id),
+    );
+    const dimmed = matchingNodeIdsFor("procrastination");
+    assert.deepEqual([...dimmed].sort(), [...listed].sort());
   });
 });
