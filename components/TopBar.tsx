@@ -152,7 +152,9 @@ export function TopBar({
     <>
     <div
       ref={bar}
-      className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[20.5rem] md:pl-[20.5rem]"
+      // Clears the navigation pill at its widest — the queue badge on Record
+      // grows the pill — and leaves the same 8px gap the rest of the row uses.
+      className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[22rem] md:pl-[22rem]"
     >
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
         <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-[var(--panel)] px-3 py-2 shadow-lg backdrop-blur-xl">
@@ -350,7 +352,7 @@ export function TopBar({
           Filter{activeCategories.size > 0 && ` (${activeCategories.size})`}
         </button>
 
-        <ThemeToggle className="sm:ml-auto" />
+        <ThemeToggle variant="pill" />
 
         <div className="relative">
           <button

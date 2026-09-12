@@ -66,7 +66,10 @@ export function AppNav({
         "inset-x-0 bottom-0 border-t border-[var(--rule)] bg-[var(--panel)] backdrop-blur-xl",
         "pb-[var(--safe-bottom)]",
         // Laptop: a small pill, out of the way of the map.
-        "sm:inset-x-auto sm:bottom-auto sm:left-4 sm:top-4 sm:gap-1 sm:rounded-full sm:border sm:p-1 sm:shadow-[0_6px_20px_rgb(25_22_20_/_0.10)]",
+        // Fixed width on a laptop so the bar beside it always starts in the
+        // same place: the queue badge on Record appears and disappears, and an
+        // auto-width pill moved the whole row when it did.
+        "sm:inset-x-auto sm:bottom-auto sm:left-4 sm:top-4 sm:w-80 sm:gap-1 sm:rounded-full sm:border sm:p-1 sm:shadow-[0_6px_20px_rgb(25_22_20_/_0.10)]",
       ].join(" ")}
     >
       {ITEMS.map((item) => {
@@ -79,7 +82,7 @@ export function AppNav({
             aria-current={active ? "page" : undefined}
             className={[
               "relative flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
-              "sm:min-h-[40px] sm:flex-none sm:flex-row sm:gap-2 sm:rounded-full sm:px-4 sm:py-0 sm:text-[12.5px]",
+              "sm:min-h-[40px] sm:flex-1 sm:flex-row sm:gap-2 sm:rounded-full sm:px-3 sm:py-0 sm:text-[12.5px]",
               active
                 ? "text-[var(--green)] sm:bg-[var(--green)] sm:text-[#f3efe7]"
                 : "text-[var(--ink-faint)] hover:text-[var(--ink)]",

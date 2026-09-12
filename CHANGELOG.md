@@ -62,6 +62,12 @@ need to know which one happened.
 
 ### Changed
 
+- **The map's bar is one row again.** An `ml-auto` had pushed the appearance
+  control, Data and the keyboard hint to the far right, leaving 400px of empty
+  space in the middle of the row; and the appearance control was a bare icon
+  among bordered pills. Everything is packed left now at a consistent 8px, the
+  control matches its neighbours, and the navigation pill is a fixed width on a
+  laptop so the bar beside it stops moving when the queue badge appears.
 - **The map's controls are paper again, not grey.** When the palette moved to
   light, the scales were inverted so existing classes would land correctly —
   but `bg-black/60` on chrome floating over the dark canvas became *white at
