@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { PROVENANCE_BLURB } from "@/lib/competence";
 import {
   capstonesForNode,
   missionsForNode,
@@ -33,6 +34,7 @@ import {
   Chip,
   ConfidenceChip,
   EstimateChip,
+  ProvenanceChip,
   KindChip,
   Meter,
   Section,
@@ -275,7 +277,7 @@ export function SidePanel({
                 value={estimate?.competence ?? 0}
                 hue={hue}
                 emphasis
-                caption="Estimated from evidence that could have gone badly."
+                caption={PROVENANCE_BLURB[estimate?.provenance ?? "prior"]}
               />
               <Meter
                 label="Retention"
@@ -286,6 +288,7 @@ export function SidePanel({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              <ProvenanceChip provenance={estimate?.provenance ?? "prior"} />
               <EstimateChip
                 level={estimate?.confidence ?? "none"}
                 observations={estimate?.strongObservations}
@@ -761,6 +764,8 @@ function EvidenceTab({
 
       <Section title="Sources" hint={`Reviewed ${evidence.evidenceUpdatedAt}.`}>
         <ul className="space-y-1">
+          {/* A citation nobody can follow is an assertion wearing a citation's
+              clothes. Anything without a link says so on its face. */}
           {evidence.sources.map((source) => (
             <li key={source.title} className="text-[11px] leading-relaxed text-neutral-400">
               {source.url ? (
@@ -773,7 +778,15 @@ function EvidenceTab({
                   {source.title}
                 </a>
               ) : (
-                source.title
+                <>
+                  {source.title}
+                  <span
+                    title="No link on file, so this reference has not been checked from inside the app."
+                    className="ml-1.5 whitespace-nowrap rounded-full border border-amber-300/35 bg-amber-300/[0.12] px-1.5 py-px text-[9px] font-medium uppercase tracking-wider text-amber-100"
+                  >
+                    unchecked
+                  </span>
+                </>
               )}
             </li>
           ))}

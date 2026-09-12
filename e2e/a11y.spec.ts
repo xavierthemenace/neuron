@@ -80,7 +80,9 @@ test.describe("semantics", () => {
       .getAttribute("aria-label");
 
     expect(label).toBeTruthy();
-    expect(label).toMatch(/percent estimated competence/);
+    // An untouched node says the number is the starting assumption; a trained
+    // one says it is an estimate. Both have to be spoken, neither bare.
+    expect(label).toMatch(/percent estimated competence|percent, the starting assumption/);
     expect(label).toMatch(/never trained|percent retention/);
   });
 

@@ -14,6 +14,7 @@ import {
   difficultyFactor,
   displayStrength,
   estimateNode,
+  provenanceOf,
 } from "../../lib/competence.ts";
 import {
   CEILING,
@@ -191,6 +192,49 @@ describe("competence: practice is not competence", () => {
     const b = estimateNode({ ...base, logs: scored, xp: 40 }, NOW);
     assert.ok(b.competence > a.competence);
     assert.ok(b.practice < a.practice, "and with far less practice volume");
+  });
+
+  it("calls an untouched node a prior rather than a measurement", () => {
+    const estimate = estimateNode({ ...base, logs: [], xp: 0 }, NOW);
+    assert.equal(estimate.provenance, "prior");
+    assert.ok(estimate.competence > 0, "the prior still renders as a number");
+  });
+
+  it("does not call a pile of ticks measured", () => {
+    const logs = Array.from({ length: 25 }, (_, i) => daysAgo(i, { evidence: "self-report" }));
+    const estimate = estimateNode({ ...base, logs, xp: 700 }, NOW);
+    assert.equal(estimate.provenance, "self-reported");
+  });
+
+  it("separates work produced from work scored", () => {
+    const judged = estimateNode(
+      { ...base, logs: [daysAgo(1, { evidence: "artifact", note: "a written answer" })], xp: 20 },
+      NOW,
+    );
+    assert.equal(judged.provenance, "judged");
+
+    const measured = estimateNode(
+      { ...base, logs: [daysAgo(1, { evidence: "scored", score: 0.8, difficulty: 3 })], xp: 20 },
+      NOW,
+    );
+    assert.equal(measured.provenance, "measured");
+  });
+
+  it("lets one scored observation outrank any number of softer ones", () => {
+    const mixed = [
+      daysAgo(1, { evidence: "self-report" }),
+      daysAgo(2, { evidence: "artifact", note: "one" }),
+      daysAgo(3, { evidence: "artifact", note: "two" }),
+      daysAgo(4, { evidence: "scored", score: 0.7, difficulty: 3 }),
+    ];
+    assert.equal(estimateNode({ ...base, logs: mixed, xp: 80 }, NOW).provenance, "measured");
+  });
+
+  it("ranks provenance off observations alone", () => {
+    assert.equal(provenanceOf([]), "prior");
+    assert.equal(provenanceOf([{ kind: "self-report" }]), "self-reported");
+    assert.equal(provenanceOf([{ kind: "self-report" }, { kind: "artifact" }]), "judged");
+    assert.equal(provenanceOf([{ kind: "artifact" }, { kind: "external" }]), "measured");
   });
 
   it("weights evidence kinds in the right order", () => {

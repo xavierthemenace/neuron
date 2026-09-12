@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { ESTIMATE_CONFIDENCE_LABEL } from "@/lib/competence";
+import { ESTIMATE_CONFIDENCE_LABEL, PROVENANCE_LABEL } from "@/lib/competence";
 import { buildInbox, type InboxItem } from "@/lib/inbox";
 import { DEFAULT_CONSTRAINTS, planSession, type WorkoutItem } from "@/lib/workout";
 import type { IntelligenceData } from "@/lib/types";
@@ -177,7 +177,8 @@ export function Today({
             {
               k: "ability",
               v: `${Math.round(estimate.competence * 100)}%`,
-              note: "estimated, not measured",
+              // Never let a percentage imply it was measured when it was not.
+              note: PROVENANCE_LABEL[estimate.provenance].toLowerCase(),
             },
             {
               k: "certainty",
