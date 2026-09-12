@@ -956,3 +956,88 @@ describe("the example profile", () => {
     assert.ok(summary.overconfidence !== null && summary.overconfidence > 0.02, "should read as overconfident");
   });
 });
+
+describe("the new probes", () => {
+  const ADDED = [
+    "probe-inhibition",
+    "probe-flexibility",
+    "probe-base-rates",
+    "probe-expected-value",
+    "probe-validity",
+    "probe-remote-associates",
+  ];
+
+  it("are all in the catalogue and all point at capabilities that exist", () => {
+    for (const id of ADDED) {
+      const probe = PROBES.find((candidate) => candidate.id === id);
+      assert.ok(probe, `${id} is missing`);
+      assert.ok(probe.nodeIds.length > 0, `${id} measures nothing`);
+      for (const nodeId of probe.nodeIds) {
+        assert.ok(nodesById.has(nodeId), `${id} points at missing node ${nodeId}`);
+      }
+      assert.ok(probe.caveat.length > 80, `${id} needs a real caveat`);
+    }
+  });
+
+  it("build items at every difficulty, with an answer that can be reached", () => {
+    for (const id of ADDED) {
+      for (const difficulty of [1, 2, 3, 4, 5]) {
+        const run = buildProbeRun(id, difficulty, 12345 + difficulty);
+        assert.ok(run, `${id} produced no run at difficulty ${difficulty}`);
+        assert.ok(run.items.length >= 4, `${id} produced ${run.items.length} items`);
+        for (const item of run.items) {
+          assert.ok(item.prompt.trim().length > 0, `${id} has an empty prompt`);
+          if (item.kind === "choice") {
+            assert.ok(Array.isArray(item.options), `${id} choice item has no options`);
+            assert.ok(
+              Number.isInteger(item.answer) &&
+                item.answer >= 0 &&
+                item.answer < item.options.length,
+              `${id} choice answer is out of range`,
+            );
+          } else {
+            assert.ok(String(item.answer).length > 0, `${id} item has no answer`);
+          }
+        }
+      }
+    }
+  });
+
+  it("score a perfect run as 1 and an empty run as 0", () => {
+    for (const id of ADDED) {
+      const run = buildProbeRun(id, 3, 777);
+      const perfect = Object.fromEntries(run.items.map((item) => [item.id, String(item.answer)]));
+      assert.equal(scoreProbe(run, perfect).score, 1, `${id} does not score a perfect run as 1`);
+      assert.equal(scoreProbe(run, {}).score, 0, `${id} gives credit for a blank run`);
+    }
+  });
+
+  it("generate fresh items per seed, so a repeat is not the same test", () => {
+    for (const id of ADDED) {
+      const a = buildProbeRun(id, 3, 1);
+      const b = buildProbeRun(id, 3, 2);
+      const same = JSON.stringify(a.items) === JSON.stringify(b.items);
+      assert.ok(!same, `${id} produced identical items for two seeds`);
+    }
+  });
+
+  it("asks harder base-rate questions as difficulty rises", () => {
+    const easy = buildProbeRun("probe-base-rates", 1, 42).items[0].prompt;
+    const hard = buildProbeRun("probe-base-rates", 5, 42).items[0].prompt;
+    const rarity = (prompt) => Number(prompt.match(/, (\d+) have the condition/)[1]);
+    assert.ok(rarity(hard) < rarity(easy), "the condition should get rarer, not commoner");
+  });
+
+  it("leans on the syllogisms where form and plausibility disagree", () => {
+    // Those items are the reason the probe exists; an easy run should contain
+    // fewer of them than a hard one.
+    const believableButInvalid = "This is an animal. Therefore: This is a dog.";
+    const hard = buildProbeRun("probe-validity", 5, 9).items;
+    assert.ok(hard.length >= 6);
+    assert.ok(
+      hard.some((item) => item.prompt.includes("floats") || item.prompt.includes("unhappy")),
+      "a hard run should include a valid-but-unbelievable item",
+    );
+    assert.ok(believableButInvalid.length > 0);
+  });
+});

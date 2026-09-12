@@ -20,7 +20,7 @@ most, what you are weakest at, and what you have neglected.
 it. The displayed score is the sum of the displayed factors; there is a test
 that says so.
 
-**Is any of this working?** — Eleven diagnostic probes and a calibration record
+**Is any of this working?** — Seventeen diagnostic probes and a calibration record
 with Brier scoring, shown on the front door rather than buried. Results are
 compared only to your own history, and only when the change clears the noise
 floor for that item count.
@@ -62,7 +62,7 @@ something to an AI endpoint you configured.
 npm run lint
 npx tsc --noEmit
 npm run check:data     # curriculum schema, integrity, citations, debt budgets
-npm test               # 207 pure-logic unit tests, including text contrast
+npm test               # 213 pure-logic unit tests, including text contrast
 npm run build
 npx playwright test    # 80 browser tests (npx playwright install chromium first)
 ```
@@ -114,7 +114,7 @@ Node test runner.
 | `retention.ts` | Six retention models. FSRS-style stability for knowledge, fluency decay for procedural skill, recency for habits, detraining for physical capability, demonstration recency for social skill, application frequency for meta-skills. |
 | `competence.ts` | Estimates ability from observations that could have gone badly, weighted by evidence kind, difficulty and recency. Confidence is capped by how measurable the construct is. |
 | `difficulty.ts` | Adaptive difficulty targeting a 45–85% success band, replayed from the log. Grinding an easier framing cannot promote you. |
-| `diagnostics.ts` | Eleven probes, generated per run where that is defensible. |
+| `diagnostics.ts` | Seventeen probes, generated per run where that is defensible. |
 | `predictions.ts` | Brier score with Murphy's decomposition, so hedging at the base rate cannot look like skill. |
 | `workout.ts` | Constraint-based session planning with fourteen weighted factors. |
 | `graph-intel.ts` | Bottlenecks, prerequisite gaps, isolated strengths, unproven practice, cluster imbalance — each with its numbers. |

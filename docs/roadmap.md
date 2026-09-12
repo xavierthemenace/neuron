@@ -26,10 +26,16 @@ curriculum author's judgement with a stated confidence, not an experimental
 result. The UI says so, but the honest long-term answer is to downgrade edges
 that nobody can justify and to be willing to delete them.
 
-**No node has more than one diagnostic.** Eleven probes cover a fraction of 139
-nodes. Most competence estimates will therefore rest on artifacts and
-self-report, which is exactly the state the confidence cap exists to represent —
-but more probes would be better than a better estimator.
+**No node has more than one diagnostic, and 102 have none.** Seventeen probes
+cover 37 of 139 nodes. Most competence estimates therefore rest on artifacts
+and self-report, which is exactly the state the confidence cap and the
+provenance label exist to represent.
+
+A large part of that remainder cannot be closed by adding probes, and saying so
+is more useful than a backlog item: negotiation, trust, compassion, sleep,
+manual craft and the depth of someone's own field are not measurable by a
+five-minute test in a browser. For those the instrument is the work produced
+and what it is graded against, which is what the exercise rubrics are for.
 
 **Transfer is asserted, not measured.** Missions produce transfer *evidence*, in
 the sense that they require several capabilities to interact. Whether completing
@@ -51,8 +57,10 @@ example profile fills the views that need history.
 
 ## Next
 
-**More diagnostic probes**, particularly for the executive and epistemic
-clusters, where competence currently rests almost entirely on artifacts.
+**More diagnostic probes** where one is genuinely defensible. The executive and
+epistemic clusters have just been covered; the remaining candidates are the
+spatial and musical ones, which need audio and canvas item types the runner
+does not have yet.
 
 **Mechanisms for the legacy edges**, ideally with citations, ideally with some
 edges deleted rather than justified.
