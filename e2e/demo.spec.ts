@@ -42,6 +42,38 @@ test.describe("example profile", () => {
     await expect(dialog.getByRole("button", { name: /^Resolve$/ }).first()).toBeVisible();
   });
 
+  test("labels the map too, which is where its headline figure shows", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Show me an example first" }).click();
+    await expect(page.getByText("This is an example profile.")).toBeVisible();
+
+    await openMap(page);
+    // The map header is the one place the profile's XP appears without a
+    // banner above it, so the label has to travel with the figure.
+    await expect(page.getByText("Example data")).toBeVisible();
+  });
+
+  test("takes a backup before replacing anything, even a profile with no logs", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Skip setup" }).click();
+    await expect(page.getByTestId("today-screen")).toBeVisible();
+
+    page.on("dialog", (dialog) => dialog.accept());
+    await openMap(page);
+
+    // A goal set before the first rep used to be destroyed with no backup at
+    // all, because the guard only counted logs and predictions.
+    const download = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Data" }).click();
+    await page.getByRole("button", { name: /Load an example profile/ }).click();
+    await expect(await download).toBeTruthy();
+
+    await page.getByRole("button", { name: "Today", exact: true }).click();
+    await expect(page.getByText("This is an example profile.")).toBeVisible();
+  });
+
   test("can be cleared back to an empty profile", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Show me an example first" }).click();

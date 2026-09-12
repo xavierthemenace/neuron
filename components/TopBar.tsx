@@ -125,6 +125,14 @@ export function TopBar({
           <span className="hidden tabular-nums text-xs text-neutral-500 sm:inline">
             {awake}/{data.nodes.length} active
           </span>
+          {progress.demo && (
+            <span
+              title="Every figure on this screen comes from the generated example profile. Clear it from Data."
+              className="rounded-full border border-amber-300/45 bg-amber-300/[0.12] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-amber-100"
+            >
+              Example data
+            </span>
+          )}
         </div>
 
         <div className="relative order-last w-full sm:order-none sm:w-auto">
@@ -360,17 +368,23 @@ export function TopBar({
                 <button
                   type="button"
                   onClick={() => {
-                    // Loading over real work would be the single worst thing
-                    // this menu could do, so it cannot happen quietly.
-                    const hasWork = progress.logs.length > 0 || progress.predictions.length > 0;
-                    const go = () =>
-                      window.confirm(
-                        hasWork
-                          ? "A backup has been downloaded. Replace your record with six months of generated example data?"
-                          : "Load six months of generated example data, so the review queue, comparisons and calibration have something in them?",
-                      ) && replaceProgress(buildDemoProgress());
-                    if (hasWork) void exportBackup(progress).then(go);
-                    else go();
+                    // Always export first, exactly as Reset does.
+                    //
+                    // This used to decide whether a backup was warranted by
+                    // counting logs and predictions, which missed goals,
+                    // personal capabilities and experiments — and could never
+                    // have seen journals, which live in their own store. Anyone
+                    // who set up a goal before logging a rep lost it silently.
+                    // There is no version of this worth getting clever about.
+                    void exportBackup(progress).then(() => {
+                      if (
+                        window.confirm(
+                          "A backup has been downloaded. Replace everything you have with six months of generated example data?",
+                        )
+                      ) {
+                        replaceProgress(buildDemoProgress());
+                      }
+                    });
                     setDataOpen(false);
                   }}
                   className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"

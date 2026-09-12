@@ -104,7 +104,10 @@ export function Workbench({
             aria-selected={tab === entry.id}
             onClick={() => jump(entry.id)}
             className={[
-              "shrink-0 rounded-lg px-3 py-2 text-xs transition-colors",
+              // 44px on a phone: this strip was the one place in the app
+              // still below the WCAG target-size minimum.
+              "flex shrink-0 items-center rounded-lg px-3 text-xs transition-colors",
+              "min-h-[44px] sm:min-h-0 sm:py-2",
               tab === entry.id
                 ? "bg-white/10 text-white"
                 : "text-neutral-500 hover:bg-white/5 hover:text-neutral-300",
