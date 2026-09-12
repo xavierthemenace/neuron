@@ -144,14 +144,14 @@ function ConceptNodeComponent({ data, selected }: NodeProps<ConceptFlowNode>) {
           "whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium tracking-tight",
           "transition-[opacity,background-color,border-color,transform] duration-300",
           selected
-            ? "translate-y-0 border-white/15 bg-black/75 opacity-100 shadow-lg backdrop-blur-md"
+            ? "translate-y-0 border-white/15 bg-[rgb(9_11_16_/_0.82)] opacity-100 shadow-lg backdrop-blur-md"
             : dimmed
               ? "translate-y-0.5 border-transparent bg-transparent opacity-0"
               : contextDimmed && focusMode
                 ? "translate-y-0.5 border-transparent bg-transparent opacity-0"
                 : contextDimmed
                   ? "translate-y-0.5 border-transparent bg-transparent opacity-20"
-                  : "translate-y-0.5 border-transparent bg-black/15 opacity-70 group-hover:translate-y-0 group-hover:border-white/12 group-hover:bg-black/65 group-hover:opacity-100 group-hover:backdrop-blur-md",
+                  : "translate-y-0.5 border-transparent bg-[rgb(9_11_16_/_0.35)] opacity-70 group-hover:translate-y-0 group-hover:border-white/12 group-hover:bg-[rgb(9_11_16_/_0.75)] group-hover:opacity-100 group-hover:backdrop-blur-md",
         ].join(" ")}
         style={{ color: `oklch(0.96 0.035 ${hue})` }}
       >

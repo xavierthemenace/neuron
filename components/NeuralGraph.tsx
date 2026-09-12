@@ -27,6 +27,7 @@ import { buildInbox, inboxNodeIds } from "@/lib/inbox";
 import { matchingNodeIdsFor } from "@/lib/search";
 import { neighborsWithinDepth } from "@/lib/training";
 import { AICoach } from "./AICoach";
+import { AppNav, type Screen } from "./AppNav";
 import { ClusterBackdrop } from "./ClusterBackdrop";
 import { CommandPalette } from "./CommandPalette";
 import { ConceptNode } from "./ConceptNode";
@@ -37,9 +38,10 @@ import { CapstoneRunner, MissionRunner } from "./MissionRunner";
 import { MigrationNotice } from "./MigrationNotice";
 import { Onboarding } from "./Onboarding";
 import { ProgressProvider, useProgress } from "./ProgressProvider";
-import { SessionLauncher, SessionPlanner } from "./SessionPlanner";
+import { SessionPlanner } from "./SessionPlanner";
 import { SidePanel } from "./SidePanel";
 import { SynapseEdge } from "./SynapseEdge";
+import { Today } from "./Today";
 import { TopBar } from "./TopBar";
 import { Workbench, type WorkbenchTab } from "./Workbench";
 
@@ -95,6 +97,11 @@ function Graph() {
   const [missionId, setMissionId] = useState<string | null>(null);
   const [capstoneId, setCapstoneId] = useState<string | null>(null);
   const [activePathId, setActivePathId] = useState<string | null>(null);
+  // The app opens on Today. The map is a destination, not the front door.
+  const [screen, setScreen] = useState<Screen>("today");
+  // Closing the workbench returns you where you opened it from: arriving back
+  // on Today would lose the map you were reading.
+  const [returnScreen, setReturnScreen] = useState<Screen>("today");
 
   useEffect(() => {
     installDevTools();
@@ -122,10 +129,8 @@ function Graph() {
     return new Set(active.flatMap((goal) => goal.nodeIds));
   }, [activePathId, progress.goals]);
 
-  const flaggedIds = useMemo(
-    () => inboxNodeIds(buildInbox(model, progress)),
-    [model, progress],
-  );
+  const inbox = useMemo(() => buildInbox(model, progress), [model, progress]);
+  const flaggedIds = useMemo(() => inboxNodeIds(inbox), [inbox]);
 
   const nodes = useMemo(
     () =>
@@ -204,21 +209,36 @@ function Graph() {
     void fitView({ padding: 0.14, duration: cameraDuration(520), maxZoom: 1.1 });
   }, [fitView]);
 
+  /**
+   * Focus Mode framing.
+   *
+   * The old padding of 0.58 meant more than half the frame was margin, so a
+   * wide depth-2 neighbourhood pushed the camera out past 0.4 and the labels —
+   * the whole point of isolating a network — became unreadable. A floor on the
+   * zoom is the honest trade: show the neighbourhood as far as it fits, and
+   * keep it legible rather than complete. Turning the mode off used to leave
+   * the camera wherever it had been pushed; it now comes back to the selection.
+   */
   const setFocusModeAndFrame = useCallback(
     (enabled: boolean) => {
       setFocusMode(enabled);
-      if (!enabled || !selectedId) return;
+      if (!selectedId) return;
+      if (!enabled) {
+        focusNode(selectedId);
+        return;
+      }
       const ids = Array.from(neighborsWithinDepth(data, selectedId, 2));
       requestAnimationFrame(() => {
         void fitView({
           nodes: ids.map((id) => ({ id })),
-          padding: 0.58,
+          padding: 0.24,
           duration: cameraDuration(560),
+          minZoom: 0.62,
           maxZoom: 1.5,
         });
       });
     },
-    [fitView, selectedId],
+    [fitView, focusNode, selectedId],
   );
 
   const showPath = useCallback(
@@ -294,93 +314,148 @@ function Graph() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [focusNode, selectedId]);
 
-  const toggleCategory = useCallback((id: string) => {
-    setActiveCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+  const frameCategories = useCallback(
+    (categories: Set<string>) => {
+      if (categories.size === 0) {
+        fitAll();
+        return;
+      }
+      const ids = data.nodes
+        .filter((node) => categories.has(node.categoryId))
+        .map((node) => ({ id: node.id }));
+      if (ids.length === 0) return;
+      requestAnimationFrame(() => {
+        void fitView({
+          nodes: ids,
+          padding: 0.3,
+          duration: cameraDuration(560),
+          maxZoom: 1.2,
+        });
+      });
+    },
+    [fitAll, fitView],
+  );
+
+  const toggleCategory = useCallback(
+    (id: string) => {
+      setActiveCategories((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        frameCategories(next);
+        return next;
+      });
+    },
+    [frameCategories],
+  );
+
+  const openWorkbench = useCallback((tab: WorkbenchTab | null) => {
+    setWorkbench(tab);
+    if (!tab) return;
+    setScreen((current) => {
+      if (current !== "data") setReturnScreen(current);
+      return "data";
     });
   }, []);
+
+  const closeWorkbench = useCallback(() => {
+    setWorkbench(null);
+    setScreen(returnScreen);
+  }, [returnScreen]);
 
   const selectedNode = selectedId ? (nodesById.get(selectedId) ?? null) : null;
   const selectedCategory = selectedNode
     ? (categories.get(selectedNode.categoryId) ?? null)
     : null;
 
-  const inboxCount = flaggedIds.size;
+  const inboxCount = inbox.length;
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[var(--surface)]">
-      <ReactFlow<ConceptFlowNode>
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodeClick={onNodeClick}
-        onPaneClick={clearSelection}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        nodesFocusable
-        edgesFocusable={false}
-        disableKeyboardA11y={false}
-        autoPanOnNodeFocus
-        elementsSelectable
-        minZoom={0.08}
-        maxZoom={2.6}
-        fitView
-        fitViewOptions={{ padding: 0.13 }}
-        proOptions={{ hideAttribution: false }}
-        ariaLabelConfig={{
-          // Both keys, deliberately. React Flow selects the "keyboardDisabled"
-          // string when keyboard accessibility is *enabled*, and its defaults
-          // describe dragging and deleting nodes — neither of which this map
-          // supports.
-          "node.a11yDescription.default": GRAPH_DESCRIPTION,
-          "node.a11yDescription.keyboardDisabled": GRAPH_DESCRIPTION,
-          "minimap.ariaLabel": "Neuron cognitive map overview",
-          "controls.ariaLabel": "Graph zoom and fit controls",
-        }}
-        className={hydrated ? "opacity-100" : "opacity-0"}
-        style={{ transition: "opacity 400ms ease" }}
-      >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={31}
-          size={1.2}
-          color="oklch(0.42 0.035 265)"
-        />
-        <ClusterBackdrop data={data} />
-        <Controls
-          showInteractive={false}
-          className="!bottom-3 !left-3 !border !border-white/12 !bg-black/65 !backdrop-blur-xl md:!bottom-4 md:!left-4"
-        />
-        <MiniMap
-          pannable
-          zoomable
-          style={MINIMAP_STYLE}
-          maskColor="oklch(0.08 0.01 265 / 0.7)"
-          nodeStrokeWidth={3}
-          nodeColor={(node) => {
-            const nodeData = node.data as ConceptNodeData;
-            return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
+      {/* The canvas stays mounted so React Flow keeps its measurements, but a
+          139-node graph behind an opaque screen is 139 tab stops a keyboard user
+          has to walk through to reach anything. `inert` takes the whole layer out
+          of the tab order, and out of the accessibility tree, while it is not the
+          screen you are on. */}
+      <div className="absolute inset-0" inert={screen !== "map"}>
+        <ReactFlow<ConceptFlowNode>
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodeClick={onNodeClick}
+          onPaneClick={clearSelection}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          nodesFocusable
+          edgesFocusable={false}
+          disableKeyboardA11y={false}
+          autoPanOnNodeFocus
+          elementsSelectable
+          minZoom={0.08}
+          maxZoom={2.6}
+          fitView
+          fitViewOptions={{ padding: 0.13 }}
+          proOptions={{ hideAttribution: false }}
+          ariaLabelConfig={{
+            // Both keys, deliberately. React Flow selects the "keyboardDisabled"
+            // string when keyboard accessibility is *enabled*, and its defaults
+            // describe dragging and deleting nodes — neither of which this map
+            // supports.
+            "node.a11yDescription.default": GRAPH_DESCRIPTION,
+            "node.a11yDescription.keyboardDisabled": GRAPH_DESCRIPTION,
+            "minimap.ariaLabel": "Neuron cognitive map overview",
+            "controls.ariaLabel": "Graph zoom and fit controls",
           }}
-          className={[
-            "!bottom-3 !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
-            selectedNode ? "md:!right-[456px]" : "md:!right-4",
-          ].join(" ")}
-        />
-      </ReactFlow>
+          className={hydrated ? "opacity-100" : "opacity-0"}
+          style={{ transition: "opacity 400ms ease" }}
+        >
+          <Background
+            variant={BackgroundVariant.Dots}
+            gap={31}
+            size={1.2}
+            color="oklch(0.42 0.035 265)"
+          />
+          <ClusterBackdrop data={data} />
+          <Controls
+            showInteractive={false}
+            className="!bottom-[72px] !left-3 !border !border-white/12 !bg-[var(--panel)] !backdrop-blur-xl md:!bottom-4 md:!left-4"
+          />
+          <MiniMap
+            pannable
+            zoomable
+            style={MINIMAP_STYLE}
+            maskColor="oklch(0.08 0.01 265 / 0.7)"
+            nodeStrokeWidth={3}
+            nodeColor={(node) => {
+              const nodeData = node.data as ConceptNodeData;
+              return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
+            }}
+            className={[
+              "!bottom-[72px] !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
+              // Clears the capability rail, which grows with the display.
+              selectedNode
+                ? "md:!right-[456px] xl:!right-[512px] 2xl:!right-[576px]"
+                : "md:!right-4",
+            ].join(" ")}
+          />
+        </ReactFlow>
+      </div>
 
+      {(screen === "map" || (screen === "data" && returnScreen === "map")) && (
+        <>
       <TopBar
         data={data}
         search={search}
         onSearchChange={setSearch}
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenWorkbench={openWorkbench}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
-        onClearFilters={() => setActiveCategories(new Set())}
+        onClearFilters={() => {
+          setActiveCategories(new Set());
+          fitAll();
+        }}
         activePathId={activePathId}
         onShowPath={showPath}
         onClearPath={() => setActivePathId(null)}
@@ -393,21 +468,54 @@ function Graph() {
         nodesById={nodesById}
         onSelectNode={focusNode}
         onFitView={fitAll}
-        onOpenAnalytics={() => setWorkbench("analytics")}
+        onOpenAnalytics={() => openWorkbench("analytics")}
         focusMode={focusMode}
         onToggleFocusMode={() => setFocusModeAndFrame(!focusMode)}
       />
 
-      <SessionLauncher
-        data={data}
-        onOpen={() => setPlannerOpen(true)}
-        panelOpen={Boolean(selectedNode)}
-      />
       <AICoach
         data={data}
         selectedNode={selectedNode}
         onSelectNode={focusNode}
         researchMode={researchMode}
+      />
+
+        </>
+      )}
+
+      {/* Paper covers the map plate on every screen that is not the map, so a
+          sheet opened from the bar reads as a destination rather than a modal
+          floating over a graph nobody asked to see. */}
+      {screen !== "map" && (
+        <div
+          className="absolute inset-0 z-20 overflow-y-auto bg-[var(--paper)] pt-[var(--safe-top)] pb-[calc(68px+var(--safe-bottom))] sm:pt-14 sm:pb-10"
+          data-testid={screen === "today" ? "today-screen" : "data-screen"}
+        >
+          {screen === "today" && (
+          <Today
+            data={data}
+            onSelectNode={focusNode}
+            onOpenPlanner={() => setPlannerOpen(true)}
+            onOpenTab={openWorkbench}
+            onRunProbe={setProbeId}
+            onOpenMission={setMissionId}
+            onOpenMap={() => setScreen("map")}
+          />
+          )}
+        </div>
+      )}
+
+      <AppNav
+        screen={screen}
+        onChange={(next) => {
+          if (next === "data") setReturnScreen(screen);
+          setScreen(next);
+          setWorkbench(next === "data" ? "review" : null);
+          // Opening the map on whatever the camera was last pointed at reads as
+          // a broken screen; with nothing selected, show the whole thing.
+          if (next === "map" && !selectedId) fitAll();
+        }}
+        badge={inboxCount}
       />
 
       <SidePanel
@@ -438,8 +546,8 @@ function Graph() {
       <Workbench
         open={workbench !== null}
         tab={workbench ?? "review"}
-        onTabChange={setWorkbench}
-        onClose={() => setWorkbench(null)}
+        onTabChange={openWorkbench}
+        onClose={closeWorkbench}
         onSelectNode={focusNode}
         onRunProbe={setProbeId}
         onOpenMission={setMissionId}
@@ -468,7 +576,7 @@ function Graph() {
 
       <Onboarding
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenMap={() => setScreen("map")}
         onRunProbe={setProbeId}
       />
       <MigrationNotice />
@@ -477,7 +585,7 @@ function Graph() {
         data={data}
         selectedId={selectedId}
         onSelectNode={focusNode}
-        onOpenWorkbench={setWorkbench}
+        onOpenWorkbench={openWorkbench}
         onOpenPlanner={() => setPlannerOpen(true)}
         onRunProbe={setProbeId}
         onOpenMission={setMissionId}

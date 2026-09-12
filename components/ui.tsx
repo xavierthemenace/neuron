@@ -9,7 +9,13 @@ import {
   KIND_GLYPH,
   KIND_LABEL,
 } from "@/lib/evidence";
-import { ESTIMATE_CONFIDENCE_LABEL, type EstimateConfidence } from "@/lib/competence";
+import {
+  ESTIMATE_CONFIDENCE_LABEL,
+  PROVENANCE_BLURB,
+  PROVENANCE_LABEL,
+  type EstimateConfidence,
+  type EstimateProvenance,
+} from "@/lib/competence";
 import type { EvidenceConfidence, NodeKind } from "@/lib/types";
 import { useDismissable } from "./useDismissable";
 
@@ -78,8 +84,8 @@ export function Meter({
           className="h-full rounded-full transition-[width] duration-500"
           style={{
             width: `${percent}%`,
-            background: `oklch(0.76 ${emphasis ? 0.16 : 0.1} ${hue})`,
-            boxShadow: emphasis ? `0 0 10px oklch(0.74 0.15 ${hue} / 0.6)` : undefined,
+            background: `oklch(0.56 ${emphasis ? 0.15 : 0.09} ${hue})`,
+            boxShadow: undefined,
           }}
         />
       </div>
@@ -101,9 +107,9 @@ export function ConfidenceChip({
       title={CONFIDENCE_BLURB[band]}
       className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider"
       style={{
-        borderColor: `oklch(0.7 0.14 ${hue} / 0.3)`,
-        background: `oklch(0.6 0.12 ${hue} / 0.1)`,
-        color: `oklch(0.87 0.11 ${hue})`,
+        borderColor: `oklch(0.55 0.12 ${hue} / 0.38)`,
+        background: `oklch(0.72 0.11 ${hue} / 0.18)`,
+        color: `oklch(0.42 0.12 ${hue})`,
       }}
     >
       {prefix && <span className="font-normal normal-case opacity-70">{prefix}</span>}
@@ -139,6 +145,32 @@ export function EstimateChip({
       {observations !== undefined && observations > 0 && (
         <span className="opacity-60">· {observations} obs</span>
       )}
+    </span>
+  );
+}
+
+/**
+ * What kind of evidence a number rests on.
+ *
+ * Deliberately the loudest chip on the screen when the answer is "none". A
+ * percentage reads as a measurement whether or not it is one, and for most of
+ * this map, for a long time, it is not one.
+ */
+export function ProvenanceChip({ provenance }: { provenance: EstimateProvenance }) {
+  const tone =
+    provenance === "measured"
+      ? "border-emerald-300/35 bg-emerald-300/[0.12] text-emerald-100"
+      : provenance === "judged"
+        ? "border-sky-300/35 bg-sky-300/[0.10] text-sky-100"
+        : provenance === "self-reported"
+          ? "border-amber-300/35 bg-amber-300/[0.12] text-amber-100"
+          : "border-neutral-600/40 bg-neutral-800/[0.10] text-neutral-400";
+  return (
+    <span
+      title={PROVENANCE_BLURB[provenance]}
+      className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider ${tone}`}
+    >
+      {PROVENANCE_LABEL[provenance]}
     </span>
   );
 }
@@ -185,7 +217,7 @@ export function Why({
       {open && (
         <div
           id={id}
-          className="mt-1.5 rounded-lg border border-white/8 bg-black/25 p-2.5 text-[10px] leading-relaxed text-neutral-400"
+          className="mt-1.5 rounded-lg border border-white/8 bg-[var(--sunk)] p-2.5 text-[10px] leading-relaxed text-neutral-400"
         >
           {children}
         </div>
@@ -203,14 +235,25 @@ export function Sheet({
   children,
   footer,
   wide = false,
+  asScreen = false,
+  closeLabel,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   subtitle?: string;
+  /** Overrides "Close {title}" where that reads as "quit the app". */
+  closeLabel?: string;
   children: ReactNode;
   footer?: ReactNode;
   wide?: boolean;
+  /**
+   * A destination reached from the navigation bar rather than something
+   * stacked over the screen you were on. It drops the scrim and fills the
+   * phone, because dimming the page behind a place you deliberately went is
+   * how a modal looks, not how a screen looks.
+   */
+  asScreen?: boolean;
 }) {
   const dialogRef = useRef<HTMLElement | null>(null);
   useDismissable({ open, onClose, modal: true, container: dialogRef });
@@ -219,7 +262,15 @@ export function Sheet({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:p-4"
+      className={[
+        "fixed inset-0 z-[80] flex justify-center sm:items-center sm:p-4",
+        // A screen starts at the top and stops above the navigation bar; a
+        // modal rises from the bottom edge.
+        asScreen ? "items-start" : "items-end",
+        asScreen
+          ? "bg-[var(--paper)] sm:bg-[var(--scrim)] sm:backdrop-blur-sm"
+          : "bg-[var(--scrim)] backdrop-blur-sm",
+      ].join(" ")}
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -231,9 +282,12 @@ export function Sheet({
         aria-modal="true"
         aria-label={title}
         className={[
-          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[oklch(0.14_0.018_265_/_0.985)] shadow-2xl",
+          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[var(--panel)] shadow-2xl",
           "rounded-t-2xl border-t sm:rounded-2xl sm:border",
-          wide ? "sm:max-w-5xl" : "sm:max-w-2xl",
+          asScreen
+            ? "max-h-none h-[calc(100dvh-68px-var(--safe-bottom))] rounded-t-none border-t-0 sm:h-auto sm:max-h-[92dvh] sm:rounded-2xl sm:border"
+            : "",
+          wide ? "sm:max-w-5xl xl:max-w-6xl 2xl:max-w-[88rem]" : "sm:max-w-2xl lg:max-w-3xl",
         ].join(" ")}
       >
         <header className="flex shrink-0 items-start gap-3 border-b border-white/10 px-5 py-4">
@@ -246,7 +300,7 @@ export function Sheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label={`Close ${title}`}
+            aria-label={closeLabel ?? `Close ${title}`}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-neutral-500 transition-colors hover:bg-white/7 hover:text-white"
           >
             <svg viewBox="0 0 14 14" className="h-3.5 w-3.5" aria-hidden="true">
@@ -269,6 +323,55 @@ export function Sheet({
         )}
       </section>
     </div>
+  );
+}
+
+/**
+ * A confirm step in the app's own language.
+ *
+ * The destructive Data actions gated on `window.confirm`, which some browsers
+ * suppress outright — the buttons then read as dead controls — and which drops
+ * the paper-and-ink design for an OS alert at exactly the moment the user is
+ * being asked to trust the app with their record.
+ */
+export function ConfirmDialog({
+  open,
+  title,
+  body,
+  confirmLabel,
+  destructive = false,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  body: string;
+  confirmLabel: string;
+  destructive?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <Sheet open={open} onClose={onCancel} title={title}>
+      <p className="text-[13px] leading-relaxed text-neutral-300">{body}</p>
+      <div className="mt-5 flex justify-end gap-2">
+        <button type="button" onClick={onCancel} className={buttonClass}>
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={onConfirm}
+          autoFocus
+          className={
+            destructive
+              ? "rounded-lg border border-rose-300/40 bg-rose-300/[0.12] px-3 py-2 text-xs font-medium text-rose-100 transition-colors hover:bg-rose-300/20"
+              : primaryButtonClass
+          }
+        >
+          {confirmLabel}
+        </button>
+      </div>
+    </Sheet>
   );
 }
 
@@ -351,7 +454,7 @@ export function Field({
 }
 
 export const inputClass =
-  "w-full rounded-lg border border-white/10 bg-black/35 px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-black/50";
+  "w-full rounded-lg border border-white/10 bg-[var(--sunk-strong)] px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-[var(--sunk-strong)]";
 
 export const buttonClass =
   "rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 text-xs text-neutral-200 transition-colors hover:border-white/28 hover:bg-white/[0.09] hover:text-white disabled:cursor-not-allowed disabled:opacity-40";

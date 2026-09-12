@@ -84,7 +84,7 @@ function ItemView({
   return (
     <div className="space-y-3">
       {rotation && (
-        <div className="flex items-center justify-center gap-6 rounded-xl border border-white/8 bg-black/25 p-4">
+        <div className="flex items-center justify-center gap-6 rounded-xl border border-white/8 bg-[var(--sunk)] p-4">
           <RotationShape cells={rotation.cells} />
           <span className="text-neutral-600" aria-hidden="true">
             vs
@@ -95,7 +95,7 @@ function ItemView({
 
       {item.stimulus && !rotation && (
         <div
-          className="rounded-xl border border-white/8 bg-black/25 p-4 text-center font-mono text-lg tracking-[0.35em] text-neutral-100"
+          className="rounded-xl border border-white/8 bg-[var(--sunk)] p-4 text-center font-mono text-lg tracking-[0.35em] text-neutral-100"
           aria-live="polite"
         >
           {hidden ? (
@@ -108,7 +108,15 @@ function ItemView({
         </div>
       )}
 
-      <p className="text-[13px] leading-relaxed text-neutral-200">{item.prompt}</p>
+      {item.display === "figure" ? (
+        // Tight enough that a row of arrows reads as one group, which is what
+        // makes the neighbours interfere at all.
+        <p className="py-2 text-center font-mono text-3xl tracking-[0.08em] text-neutral-100">
+          {item.prompt}
+        </p>
+      ) : (
+        <p className="text-[13px] leading-relaxed text-neutral-200">{item.prompt}</p>
+      )}
 
       {item.kind === "choice" && item.options && (
         <div className="grid gap-1.5">

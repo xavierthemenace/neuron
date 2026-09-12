@@ -45,7 +45,9 @@ export function GraphNavigator({
     };
   }, [data, selectedNode]);
 
-  const rightClass = selectedNode ? "md:right-[436px]" : "md:right-4";
+  const rightClass = selectedNode
+    ? "md:right-[436px] xl:right-[492px] 2xl:right-[556px]"
+    : "md:right-4";
 
   const pathwaySection = (
     title: string,
@@ -81,12 +83,12 @@ export function GraphNavigator({
   return (
     <div
       className={[
-        "pointer-events-auto absolute bottom-[126px] right-3 z-30 transition-[right] duration-300 md:bottom-[144px] md:right-4",
+        "pointer-events-auto absolute bottom-[196px] right-3 z-30 transition-[right] duration-300 md:bottom-[144px] md:right-4",
         rightClass,
       ].join(" ")}
     >
       {open && (
-        <div className="absolute bottom-11 right-0 w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-white/12 bg-[oklch(0.145_0.018_265_/_0.97)] p-3.5 shadow-2xl backdrop-blur-2xl">
+        <div className="absolute bottom-11 right-0 w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-white/12 bg-[var(--panel)] p-3.5 shadow-2xl backdrop-blur-2xl">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-semibold text-neutral-100">
@@ -172,7 +174,7 @@ export function GraphNavigator({
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-xl border border-white/12 bg-black/65 px-3 py-2 text-[10px] font-medium text-neutral-300 shadow-xl backdrop-blur-xl transition-colors hover:border-white/25 hover:bg-black/80 hover:text-white"
+        className="flex items-center gap-2 rounded-xl border border-white/12 bg-[var(--panel)] px-3 py-2 text-[10px] font-medium text-neutral-300 shadow-xl backdrop-blur-xl transition-colors hover:border-white/25 hover:bg-[var(--panel-solid)] hover:text-white"
       >
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
           <path d="M2.5 3.5 6 2l4 1.5L13.5 2v10.5L10 14l-4-1.5L2.5 14V3.5Z" fill="none" stroke="currentColor" strokeWidth="1.2" />

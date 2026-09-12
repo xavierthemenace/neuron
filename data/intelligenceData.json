@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "curriculumVersion": "2.0.0",
+  "curriculumVersion": "2.1.0",
   "categories": [
     {
       "id": "linguistic",
@@ -188,15 +188,18 @@
         "sources": [
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "Learning Vocabulary in Another Language — Nation (2013)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.cambridge.org/core/books/learning-vocabulary-in-another-language/25C481C771758930E8EBBE811231FEB7"
           },
           {
             "title": "Distributed Practice in Verbal Recall Tasks — Cepeda et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.132.3.354"
           }
         ]
       },
@@ -266,15 +269,18 @@
         "sources": [
           {
             "title": "The Reading Mind — Willingham (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.wiley.com/en-us/The+Reading+Mind:+A+Cognitive+Approach+to+Understanding+How+the+Mind+Reads-p-9781119301363"
           },
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           }
         ]
       },
@@ -330,15 +336,18 @@
         "sources": [
           {
             "title": "A Meta-Analysis of Writing Instruction for Adolescent Students — Graham & Perin (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0022-0663.99.3.445"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           },
           {
             "title": "The Dunning–Kruger Effect: On Being Ignorant of One's Own Ignorance — Dunning (2011)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/B978-0-12-385522-0.00005-6"
           }
         ]
       },
@@ -394,11 +403,13 @@
         "sources": [
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -455,11 +466,13 @@
         "sources": [
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "Deliberate Practice and Performance: A Meta-Analysis — Macnamara, Hambrick & Oswald (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797614535810"
           }
         ]
       },
@@ -517,15 +530,18 @@
         "sources": [
           {
             "title": "Learning Vocabulary in Another Language — Nation (2013)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.cambridge.org/core/books/learning-vocabulary-in-another-language/25C481C771758930E8EBBE811231FEB7"
           },
           {
             "title": "Multiple Intelligences, the Mozart Effect, and Emotional Intelligence: A Critical Review — Waterhouse (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1207/s15326985ep4104_1"
           },
           {
             "title": "Cognitive Training Does Not Enhance General Cognition — Sala & Gobet (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2018.10.004"
           }
         ]
       },
@@ -594,15 +610,18 @@
         "sources": [
           {
             "title": "Reasoning about a rule — Wason (1968)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/14640746808400161"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "Cognitive Training Does Not Enhance General Cognition — Sala & Gobet (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2018.10.004"
           }
         ]
       },
@@ -659,11 +678,13 @@
         "sources": [
           {
             "title": "How to Solve It — Pólya (1945)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.princeton.edu/books/paperback/9780691164076/how-to-solve-it"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -720,15 +741,18 @@
         "sources": [
           {
             "title": "How to Improve Bayesian Reasoning Without Instruction: Frequency Formats — Gigerenzer & Hoffrage (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.102.4.684"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           },
           {
             "title": "Calibration of Probabilities: The State of the Art to 1980 — Lichtenstein, Fischhoff & Phillips (1982)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://researchonline.lse.ac.uk/id/eprint/27324/"
           }
         ]
       },
@@ -789,11 +813,13 @@
         "sources": [
           {
             "title": "The Art of Insight in Science and Engineering — Mahajan (2014)",
-            "type": "book"
+            "type": "book",
+            "url": "https://direct.mit.edu/books/oa-monograph/5345/The-Art-of-Insight-in-Science-and"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           }
         ]
       },
@@ -842,15 +868,18 @@
         "sources": [
           {
             "title": "Human Problem Solving — Newell & Simon (1972)",
-            "type": "book"
+            "type": "book",
+            "url": "https://dl.acm.org/doi/10.5555/1095704"
           },
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -906,11 +935,13 @@
         "sources": [
           {
             "title": "Thinking in Systems — Meadows (2008)",
-            "type": "book"
+            "type": "book",
+            "url": "https://donellameadows.org/archives/donella-h-meadows-bibliography/"
           },
           {
             "title": "Cognitive Training Does Not Enhance General Cognition — Sala & Gobet (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2018.10.004"
           }
         ]
       },
@@ -966,15 +997,18 @@
         "sources": [
           {
             "title": "The Malleability of Spatial Skills: A Meta-Analysis of Training Studies — Uttal et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0028446"
           },
           {
             "title": "Mental Rotation of Three-Dimensional Objects — Shepard & Metzler (1971)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.171.3972.701"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           }
         ]
       },
@@ -1025,11 +1059,13 @@
         "sources": [
           {
             "title": "Mental Rotation of Three-Dimensional Objects — Shepard & Metzler (1971)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.171.3972.701"
           },
           {
             "title": "The Malleability of Spatial Skills: A Meta-Analysis of Training Studies — Uttal et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0028446"
           }
         ]
       },
@@ -1085,11 +1121,13 @@
         "sources": [
           {
             "title": "Navigation and the hippocampus — Maguire et al. (2000), London taxi drivers",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1073/pnas.070039597"
           },
           {
             "title": "The Malleability of Spatial Skills: A Meta-Analysis of Training Studies — Uttal et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0028446"
           }
         ]
       },
@@ -1147,11 +1185,8 @@
         "sources": [
           {
             "title": "Drawing on the Right Side of the Brain — Edwards (2012)",
-            "type": "book"
-          },
-          {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/310367/drawing-on-the-right-side-of-the-brain-by-betty-edwards/"
           }
         ]
       },
@@ -1207,11 +1242,13 @@
         "sources": [
           {
             "title": "Why a Diagram Is (Sometimes) Worth Ten Thousand Words — Larkin & Simon (1987)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1551-6708.1987.tb00863.x"
           },
           {
             "title": "The Visual Display of Quantitative Information — Tufte (2001)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/"
           }
         ]
       },
@@ -1260,11 +1297,13 @@
         "sources": [
           {
             "title": "The Malleability of Spatial Skills: A Meta-Analysis of Training Studies — Uttal et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0028446"
           },
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           }
         ]
       },
@@ -1308,15 +1347,13 @@
         "sources": [
           {
             "title": "Influence of musical and psychoacoustical training on pitch discrimination — Micheyl et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.heares.2006.05.004"
           },
           {
             "title": "When the Music's Over: Does Music Skill Transfer to Children's and Young Adolescents' Cognitive and Academic Skills? — Sala & Gobet (2017)",
-            "type": "paper"
-          },
-          {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.edurev.2016.11.005"
           }
         ]
       },
@@ -1374,11 +1411,13 @@
         "sources": [
           {
             "title": "Sensorimotor synchronization: A review of recent research — Repp & Su (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3758/s13423-012-0371-2"
           },
           {
             "title": "When the Music's Over: Does Music Skill Transfer to Children's and Young Adolescents' Cognitive and Academic Skills? — Sala & Gobet (2017)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.edurev.2016.11.005"
           }
         ]
       },
@@ -1434,11 +1473,13 @@
         "sources": [
           {
             "title": "Influence of musical and psychoacoustical training on pitch discrimination — Micheyl et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.heares.2006.05.004"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           }
         ]
       },
@@ -1496,15 +1537,18 @@
         "sources": [
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "Deliberate Practice and Performance: A Meta-Analysis — Macnamara, Hambrick & Oswald (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797614535810"
           },
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           }
         ]
       },
@@ -1556,11 +1600,13 @@
         "sources": [
           {
             "title": "Influence of musical and psychoacoustical training on pitch discrimination — Micheyl et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.heares.2006.05.004"
           },
           {
             "title": "Long-term working memory — Ericsson & Kintsch (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295x.102.2.211"
           }
         ]
       },
@@ -1604,16 +1650,14 @@
         "knownLimitations": "Musical creativity has weak measurement standards. Neuroimaging findings about improvisation are interesting but do not license claims about general creative ability.",
         "sources": [
           {
-            "title": "The Neural Correlates of Musical Improvisation — Berkowitz & Ansari (2010)",
-            "type": "paper"
-          },
-          {
             "title": "The Standard Definition of Creativity — Runco & Jaeger (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/10400419.2012.650092"
           },
           {
             "title": "Domain Specificity of Creativity — Baer (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.sciencedirect.com/book/9780127999623/domain-specificity-of-creativity"
           }
         ]
       },
@@ -1665,7 +1709,8 @@
         "sources": [
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           }
         ]
       },
@@ -1721,11 +1766,13 @@
         "sources": [
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -1782,11 +1829,13 @@
         "sources": [
           {
             "title": "Detraining: Loss of Training-Induced Physiological and Performance Adaptations — Mujika & Padilla (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.2165/00007256-200030020-00002"
           },
           {
             "title": "Be Smart, Exercise Your Heart: Exercise Effects on Brain and Cognition — Hillman, Erickson & Kramer (2008)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/nrn2298"
           }
         ]
       },
@@ -1842,15 +1891,18 @@
         "sources": [
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           },
           {
             "title": "Learning versus Performance: An Integrative Review — Soderstrom & Bjork (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691615569000"
           },
           {
             "title": "Memory and Metamemory Considerations in the Training of Human Beings — Bjork (1994)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://gwern.net/doc/psychology/spaced-repetition/1994-bjork.pdf"
           }
         ]
       },
@@ -1906,11 +1958,13 @@
         "sources": [
           {
             "title": "Interoception, contemplative practice, and health — Farb et al. (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3389/fpsyg.2015.00763"
           },
           {
             "title": "Mind the Hype: A Critical Evaluation of Mindfulness Research — Van Dam et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691617709589"
           }
         ]
       },
@@ -1968,11 +2022,13 @@
         "sources": [
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           }
         ]
       },
@@ -2019,11 +2075,13 @@
         "sources": [
           {
             "title": "Active Listening — Rogers & Farson (1957)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://books.google.com/books/about/Active_Listening.html?id=MngrjgEACAAJ"
           },
           {
             "title": "Empathic Accuracy — Ickes (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-6494.1993.tb00783.x"
           }
         ]
       },
@@ -2079,11 +2137,13 @@
         "sources": [
           {
             "title": "Empathic Accuracy — Ickes (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-6494.1993.tb00783.x"
           },
           {
             "title": "Emotional Intelligence: An Integrative Meta-Analysis — Joseph & Newman (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0017286"
           }
         ]
       },
@@ -2140,11 +2200,8 @@
         "sources": [
           {
             "title": "Thin Slices of Expressive Behavior as Predictors of Interpersonal Consequences — Ambady & Rosenthal (1992)",
-            "type": "paper"
-          },
-          {
-            "title": "Accuracy of Judging Others' Nonverbal Cues — Hall, Andrzejewski & Yopchick (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.111.2.256"
           }
         ]
       },
@@ -2195,11 +2252,13 @@
         "sources": [
           {
             "title": "Emotional Intelligence: An Integrative Meta-Analysis — Joseph & Newman (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0017286"
           },
           {
             "title": "Productivity Loss in Brainstorming Groups — Diehl & Stroebe (1987)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0022-3514.53.3.497"
           }
         ]
       },
@@ -2254,12 +2313,9 @@
         "knownLimitations": "Preparing to teach improves the teacher's own learning reliably; whether your students learn more is a separate claim requiring separate evidence.",
         "sources": [
           {
-            "title": "Learning by Teaching: The Protégé Effect — Fiorella & Mayer (2016)",
-            "type": "paper"
-          },
-          {
             "title": "The 2 Sigma Problem — Bloom (1984)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3102/0013189X013006004"
           }
         ]
       },
@@ -2315,11 +2371,13 @@
         "sources": [
           {
             "title": "Getting to Yes: Negotiating Agreement Without Giving In — Fisher & Ury",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/324551/getting-to-yes-by-roger-fisher-and-william-ury/"
           },
           {
             "title": "The Mind and Heart of the Negotiator — Thompson (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.pearson.com/en-us/subject-catalog/p/mind-and-heart-of-the-negotiator-the/P200000006425/9780135641262"
           }
         ]
       },
@@ -2374,15 +2432,18 @@
         "sources": [
           {
             "title": "The Dunning–Kruger Effect: On Being Ignorant of One's Own Ignorance — Dunning (2011)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/B978-0-12-385522-0.00005-6"
           },
           {
             "title": "Unskilled and Unaware of It — Kruger & Dunning (1999)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0022-3514.77.6.1121"
           },
           {
             "title": "How Emotions Are Made — Lisa Feldman Barrett (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/howemotionsarema0000barr"
           }
         ]
       },
@@ -2437,15 +2498,13 @@
         "sources": [
           {
             "title": "Metacognition and Cognitive Monitoring — Flavell (1979)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.34.10.906"
           },
           {
             "title": "The promise and perils of self-regulated study — Kornell & Bjork (2007)",
-            "type": "paper"
-          },
-          {
-            "title": "Metacognitive judgments and control of study — Metcalfe & Finn (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3758/BF03194055"
           }
         ]
       },
@@ -2502,7 +2561,8 @@
         "sources": [
           {
             "title": "Building a Practically Useful Theory of Goal Setting and Task Motivation — Locke & Latham (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.57.9.705"
           }
         ]
       },
@@ -2558,19 +2618,23 @@
         "sources": [
           {
             "title": "Working memory capacity and attention control — Unsworth, Fukuda, Awh & Vogel (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.cogpsych.2014.01.003"
           },
           {
             "title": "Cognitive control in media multitaskers — Ophir, Nass & Wagner (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1073/pnas.0903620106"
           },
           {
             "title": "Mindfulness Training Improves Working Memory Capacity and GRE Performance — Mrazek et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797612459659"
           },
           {
             "title": "Mind the Hype: A Critical Evaluation of Mindfulness Research — Van Dam et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691617709589"
           }
         ]
       },
@@ -2626,11 +2690,13 @@
         "sources": [
           {
             "title": "A national experiment reveals where a growth mindset improves achievement — Yeager et al. (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/s41586-019-1466-y"
           },
           {
             "title": "To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? — Sisk et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797617739704"
           }
         ]
       },
@@ -2684,11 +2750,13 @@
         "sources": [
           {
             "title": "Learning by Thinking: How Reflection Aids Performance — Di Stefano, Gino, Pisano & Staats (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2414478"
           },
           {
             "title": "Mind the Hype: A Critical Evaluation of Mindfulness Research — Van Dam et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691617709589"
           }
         ]
       },
@@ -2734,12 +2802,9 @@
         "knownLimitations": "Observational skill is taxon-specific perceptual learning. Expertise in birds does not transfer to fungi.",
         "sources": [
           {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
-          },
-          {
             "title": "Folk Biology and the Anthropology of Science — Atran (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1017/S0140525X98001277"
           }
         ]
       },
@@ -2795,11 +2860,13 @@
         "sources": [
           {
             "title": "Folk Biology and the Anthropology of Science — Atran (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1017/S0140525X98001277"
           },
           {
             "title": "Distributed Practice in Verbal Recall Tasks — Cepeda et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.132.3.354"
           }
         ]
       },
@@ -2857,11 +2924,13 @@
         "sources": [
           {
             "title": "Thinking in Systems — Meadows (2008)",
-            "type": "book"
+            "type": "book",
+            "url": "https://donellameadows.org/archives/donella-h-meadows-bibliography/"
           },
           {
             "title": "Folk Biology and the Anthropology of Science — Atran (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1017/S0140525X98001277"
           }
         ]
       },
@@ -2908,12 +2977,9 @@
         "knownLimitations": "Humans over-detect patterns in noise. Without a falsification step this node trains confidence rather than accuracy.",
         "sources": [
           {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
-          },
-          {
             "title": "Reasoning about a rule — Wason (1968)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/14640746808400161"
           }
         ]
       },
@@ -2961,7 +3027,8 @@
         "sources": [
           {
             "title": "Folk Biology and the Anthropology of Science — Atran (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1017/S0140525X98001277"
           }
         ]
       },
@@ -3010,11 +3077,13 @@
         "sources": [
           {
             "title": "The Natural Navigator — Tristan Gooley (2010)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.amazon.com/Natural-Navigator-Tristan-Gooley/dp/1905264941"
           },
           {
             "title": "Navigation and the hippocampus — Maguire et al. (2000), London taxi drivers",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1073/pnas.070039597"
           }
         ]
       },
@@ -3062,11 +3131,13 @@
         "sources": [
           {
             "title": "Unpacking Emotion Differentiation — Kashdan, Barrett & McKnight (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0963721414550708"
           },
           {
             "title": "How Emotions Are Made — Lisa Feldman Barrett (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/howemotionsarema0000barr"
           }
         ]
       },
@@ -3121,11 +3192,13 @@
         "sources": [
           {
             "title": "Interoception, contemplative practice, and health — Farb et al. (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3389/fpsyg.2015.00763"
           },
           {
             "title": "Mind the Hype: A Critical Evaluation of Mindfulness Research — Van Dam et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691617709589"
           }
         ]
       },
@@ -3181,11 +3254,13 @@
         "sources": [
           {
             "title": "Emotion Regulation: Current Status and Future Prospects — Gross (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/1047840X.2014.940781"
           },
           {
             "title": "How Emotions Are Made — Lisa Feldman Barrett (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/howemotionsarema0000barr"
           }
         ]
       },
@@ -3236,15 +3311,18 @@
         "sources": [
           {
             "title": "Debiasing Decisions: Improved Decision Making With a Single Training Intervention — Morewedge et al. (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/2372732215600886"
           },
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "Cognitive interventions to reduce diagnostic error — Graber et al. (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1136/bmjqs-2011-000149"
           }
         ]
       },
@@ -3300,11 +3378,13 @@
         "sources": [
           {
             "title": "The Effects of Feedback Interventions on Performance — Kluger & DeNisi (1996)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.119.2.254"
           },
           {
             "title": "The Power of Feedback — Hattie & Timperley (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3102/003465430298487"
           }
         ]
       },
@@ -3351,11 +3431,13 @@
         "sources": [
           {
             "title": "How Emotions Are Made — Lisa Feldman Barrett (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/howemotionsarema0000barr"
           },
           {
             "title": "Learning by Thinking: How Reflection Aids Performance — Di Stefano, Gino, Pisano & Staats (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2414478"
           }
         ]
       },
@@ -3399,15 +3481,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Executive Functions — Diamond (2013), Annual Review of Psychology",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-113011-143750"
           },
           {
             "title": "Conclusions about interventions to improve executive functions — Diamond & Ling (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.dcn.2015.11.005"
           }
         ]
       },
@@ -3464,11 +3549,13 @@
         "sources": [
           {
             "title": "Emotion Regulation: Current Status and Future Prospects — Gross (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/1047840X.2014.940781"
           },
           {
             "title": "Dealing with feeling: A meta-analysis of emotion regulation strategies — Webb, Miles & Sheeran (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0027600"
           }
         ]
       },
@@ -3524,11 +3611,13 @@
         "sources": [
           {
             "title": "Emotion Regulation: Current Status and Future Prospects — Gross (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/1047840X.2014.940781"
           },
           {
             "title": "Dealing with feeling: A meta-analysis of emotion regulation strategies — Webb, Miles & Sheeran (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0027600"
           }
         ]
       },
@@ -3586,11 +3675,13 @@
         "sources": [
           {
             "title": "A meta-analysis of the impact of short-term sleep deprivation on cognitive variables — Lim & Dinges (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0018883"
           },
           {
             "title": "Be Smart, Exercise Your Heart: Exercise Effects on Brain and Cognition — Hillman, Erickson & Kramer (2008)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/nrn2298"
           }
         ]
       },
@@ -3646,15 +3737,18 @@
         "sources": [
           {
             "title": "Implementation Intentions: Strong Effects of Simple Plans — Gollwitzer (1999)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.54.7.493"
           },
           {
             "title": "Psychology of Habit — Wood & Rünger (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-122414-033417"
           },
           {
             "title": "Building a Practically Useful Theory of Goal Setting and Task Motivation — Locke & Latham (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.57.9.705"
           }
         ]
       },
@@ -3710,11 +3804,13 @@
         "sources": [
           {
             "title": "Delay of Gratification in Children — Mischel, Shoda & Rodriguez (1989)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.2658056"
           },
           {
             "title": "Revisiting the Marshmallow Test — Watts, Duncan & Quan (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797618761661"
           }
         ]
       },
@@ -3761,11 +3857,13 @@
         "sources": [
           {
             "title": "Empathic Accuracy — Ickes (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-6494.1993.tb00783.x"
           },
           {
             "title": "Emotional Intelligence: An Integrative Meta-Analysis — Joseph & Newman (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0017286"
           }
         ]
       },
@@ -3821,11 +3919,13 @@
         "sources": [
           {
             "title": "Emotion Regulation: Current Status and Future Prospects — Gross (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/1047840X.2014.940781"
           },
           {
             "title": "Mind the Hype: A Critical Evaluation of Mindfulness Research — Van Dam et al. (2018)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691617709589"
           }
         ]
       },
@@ -3882,11 +3982,8 @@
         "sources": [
           {
             "title": "Thin Slices of Expressive Behavior as Predictors of Interpersonal Consequences — Ambady & Rosenthal (1992)",
-            "type": "paper"
-          },
-          {
-            "title": "Accuracy of Judging Others' Nonverbal Cues — Hall, Andrzejewski & Yopchick (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.111.2.256"
           }
         ]
       },
@@ -3934,7 +4031,8 @@
         "sources": [
           {
             "title": "Folk Biology and the Anthropology of Science — Atran (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1017/S0140525X98001277"
           }
         ]
       },
@@ -3977,11 +4075,13 @@
         "sources": [
           {
             "title": "Active Listening — Rogers & Farson (1957)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://books.google.com/books/about/Active_Listening.html?id=MngrjgEACAAJ"
           },
           {
             "title": "Empathic Accuracy — Ickes (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-6494.1993.tb00783.x"
           }
         ]
       },
@@ -4023,12 +4123,9 @@
         "knownLimitations": "There is no established measurement for this construct. It is included because it is practically important, not because it is well evidenced.",
         "sources": [
           {
-            "title": "Accuracy of Judging Others' Nonverbal Cues — Hall, Andrzejewski & Yopchick (2009)",
-            "type": "paper"
-          },
-          {
             "title": "Empathic Accuracy — Ickes (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-6494.1993.tb00783.x"
           }
         ]
       },
@@ -4071,11 +4168,13 @@
         "sources": [
           {
             "title": "Getting to Yes: Negotiating Agreement Without Giving In — Fisher & Ury",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/324551/getting-to-yes-by-roger-fisher-and-william-ury/"
           },
           {
             "title": "Emotional Intelligence: An Integrative Meta-Analysis — Joseph & Newman (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0017286"
           }
         ]
       },
@@ -4131,11 +4230,13 @@
         "sources": [
           {
             "title": "Getting to Yes: Negotiating Agreement Without Giving In — Fisher & Ury",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/324551/getting-to-yes-by-roger-fisher-and-william-ury/"
           },
           {
             "title": "The Mind and Heart of the Negotiator — Thompson (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.pearson.com/en-us/subject-catalog/p/mind-and-heart-of-the-negotiator-the/P200000006425/9780135641262"
           }
         ]
       },
@@ -4190,11 +4291,13 @@
         "sources": [
           {
             "title": "Emotion Regulation: Current Status and Future Prospects — Gross (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/1047840X.2014.940781"
           },
           {
             "title": "Getting to Yes: Negotiating Agreement Without Giving In — Fisher & Ury",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/324551/getting-to-yes-by-roger-fisher-and-william-ury/"
           }
         ]
       },
@@ -4241,11 +4344,13 @@
         "sources": [
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "The Mind and Heart of the Negotiator — Thompson (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.pearson.com/en-us/subject-catalog/p/mind-and-heart-of-the-negotiator-the/P200000006425/9780135641262"
           }
         ]
       },
@@ -4291,12 +4396,9 @@
         "knownLimitations": "Mentoring effects are slow, confounded with selection, and easily claimed without evidence.",
         "sources": [
           {
-            "title": "Learning by Teaching: The Protégé Effect — Fiorella & Mayer (2016)",
-            "type": "paper"
-          },
-          {
             "title": "The 2 Sigma Problem — Bloom (1984)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3102/0013189X013006004"
           }
         ]
       },
@@ -4339,7 +4441,8 @@
         "sources": [
           {
             "title": "Emotional Intelligence: An Integrative Meta-Analysis — Joseph & Newman (2010)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0017286"
           }
         ]
       },
@@ -4382,19 +4485,23 @@
         "sources": [
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "Working memory training does not improve performance on measures of intelligence — Melby-Lervåg, Redick & Hulme (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691616635612"
           },
           {
             "title": "Cognitive Training Does Not Enhance General Cognition — Sala & Gobet (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2018.10.004"
           },
           {
             "title": "Do 'Brain-Training' Programs Work? — Simons et al. (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100616661983"
           }
         ]
       },
@@ -4450,15 +4557,13 @@
         "sources": [
           {
             "title": "Schema Induction and Analogical Transfer — Gick & Holyoak (1983)",
-            "type": "paper"
-          },
-          {
-            "title": "Analogy as the Core of Cognition — Gentner (2003)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(83)90002-6"
           },
           {
             "title": "Surfaces and Essences: Analogy as the Fuel and Fire of Thinking — Hofstadter & Sander (2013)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.hachettebookgroup.com/titles/douglas-r-hofstadter/surfaces-and-essences/9780465018475/"
           }
         ]
       },
@@ -4513,15 +4618,18 @@
         "sources": [
           {
             "title": "The Logic of Scientific Discovery — Popper (1959)",
-            "type": "book"
+            "type": "book",
+            "url": "https://philpapers.org/rec/POPTLO-7"
           },
           {
             "title": "Error and the Growth of Experimental Knowledge — Mayo (1996)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.uchicago.edu/ucp/books/book/chicago/E/bo3637756.html"
           },
           {
             "title": "Sources of Power: How People Make Decisions — Klein (1998)",
-            "type": "book"
+            "type": "book",
+            "url": "https://direct.mit.edu/books/book/3647/Sources-of-PowerHow-People-Make-Decisions"
           }
         ]
       },
@@ -4569,15 +4677,18 @@
         "sources": [
           {
             "title": "How to Solve It — Pólya (1945)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.princeton.edu/books/paperback/9780691164076/how-to-solve-it"
           },
           {
             "title": "Human Problem Solving — Newell & Simon (1972)",
-            "type": "book"
+            "type": "book",
+            "url": "https://dl.acm.org/doi/10.5555/1095704"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -4633,15 +4744,18 @@
         "sources": [
           {
             "title": "Reasoning about a rule — Wason (1968)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/14640746808400161"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "The Logic of Scientific Discovery — Popper (1959)",
-            "type": "book"
+            "type": "book",
+            "url": "https://philpapers.org/rec/POPTLO-7"
           }
         ]
       },
@@ -4689,19 +4803,23 @@
         "sources": [
           {
             "title": "Working Memory: Theories, Models, and Controversies — Baddeley (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-120710-100422"
           },
           {
             "title": "Working memory training does not improve performance on measures of intelligence — Melby-Lervåg, Redick & Hulme (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691616635612"
           },
           {
             "title": "Is working memory training effective? — Shipstead, Redick & Engle (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/a0027473"
           },
           {
             "title": "Do 'Brain-Training' Programs Work? — Simons et al. (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100616661983"
           }
         ]
       },
@@ -4746,11 +4864,13 @@
         "sources": [
           {
             "title": "Perception in Chess — Chase & Simon (1973)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(73)90004-2"
           },
           {
             "title": "Long-term working memory — Ericsson & Kintsch (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295x.102.2.211"
           }
         ]
       },
@@ -4806,15 +4926,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Working memory training does not improve performance on measures of intelligence — Melby-Lervåg, Redick & Hulme (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691616635612"
           },
           {
             "title": "Working memory capacity and attention control — Unsworth, Fukuda, Awh & Vogel (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.cogpsych.2014.01.003"
           }
         ]
       },
@@ -4867,11 +4990,13 @@
         "sources": [
           {
             "title": "Working Memory: Theories, Models, and Controversies — Baddeley (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-120710-100422"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           }
         ]
       },
@@ -4923,15 +5048,18 @@
         "sources": [
           {
             "title": "Cognitive Load During Problem Solving — Sweller (1988)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1207/s15516709cog1202_4"
           },
           {
             "title": "Cognitive Load Theory and Complex Learning — van Merriënboer & Sweller (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1007/s10648-005-3951-0"
           },
           {
             "title": "Cognitive control in media multitaskers — Ophir, Nass & Wagner (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1073/pnas.0903620106"
           }
         ]
       },
@@ -4978,15 +5106,18 @@
         "sources": [
           {
             "title": "The Processing-Speed Theory of Adult Age Differences in Cognition — Salthouse (1996)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.103.3.403"
           },
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "Do 'Brain-Training' Programs Work? — Simons et al. (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100616661983"
           }
         ]
       },
@@ -5030,11 +5161,8 @@
         "sources": [
           {
             "title": "Toward an Instance Theory of Automatization — Logan (1988)",
-            "type": "paper"
-          },
-          {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.95.4.492"
           }
         ]
       },
@@ -5083,11 +5211,8 @@
         "sources": [
           {
             "title": "Visual search — Wolfe (2010)",
-            "type": "paper"
-          },
-          {
-            "title": "Perceptual Learning and the Technology of Expertise — Kellman & Garrigan (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.cub.2010.02.016"
           }
         ]
       },
@@ -5132,11 +5257,13 @@
         "sources": [
           {
             "title": "The Diffusion Decision Model — Ratcliff & McKoon (2008)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1162/neco.2008.12-06-420"
           },
           {
             "title": "The speed-accuracy tradeoff: history, physiology, methodology, and behavior — Heitz (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3389/fnins.2014.00150"
           }
         ]
       },
@@ -5185,11 +5312,13 @@
         "sources": [
           {
             "title": "Toward an Instance Theory of Automatization — Logan (1988)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.95.4.492"
           },
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           }
         ]
       },
@@ -5239,15 +5368,18 @@
         "sources": [
           {
             "title": "Test-Enhanced Learning — Roediger & Karpicke (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1111/j.1467-9280.2006.01693.x"
           },
           {
             "title": "The Critical Importance of Retrieval for Learning — Karpicke & Roediger (2008)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.1152408"
           },
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           }
         ]
       },
@@ -5304,16 +5436,18 @@
         "sources": [
           {
             "title": "Distributed Practice in Verbal Recall Tasks — Cepeda et al. (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.132.3.354"
           },
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           },
           {
             "title": "Free Spaced Repetition Scheduler (open-source DSR implementation)",
             "type": "tool",
-            "url": "https://github.com/open-spaced-repetition/fsrs4anki"
+            "url": "https://github.com/open-spaced-repetition/free-spaced-repetition-scheduler"
           }
         ]
       },
@@ -5377,11 +5511,13 @@
         "sources": [
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           },
           {
             "title": "The Reading Mind — Willingham (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.wiley.com/en-us/The+Reading+Mind:+A+Cognitive+Approach+to+Understanding+How+the+Mind+Reads-p-9781119301363"
           }
         ]
       },
@@ -5430,15 +5566,18 @@
         "sources": [
           {
             "title": "Interleaved Practice Improves Mathematics Learning — Rohrer, Dedrick & Stershic (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/edu0000001"
           },
           {
             "title": "Learning versus Performance: An Integrative Review — Soderstrom & Bjork (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691615569000"
           },
           {
             "title": "Memory and Metamemory Considerations in the Training of Human Beings — Bjork (1994)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://gwern.net/doc/psychology/spaced-repetition/1994-bjork.pdf"
           }
         ]
       },
@@ -5483,15 +5622,18 @@
         "sources": [
           {
             "title": "Mnemonology: Mnemonics for the 21st Century — Worthen & Hunt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.routledge.com/Mnemonology-Mnemonics-for-the-21st-Century/Worthen-Hunt/p/book/9781138871786"
           },
           {
             "title": "Mnemonic Training Reshapes Brain Networks to Support Superior Memory — Dresler et al. (2017)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.neuron.2017.02.003"
           },
           {
             "title": "Do 'Brain-Training' Programs Work? — Simons et al. (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100616661983"
           }
         ]
       },
@@ -5539,15 +5681,18 @@
         "sources": [
           {
             "title": "How to Take Smart Notes — Ahrens (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.amazon.com/How-Take-Smart-Notes-Nonfiction/dp/1542866502"
           },
           {
             "title": "The Extended Mind — Clark & Chalmers (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1093/analys/58.1.7"
           },
           {
             "title": "Cognitive Offloading — Risko & Gilbert (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2016.07.002"
           }
         ]
       },
@@ -5610,15 +5755,18 @@
         "sources": [
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "Schema Induction and Analogical Transfer — Gick & Holyoak (1983)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(83)90002-6"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -5675,15 +5823,18 @@
         "sources": [
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "The Reading Mind — Willingham (2017)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.wiley.com/en-us/The+Reading+Mind:+A+Cognitive+Approach+to+Understanding+How+the+Mind+Reads-p-9781119301363"
           },
           {
             "title": "The Dunning–Kruger Effect: On Being Ignorant of One's Own Ignorance — Dunning (2011)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/B978-0-12-385522-0.00005-6"
           }
         ]
       },
@@ -5732,15 +5883,18 @@
         "sources": [
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "Perception in Chess — Chase & Simon (1973)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(73)90004-2"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -5796,15 +5950,18 @@
         "sources": [
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           },
           {
             "title": "Schema Induction and Analogical Transfer — Gick & Holyoak (1983)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(83)90002-6"
           },
           {
             "title": "Cognitive Training Does Not Enhance General Cognition — Sala & Gobet (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2018.10.004"
           }
         ]
       },
@@ -5853,15 +6010,18 @@
         "sources": [
           {
             "title": "Communicating Statistical Information — Hoffrage, Lindsey, Hertwig & Gigerenzer (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.290.5500.2261"
           },
           {
             "title": "How to Improve Bayesian Reasoning Without Instruction: Frequency Formats — Gigerenzer & Hoffrage (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.102.4.684"
           },
           {
             "title": "The Visual Display of Quantitative Information — Tufte (2001)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/"
           }
         ]
       },
@@ -5910,11 +6070,13 @@
         "sources": [
           {
             "title": "Schema Induction and Analogical Transfer — Gick & Holyoak (1983)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/0010-0285(83)90002-6"
           },
           {
             "title": "When and Where Do We Apply What We Learn? A Taxonomy for Far Transfer — Barnett & Ceci (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/12081085/"
           }
         ]
       },
@@ -5963,11 +6125,13 @@
         "sources": [
           {
             "title": "Human Cognitive Abilities — Carroll (1993)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/humancognitiveab0000carr"
           },
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           }
         ]
       },
@@ -6017,15 +6181,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Executive Functions — Diamond (2013), Annual Review of Psychology",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-113011-143750"
           },
           {
             "title": "Working memory capacity and attention control — Unsworth, Fukuda, Awh & Vogel (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.cogpsych.2014.01.003"
           }
         ]
       },
@@ -6106,15 +6273,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Conclusions about interventions to improve executive functions — Diamond & Ling (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.dcn.2015.11.005"
           },
           {
             "title": "Executive Functions — Diamond (2013), Annual Review of Psychology",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-113011-143750"
           }
         ]
       },
@@ -6167,6 +6337,11 @@
           "minutes": 5,
           "progression": [
             "Run it at two times of day and compare the error rates"
+          ],
+          "rubric": [
+            "The commission-error count written down as a number, not an impression",
+            "The condition you ran it under: time of day, sleep, anything that would explain a bad run",
+            "A comparison against your own previous run, or the note that this is the first one"
           ]
         }
       ]
@@ -6195,15 +6370,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Executive Functions — Diamond (2013), Annual Review of Psychology",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-113011-143750"
           },
           {
             "title": "Conclusions about interventions to improve executive functions — Diamond & Ling (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.dcn.2015.11.005"
           }
         ]
       },
@@ -6256,6 +6434,11 @@
           "minutes": 6,
           "progression": [
             "Compare switch cost when rested versus tired"
+          ],
+          "rubric": [
+            "Switch-trial and repeat-trial times recorded separately",
+            "The switch cost stated as the difference between them",
+            "Accuracy for both, so a fast run that was wrong cannot read as a good one"
           ]
         }
       ]
@@ -6284,15 +6467,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "How to Solve It — Pólya (1945)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.princeton.edu/books/paperback/9780691164076/how-to-solve-it"
           },
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           }
         ]
       },
@@ -6372,15 +6558,18 @@
         "sources": [
           {
             "title": "Implementation Intentions: Strong Effects of Simple Plans — Gollwitzer (1999)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.54.7.493"
           },
           {
             "title": "Building a Practically Useful Theory of Goal Setting and Task Motivation — Locke & Latham (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.57.9.705"
           },
           {
             "title": "Psychology of Habit — Wood & Rünger (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1146/annurev-psych-122414-033417"
           }
         ]
       },
@@ -6460,15 +6649,18 @@
         "sources": [
           {
             "title": "The Unity and Diversity of Executive Functions — Miyake et al. (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1006/cogp.1999.0734"
           },
           {
             "title": "Cognitive interventions to reduce diagnostic error — Graber et al. (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1136/bmjqs-2011-000149"
           },
           {
             "title": "The Checklist Manifesto — Gawande (2009)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.porchlightbooks.com/products/checklist-manifesto-atul-gawande-9780312430009"
           }
         ]
       },
@@ -6548,15 +6740,18 @@
         "sources": [
           {
             "title": "Why Most Published Research Findings Are False — Ioannidis (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1371/journal.pmed.0020124"
           },
           {
             "title": "Estimating the Reproducibility of Psychological Science — Open Science Collaboration (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.aac4716"
           },
           {
             "title": "How to Improve Bayesian Reasoning Without Instruction: Frequency Formats — Gigerenzer & Hoffrage (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.102.4.684"
           }
         ]
       },
@@ -6598,6 +6793,11 @@
           "minutes": 25,
           "progression": [
             "Predict the confidence interval, then check"
+          ],
+          "rubric": [
+            "Your predicted effect size, written before you read the abstract or results",
+            "The design feature that drove the prediction: sample, controls, allocation, or the lack of them",
+            "The actual reported effect, and one sentence on where your reading was off"
           ]
         },
         {
@@ -6637,11 +6837,13 @@
         "sources": [
           {
             "title": "Lateral Reading and the Nature of Expertise — Wineburg & McGrew (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/016146811912101102"
           },
           {
             "title": "Why Most Published Research Findings Are False — Ioannidis (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1371/journal.pmed.0020124"
           }
         ]
       },
@@ -6723,15 +6925,18 @@
         "sources": [
           {
             "title": "The Book of Why — Pearl & Mackenzie (2018)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.hachettebookgroup.com/titles/judea-pearl/the-book-of-why/9780465097616/"
           },
           {
             "title": "Statistical Rethinking — McElreath (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://xcelab.net/rm/statistical-rethinking/"
           },
           {
             "title": "Why Most Published Research Findings Are False — Ioannidis (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1371/journal.pmed.0020124"
           }
         ]
       },
@@ -6812,19 +7017,23 @@
         "sources": [
           {
             "title": "How to Improve Bayesian Reasoning Without Instruction: Frequency Formats — Gigerenzer & Hoffrage (1995)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.102.4.684"
           },
           {
             "title": "Communicating Statistical Information — Hoffrage, Lindsey, Hertwig & Gigerenzer (2000)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.290.5500.2261"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           },
           {
             "title": "Statistical Rethinking — McElreath (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://xcelab.net/rm/statistical-rethinking/"
           }
         ]
       },
@@ -6866,6 +7075,11 @@
           "minutes": 20,
           "progression": [
             "Do them in probability format instead and compare your accuracy"
+          ],
+          "rubric": [
+            "Five items attempted, each with the prior, the likelihood and the posterior written out",
+            "The natural-frequency framing shown, not just the final percentage",
+            "How many of the five you got within the tolerance you set in advance"
           ]
         },
         {
@@ -6906,15 +7120,18 @@
         "sources": [
           {
             "title": "The Logic of Scientific Discovery — Popper (1959)",
-            "type": "book"
+            "type": "book",
+            "url": "https://philpapers.org/rec/POPTLO-7"
           },
           {
             "title": "Reasoning about a rule — Wason (1968)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/14640746808400161"
           },
           {
             "title": "Error and the Growth of Experimental Knowledge — Mayo (1996)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.uchicago.edu/ucp/books/book/chicago/E/bo3637756.html"
           }
         ]
       },
@@ -6967,6 +7184,11 @@
           "minutes": 10,
           "progression": [
             "Repeat with a rule you generated yourself"
+          ],
+          "rubric": [
+            "The rule you hypothesised, stated before you started testing",
+            "At least one test chosen specifically because it could disconfirm that rule",
+            "Whether you actually ran that test, and what it returned"
           ]
         }
       ]
@@ -6994,19 +7216,23 @@
         "sources": [
           {
             "title": "Why Most Published Research Findings Are False — Ioannidis (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1371/journal.pmed.0020124"
           },
           {
             "title": "Estimating the Reproducibility of Psychological Science — Open Science Collaboration (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.aac4716"
           },
           {
             "title": "Error and the Growth of Experimental Knowledge — Mayo (1996)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.uchicago.edu/ucp/books/book/chicago/E/bo3637756.html"
           },
           {
             "title": "Statistical Rethinking — McElreath (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://xcelab.net/rm/statistical-rethinking/"
           }
         ]
       },
@@ -7088,19 +7314,23 @@
         "sources": [
           {
             "title": "Error and the Growth of Experimental Knowledge — Mayo (1996)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.uchicago.edu/ucp/books/book/chicago/E/bo3637756.html"
           },
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           },
           {
             "title": "Statistical Rethinking — McElreath (2020)",
-            "type": "book"
+            "type": "book",
+            "url": "https://xcelab.net/rm/statistical-rethinking/"
           },
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           }
         ]
       },
@@ -7180,15 +7410,18 @@
         "sources": [
           {
             "title": "The Foundations of Statistics — Savage (1954)",
-            "type": "book"
+            "type": "book",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/nav.3800010316"
           },
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "Information Value Theory — Howard (1966)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1109/TSSC.1966.300074"
           }
         ]
       },
@@ -7268,15 +7501,18 @@
         "sources": [
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "Information Value Theory — Howard (1966)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1109/TSSC.1966.300074"
           },
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           }
         ]
       },
@@ -7356,19 +7592,23 @@
         "sources": [
           {
             "title": "Verification of Forecasts Expressed in Terms of Probability — Brier (1950)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2"
           },
           {
             "title": "Calibration of Probabilities: The State of the Art to 1980 — Lichtenstein, Fischhoff & Phillips (1982)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://researchonline.lse.ac.uk/id/eprint/27324/"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           },
           {
             "title": "Psychological Strategies for Winning a Geopolitical Forecasting Tournament — Mellers et al. (2014)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/0956797614524255"
           }
         ]
       },
@@ -7398,6 +7638,11 @@
           "minutes": 10,
           "progression": [
             "Make them about things you would rather not be wrong about"
+          ],
+          "rubric": [
+            "Three claims a stranger could later judge true or false without asking you what you meant",
+            "A probability on each, and a date it resolves",
+            "Why you picked that probability rather than a round 50%"
           ]
         },
         {
@@ -7410,6 +7655,11 @@
           "minutes": 15,
           "progression": [
             "Plot the calibration curve and find your systematic direction of error"
+          ],
+          "rubric": [
+            "Every prediction past its date marked resolved, including the ones you would rather not",
+            "The outcome recorded as it happened, not as it felt at the time",
+            "One line on any prediction you got badly wrong, and what would have changed the call"
           ]
         },
         {
@@ -7422,6 +7672,11 @@
           "minutes": 20,
           "progression": [
             "Repeat until roughly nine of ten intervals actually contain the answer"
+          ],
+          "rubric": [
+            "Ten intervals, each with a lower and upper bound written before you look anything up",
+            "The true values, and a count of how many of the ten fell inside",
+            "The hit rate compared against the 9-in-10 the interval claimed"
           ]
         }
       ]
@@ -7450,15 +7705,18 @@
         "sources": [
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           },
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "Learning by Thinking: How Reflection Aids Performance — Di Stefano, Gino, Pisano & Staats (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2414478"
           }
         ]
       },
@@ -7538,15 +7796,18 @@
         "sources": [
           {
             "title": "Information Value Theory — Howard (1966)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1109/TSSC.1966.300074"
           },
           {
             "title": "The Foundations of Statistics — Savage (1954)",
-            "type": "book"
+            "type": "book",
+            "url": "https://onlinelibrary.wiley.com/doi/10.1002/nav.3800010316"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           }
         ]
       },
@@ -7627,15 +7888,18 @@
         "sources": [
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           },
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           },
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           }
         ]
       },
@@ -7714,19 +7978,23 @@
         "sources": [
           {
             "title": "The Nature of Human Intelligence — Guilford (1967)",
-            "type": "book"
+            "type": "book",
+            "url": "https://archive.org/details/natureofhumanint0000jpgu"
           },
           {
             "title": "The Standard Definition of Creativity — Runco & Jaeger (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/10400419.2012.650092"
           },
           {
             "title": "Domain Specificity of Creativity — Baer (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.sciencedirect.com/book/9780127999623/domain-specificity-of-creativity"
           },
           {
             "title": "Productivity Loss in Brainstorming Groups — Diehl & Stroebe (1987)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0022-3514.53.3.497"
           }
         ]
       },
@@ -7806,15 +8074,18 @@
         "sources": [
           {
             "title": "Creative Cognition: Theory, Research, and Applications — Finke, Ward & Smith (1992)",
-            "type": "book"
+            "type": "book",
+            "url": "https://direct.mit.edu/books/monograph/4888/Creative-CognitionTheory-Research-and-Applications"
           },
           {
             "title": "How to Solve It — Pólya (1945)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.princeton.edu/books/paperback/9780691164076/how-to-solve-it"
           },
           {
             "title": "The Standard Definition of Creativity — Runco & Jaeger (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/10400419.2012.650092"
           }
         ]
       },
@@ -7894,15 +8165,18 @@
         "sources": [
           {
             "title": "Creative Cognition: Theory, Research, and Applications — Finke, Ward & Smith (1992)",
-            "type": "book"
+            "type": "book",
+            "url": "https://direct.mit.edu/books/monograph/4888/Creative-CognitionTheory-Research-and-Applications"
           },
           {
             "title": "Surfaces and Essences: Analogy as the Fuel and Fire of Thinking — Hofstadter & Sander (2013)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.hachettebookgroup.com/titles/douglas-r-hofstadter/surfaces-and-essences/9780465018475/"
           },
           {
             "title": "Domain Specificity of Creativity — Baer (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.sciencedirect.com/book/9780127999623/domain-specificity-of-creativity"
           }
         ]
       },
@@ -7982,15 +8256,18 @@
         "sources": [
           {
             "title": "The Standard Definition of Creativity — Runco & Jaeger (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1080/10400419.2012.650092"
           },
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           },
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           }
         ]
       },
@@ -8071,15 +8348,18 @@
         "sources": [
           {
             "title": "Motor Control and Learning: A Behavioral Emphasis — Schmidt & Lee",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Motor_Control_and_Learning.html?id=EvJ6DwAAQBAJ"
           },
           {
             "title": "The Power of Feedback — Hattie & Timperley (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3102/003465430298487"
           },
           {
             "title": "The Effects of Feedback Interventions on Performance — Kluger & DeNisi (1996)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.119.2.254"
           }
         ]
       },
@@ -8159,15 +8439,18 @@
         "sources": [
           {
             "title": "Lateral Reading and the Nature of Expertise — Wineburg & McGrew (2019)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/016146811912101102"
           },
           {
             "title": "Cognitive Offloading — Risko & Gilbert (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2016.07.002"
           },
           {
             "title": "Google Effects on Memory — Sparrow, Liu & Wegner (2011)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.1207745"
           }
         ]
       },
@@ -8251,15 +8534,18 @@
         "sources": [
           {
             "title": "How to Solve It — Pólya (1945)",
-            "type": "book"
+            "type": "book",
+            "url": "https://press.princeton.edu/books/paperback/9780691164076/how-to-solve-it"
           },
           {
             "title": "Human Problem Solving — Newell & Simon (1972)",
-            "type": "book"
+            "type": "book",
+            "url": "https://dl.acm.org/doi/10.5555/1095704"
           },
           {
             "title": "Cognitive Load Theory and Complex Learning — van Merriënboer & Sweller (2005)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1007/s10648-005-3951-0"
           }
         ]
       },
@@ -8339,15 +8625,18 @@
         "sources": [
           {
             "title": "Navigating the Jagged Technological Frontier — Dell'Acqua et al. (2023)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.2139/ssrn.4573321"
           },
           {
             "title": "To Trust or to Think: Cognitive Forcing Functions Can Reduce Overreliance on AI — Buçinca, Malaya & Gajos (2021)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1145/3449287"
           },
           {
             "title": "Cognitive Offloading — Risko & Gilbert (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2016.07.002"
           }
         ]
       },
@@ -8428,19 +8717,23 @@
         "sources": [
           {
             "title": "Cognitive Offloading — Risko & Gilbert (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1016/j.tics.2016.07.002"
           },
           {
             "title": "Google Effects on Memory — Sparrow, Liu & Wegner (2011)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1126/science.1207745"
           },
           {
             "title": "The Extended Mind — Clark & Chalmers (1998)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1093/analys/58.1.7"
           },
           {
             "title": "The Checklist Manifesto — Gawande (2009)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.porchlightbooks.com/products/checklist-manifesto-atul-gawande-9780312430009"
           }
         ]
       },
@@ -8520,19 +8813,23 @@
         "sources": [
           {
             "title": "To Trust or to Think: Cognitive Forcing Functions Can Reduce Overreliance on AI — Buçinca, Malaya & Gajos (2021)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1145/3449287"
           },
           {
             "title": "Navigating the Jagged Technological Frontier — Dell'Acqua et al. (2023)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.2139/ssrn.4573321"
           },
           {
             "title": "The Checklist Manifesto — Gawande (2009)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.porchlightbooks.com/products/checklist-manifesto-atul-gawande-9780312430009"
           },
           {
             "title": "Cognitive interventions to reduce diagnostic error — Graber et al. (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1136/bmjqs-2011-000149"
           }
         ]
       },
@@ -8613,15 +8910,18 @@
         "sources": [
           {
             "title": "Memory and Metamemory Considerations in the Training of Human Beings — Bjork (1994)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://gwern.net/doc/psychology/spaced-repetition/1994-bjork.pdf"
           },
           {
             "title": "Learning versus Performance: An Integrative Review — Soderstrom & Bjork (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691615569000"
           },
           {
             "title": "The promise and perils of self-regulated study — Kornell & Bjork (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3758/BF03194055"
           }
         ]
       },
@@ -8650,6 +8950,11 @@
           "minutes": 10,
           "progression": [
             "Adjust after every session, not weekly"
+          ],
+          "rubric": [
+            "Your success rate for the session as a fraction, not a feeling",
+            "The difficulty level you trained at",
+            "The adjustment you made, or the reason you left it alone"
           ]
         },
         {
@@ -8702,15 +9007,18 @@
         "sources": [
           {
             "title": "The Effects of Feedback Interventions on Performance — Kluger & DeNisi (1996)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-2909.119.2.254"
           },
           {
             "title": "The Power of Feedback — Hattie & Timperley (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3102/003465430298487"
           },
           {
             "title": "Learning Strategies: A Synthesis and Conceptual Model — Hattie & Donoghue (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/npjscilearn.2016.13"
           }
         ]
       },
@@ -8791,19 +9099,23 @@
         "sources": [
           {
             "title": "The Role of Deliberate Practice in the Acquisition of Expert Performance — Ericsson, Krampe & Tesch-Römer (1993)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0033-295X.100.3.363"
           },
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           },
           {
             "title": "Learning versus Performance: An Integrative Review — Soderstrom & Bjork (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691615569000"
           },
           {
             "title": "Interleaved Practice Improves Mathematics Learning — Rohrer, Dedrick & Stershic (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/edu0000001"
           }
         ]
       },
@@ -8844,6 +9156,11 @@
           "minutes": 30,
           "progression": [
             "Run it for three weeks before judging"
+          ],
+          "rubric": [
+            "The habit you replaced, described specifically enough that someone could copy the change",
+            "The retrieval version you ran instead",
+            "A test taken at least a day later, with the score, not an in-session impression"
           ]
         },
         {
@@ -8884,15 +9201,13 @@
         "sources": [
           {
             "title": "Cognitive interventions to reduce diagnostic error — Graber et al. (2012)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1136/bmjqs-2011-000149"
           },
           {
             "title": "Learning Strategies: A Synthesis and Conceptual Model — Hattie & Donoghue (2016)",
-            "type": "paper"
-          },
-          {
-            "title": "Metacognitive judgments and control of study — Metcalfe & Finn (2009)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/npjscilearn.2016.13"
           }
         ]
       },
@@ -8973,19 +9288,23 @@
         "sources": [
           {
             "title": "The promise and perils of self-regulated study — Kornell & Bjork (2007)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.3758/BF03194055"
           },
           {
             "title": "Learning Strategies: A Synthesis and Conceptual Model — Hattie & Donoghue (2016)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1038/npjscilearn.2016.13"
           },
           {
             "title": "Improving Students' Learning With Effective Learning Techniques — Dunlosky et al. (2013)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1529100612453266"
           },
           {
             "title": "Learning versus Performance: An Integrative Review — Soderstrom & Bjork (2015)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1177/1745691615569000"
           }
         ]
       },
@@ -9026,6 +9345,11 @@
           "minutes": 35,
           "progression": [
             "Test after a week rather than a day"
+          ],
+          "rubric": [
+            "The same material run through both strategies, with time spent on each",
+            "A delayed test for both, at least a day out",
+            "Which won, and whether the margin is bigger than the noise in one sitting"
           ]
         },
         {
@@ -9066,15 +9390,18 @@
         "sources": [
           {
             "title": "Building a Practically Useful Theory of Goal Setting and Task Motivation — Locke & Latham (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.57.9.705"
           },
           {
             "title": "Implementation Intentions: Strong Effects of Simple Plans — Gollwitzer (1999)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.54.7.493"
           },
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           }
         ]
       },
@@ -9155,15 +9482,18 @@
         "sources": [
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           },
           {
             "title": "Building a Practically Useful Theory of Goal Setting and Task Motivation — Locke & Latham (2002)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://doi.org/10.1037/0003-066X.57.9.705"
           },
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           }
         ]
       },
@@ -9243,15 +9573,18 @@
         "sources": [
           {
             "title": "Scenario Planning: Strategic Conversation — van der Heijden (2005)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.wiley.com/en-ie/Scenarios:+The+Art+of+Strategic+Conversation,+2nd+Edition-p-9780470023686"
           },
           {
             "title": "Superforecasting: The Art and Science of Prediction — Tetlock & Gardner (2015)",
-            "type": "book"
+            "type": "book",
+            "url": "https://digitalcommons.usf.edu/jss/vol9/iss1/14/"
           },
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           }
         ]
       },
@@ -9332,15 +9665,18 @@
         "sources": [
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           },
           {
             "title": "Thinking, Fast and Slow — Kahneman (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/"
           },
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           }
         ]
       },
@@ -9420,19 +9756,23 @@
         "sources": [
           {
             "title": "Good Strategy / Bad Strategy — Rumelt (2011)",
-            "type": "book"
+            "type": "book",
+            "url": "https://www.penguinrandomhouse.com/books/208668/good-strategy-bad-strategy-by-richard-rumelt/"
           },
           {
             "title": "Thinking in Systems — Meadows (2008)",
-            "type": "book"
+            "type": "book",
+            "url": "https://donellameadows.org/archives/donella-h-meadows-bibliography/"
           },
           {
             "title": "From Nobel Prize to Project Management: Getting Risks Right — Flyvbjerg (2006)",
-            "type": "paper"
+            "type": "paper",
+            "url": "https://journals.sagepub.com/doi/10.1177/875697280603700302"
           },
           {
             "title": "Noise: A Flaw in Human Judgment — Kahneman, Sibony & Sunstein (2021)",
-            "type": "book"
+            "type": "book",
+            "url": "https://books.google.com/books/about/Noise.html?id=fhIBEAAAQBAJ"
           }
         ]
       },

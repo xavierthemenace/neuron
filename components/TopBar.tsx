@@ -4,12 +4,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { paths } from "@/lib/curriculum";
 import { exportAnkiCsv, exportObsidianVault } from "@/lib/knowledge-export";
 import { exportBackup, importBackup } from "@/lib/backup";
+import { buildDemoProgress } from "@/lib/demo";
 import { search as conceptSearch } from "@/lib/search";
 import { TIERS, tierForXp } from "@/lib/mastery";
 import type { Category, IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
 import type { WorkbenchTab } from "./Workbench";
-import { Chip } from "./ui";
+import { ThemeToggle } from "./ThemeToggle";
+import { Chip, ConfirmDialog } from "./ui";
+import { useDismissable } from "./useDismissable";
 
 export function TopBar({
   data,
@@ -44,9 +47,42 @@ export function TopBar({
   const searchInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [legendOpen, setLegendOpen] = useState(false);
-  const [dataOpen, setDataOpen] = useState(false);
-  const [pathsOpen, setPathsOpen] = useState(false);
+  /**
+   * One menu at a time, closed by Escape or by clicking away.
+   *
+   * These were three independent booleans, so Filter and Paths could sit open
+   * on top of each other, and neither closed on Escape or on an outside click —
+   * the Filter panel could only be dismissed by pressing Filter again.
+   */
+  const [menu, setMenu] = useState<null | "legend" | "data" | "paths">(null);
+  const bar = useRef<HTMLDivElement>(null);
+  const legendOpen = menu === "legend";
+  const dataOpen = menu === "data";
+  const pathsOpen = menu === "paths";
+  const setLegendOpen = (open: boolean) => setMenu(open ? "legend" : null);
+  const setDataOpen = (open: boolean) => setMenu(open ? "data" : null);
+  const setPathsOpen = (open: boolean) => setMenu(open ? "paths" : null);
+
+  useDismissable({ open: menu !== null, onClose: () => setMenu(null) });
+
+  const [pending, setPending] = useState<null | {
+    title: string;
+    body: string;
+    confirmLabel: string;
+    destructive?: boolean;
+    run: () => void;
+  }>(null);
+
+  useEffect(() => {
+    if (menu === null) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!bar.current?.contains(event.target as Node)) setMenu(null);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, [menu]);
+
+  const activePath = activePathId ? paths.find((path) => path.id === activePathId) : null;
 
   const tierCounts = useMemo(() => {
     const counts = new Array(TIERS.length).fill(0);
@@ -113,9 +149,15 @@ export function TopBar({
   };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4">
+    <>
+    <div
+      ref={bar}
+      // Clears the navigation pill at its widest — the queue badge on Record
+      // grows the pill — and leaves the same 8px gap the rest of the row uses.
+      className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[22rem] md:pl-[22rem]"
+    >
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
-        <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-black/60 px-3 py-2 shadow-lg backdrop-blur-xl">
+        <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-[var(--panel)] px-3 py-2 shadow-lg backdrop-blur-xl">
           <span className="text-sm font-semibold tracking-tight text-white">Neuron</span>
           <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
           <span className="tabular-nums text-xs text-neutral-300">
@@ -124,6 +166,14 @@ export function TopBar({
           <span className="hidden tabular-nums text-xs text-neutral-500 sm:inline">
             {awake}/{data.nodes.length} active
           </span>
+          {progress.demo && (
+            <span
+              title="Every figure on this screen comes from the generated example profile. Clear it from Data."
+              className="rounded-full border border-amber-300/45 bg-amber-300/[0.12] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-amber-100"
+            >
+              Example data
+            </span>
+          )}
         </div>
 
         <div className="relative order-last w-full sm:order-none sm:w-auto">
@@ -144,7 +194,7 @@ export function TopBar({
               }}
               placeholder="Search capabilities…"
               aria-label="Search capabilities"
-              className="min-h-[40px] w-full rounded-xl border border-white/12 bg-black/60 px-3 py-2 pr-9 text-xs text-neutral-100 shadow-lg outline-none backdrop-blur-xl transition-[border-color,background-color] placeholder:text-neutral-500 focus:border-white/30 focus:bg-black/75 sm:w-64"
+              className="min-h-[40px] w-full rounded-xl border border-white/12 bg-[var(--panel)] px-3 py-2 pr-9 text-xs text-neutral-100 shadow-lg outline-none backdrop-blur-xl transition-[border-color,background-color] placeholder:text-neutral-500 focus:border-white/30 focus:bg-[var(--panel-solid)] sm:w-64"
             />
             {search ? (
               <button
@@ -166,7 +216,7 @@ export function TopBar({
           </div>
 
           {search.trim() && (
-            <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
+            <div className="absolute left-0 top-full z-40 mt-2 w-full min-w-[18rem] overflow-hidden rounded-xl border border-white/12 bg-[var(--panel)] p-1.5 shadow-2xl backdrop-blur-2xl sm:w-[22rem]">
               {searchResults.length > 0 ? (
                 searchResults.map((result, index) => {
                   const node = data.nodes.find((item) => item.id === result.id);
@@ -181,7 +231,7 @@ export function TopBar({
                       <span
                         className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_10px_currentColor]"
                         style={{
-                          color: `oklch(0.78 0.16 ${category?.hue ?? 260})`,
+                          color: `oklch(0.46 0.14 ${category?.hue ?? 260})`,
                           background: "currentColor",
                         }}
                       />
@@ -214,33 +264,45 @@ export function TopBar({
           onClick={() => onOpenWorkbench("review")}
           className={[
             "relative min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
+            // A tinted pill over a dark canvas reads as muddy. When there is
+            // something in the queue this is the one solid colour on the map.
             inboxCount > 0
-              ? "border-cyan-300/30 bg-cyan-300/10 text-cyan-50"
-              : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+              ? "border-transparent bg-[var(--pop)] text-[var(--pop-ink)]"
+              : "border-white/12 bg-[var(--panel)] text-neutral-300 hover:border-white/25 hover:text-white",
           ].join(" ")}
         >
           Review
           {inboxCount > 0 && (
-            <span className="ml-1.5 tabular-nums text-cyan-200/80">{inboxCount}</span>
+            <span className="ml-1.5 tabular-nums opacity-80">{inboxCount}</span>
           )}
         </button>
 
         <div className="relative">
           <button
             type="button"
-            onClick={() => setPathsOpen((value) => !value)}
+            onClick={() => setPathsOpen(!pathsOpen)}
             aria-expanded={pathsOpen}
             className={[
               "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
               activePathId
                 ? "border-white/30 bg-white/12 text-white"
-                : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+                : "border-white/12 bg-[var(--panel)] text-neutral-300 hover:border-white/25 hover:text-white",
             ].join(" ")}
           >
-            Paths
+            {activePath ? (
+              <span className="flex items-center gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-[var(--pop)]"
+                />
+                <span className="max-w-[9rem] truncate">{activePath.label}</span>
+              </span>
+            ) : (
+              "Paths"
+            )}
           </button>
           {pathsOpen && (
-            <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-xl border border-white/12 bg-[var(--panel)] p-1.5 shadow-2xl backdrop-blur-2xl">
               {activePathId && (
                 <button
                   type="button"
@@ -278,29 +340,31 @@ export function TopBar({
 
         <button
           type="button"
-          onClick={() => setLegendOpen((value) => !value)}
+          onClick={() => setLegendOpen(!legendOpen)}
           aria-expanded={legendOpen}
           className={[
             "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
             activeCategories.size > 0
               ? "border-white/30 bg-white/12 text-white"
-              : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+              : "border-white/12 bg-[var(--panel)] text-neutral-300 hover:border-white/25 hover:text-white",
           ].join(" ")}
         >
           Filter{activeCategories.size > 0 && ` (${activeCategories.size})`}
         </button>
 
-        <div className="relative ml-auto">
+        <ThemeToggle variant="pill" />
+
+        <div className="relative">
           <button
             type="button"
-            onClick={() => setDataOpen((value) => !value)}
+            onClick={() => setDataOpen(!dataOpen)}
             aria-expanded={dataOpen}
-            className="min-h-[40px] rounded-xl border border-white/12 bg-black/60 px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
+            className="min-h-[40px] rounded-xl border border-white/12 bg-[var(--panel)] px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
           >
             Data
           </button>
           {dataOpen && (
-            <div className="absolute right-0 top-full z-40 mt-2 w-56 rounded-xl border border-white/12 bg-[oklch(0.135_0.016_265_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
+            <div className="absolute right-0 top-full z-40 mt-2 w-56 rounded-xl border border-white/12 bg-[var(--panel)] p-1.5 shadow-2xl backdrop-blur-2xl">
               <button
                 type="button"
                 onClick={() => {
@@ -335,6 +399,56 @@ export function TopBar({
                 Export Obsidian ZIP
               </button>
               <div className="my-1 h-px bg-white/8" />
+              {progress.demo ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPending({
+                      title: "Clear the example profile",
+                      body: "This leaves you with an empty profile. Nothing of yours is in the example, so nothing of yours is lost.",
+                      confirmLabel: "Clear it",
+                      run: () => resetProgress(),
+                    });
+                    setDataOpen(false);
+                  }}
+                  className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+                >
+                  Clear the example profile
+                  <span className="mt-0.5 block text-[9px] text-neutral-600">
+                    Leaves you with an empty one
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Always export first, exactly as Reset does.
+                    //
+                    // This used to decide whether a backup was warranted by
+                    // counting logs and predictions, which missed goals,
+                    // personal capabilities and experiments — and could never
+                    // have seen journals, which live in their own store. Anyone
+                    // who set up a goal before logging a rep lost it silently.
+                    // There is no version of this worth getting clever about.
+                    void exportBackup(progress).then(() =>
+                      setPending({
+                        title: "Load the example profile",
+                        body: "A backup of everything you have has been downloaded. Loading the example replaces your profile with six months of generated data. Import that backup from this menu to get your own record back.",
+                        confirmLabel: "Load the example",
+                        run: () => replaceProgress(buildDemoProgress()),
+                      }),
+                    );
+                    setDataOpen(false);
+                  }}
+                  className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+                >
+                  Load an example profile
+                  <span className="mt-0.5 block text-[9px] text-neutral-600">
+                    Six months of generated history, clearly labelled
+                  </span>
+                </button>
+              )}
+              <div className="my-1 h-px bg-white/8" />
               <button
                 type="button"
                 onClick={() => fileInput.current?.click()}
@@ -360,15 +474,15 @@ export function TopBar({
                 onClick={() => {
                   // Export first, always. A reset dialog without a backup step
                   // is how people lose years of records to one misread prompt.
-                  void exportBackup(progress).then(() => {
-                    if (
-                      window.confirm(
-                        "A backup has been downloaded. Erase all local progress, journals and settings?",
-                      )
-                    ) {
-                      resetProgress();
-                    }
-                  });
+                  void exportBackup(progress).then(() =>
+                    setPending({
+                      title: "Erase everything",
+                      body: "A backup has been downloaded. This erases all local progress, journals and settings. Importing that file from this menu is the only way back.",
+                      confirmLabel: "Erase everything",
+                      destructive: true,
+                      run: () => resetProgress(),
+                    }),
+                  );
                   setDataOpen(false);
                 }}
                 className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-red-300/60 hover:bg-red-400/[0.07] hover:text-red-200"
@@ -382,7 +496,9 @@ export function TopBar({
           )}
         </div>
 
-        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-black/35 px-2.5 py-2 text-[9px] text-neutral-500 shadow-lg backdrop-blur-xl lg:flex">
+        {/* The keyboard hint is the first thing to give up its space: the row
+            now starts clear of the navigation pill. */}
+        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-[var(--panel)] px-2.5 py-2 text-[9px] text-neutral-400 shadow-lg backdrop-blur-xl 2xl:flex">
           <kbd className="font-mono">⌘/Ctrl K</kbd>
           <span>commands</span>
         </div>
@@ -415,7 +531,7 @@ export function TopBar({
       )}
 
       {legendOpen && (
-        <div className="pointer-events-auto w-full max-w-3xl rounded-xl border border-white/12 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
+        <div className="pointer-events-auto w-full max-w-3xl rounded-xl border border-white/12 bg-[var(--panel)] p-3 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-wrap gap-1.5">
             {data.categories.map((category: Category) => {
               const active = activeCategories.has(category.id);
@@ -428,17 +544,17 @@ export function TopBar({
                   className="flex min-h-[26px] items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-all"
                   style={{
                     borderColor: active
-                      ? `oklch(0.75 0.15 ${category.hue})`
+                      ? `oklch(0.52 0.14 ${category.hue})`
                       : "oklch(1 0 0 / 0.14)",
                     background: active
-                      ? `oklch(0.7 0.15 ${category.hue} / 0.18)`
+                      ? `oklch(0.72 0.13 ${category.hue} / 0.22)`
                       : "oklch(1 0 0 / 0.025)",
-                    color: active ? `oklch(0.92 0.1 ${category.hue})` : "oklch(0.74 0.01 265)",
+                    color: active ? `oklch(0.38 0.13 ${category.hue})` : "oklch(0.44 0.01 265)",
                   }}
                 >
                   <span
                     className="h-2 w-2 rounded-full"
-                    style={{ background: `oklch(0.78 0.16 ${category.hue})` }}
+                    style={{ background: `oklch(0.58 0.15 ${category.hue})` }}
                     aria-hidden="true"
                   />
                   {category.label}
@@ -481,5 +597,19 @@ export function TopBar({
         </div>
       )}
     </div>
+
+    <ConfirmDialog
+      open={pending !== null}
+      title={pending?.title ?? ""}
+      body={pending?.body ?? ""}
+      confirmLabel={pending?.confirmLabel ?? "Confirm"}
+      destructive={pending?.destructive}
+      onCancel={() => setPending(null)}
+      onConfirm={() => {
+        pending?.run();
+        setPending(null);
+      }}
+    />
+    </>
   );
 }

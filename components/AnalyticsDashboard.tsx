@@ -54,7 +54,7 @@ function heatLevel(count: number): number {
 
 function heatColor(level: number): string {
   return [
-    "oklch(0.24 0.015 265)",
+    "#ddd8cf",
     "oklch(0.42 0.08 155)",
     "oklch(0.54 0.12 155)",
     "oklch(0.66 0.16 155)",
@@ -148,7 +148,7 @@ export function AnalyticsDashboard({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-md md:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-3 backdrop-blur-md md:p-6"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -159,9 +159,9 @@ export function AnalyticsDashboard({
         role="dialog"
         aria-modal="true"
         aria-label="Cognitive analytics dashboard"
-        className="max-h-[94dvh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/12 bg-[oklch(0.15_0.018_265_/_0.98)] shadow-2xl"
+        className="max-h-[94dvh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/12 bg-[var(--panel)] shadow-2xl"
       >
-        <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-[oklch(0.15_0.018_265_/_0.94)] px-5 py-4 backdrop-blur-xl">
+        <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-[var(--panel)] px-5 py-4 backdrop-blur-xl">
           <div>
             <h2 className="text-lg font-semibold text-neutral-50">Cognitive analytics</h2>
             <p className="text-xs text-neutral-500">
@@ -178,7 +178,7 @@ export function AnalyticsDashboard({
         </header>
 
         <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-3 md:p-5">
+          <div className="rounded-2xl border border-white/10 bg-[var(--sunk)] p-3 md:p-5">
             <div className="mb-2 flex items-end justify-between gap-3">
               <div>
                 <h3 className="text-sm font-semibold text-neutral-100">Cognitive radar</h3>
@@ -279,7 +279,7 @@ export function AnalyticsDashboard({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/10 bg-[var(--sunk)] p-4">
               <h3 className="text-sm font-semibold text-neutral-100">365-day activity</h3>
               <p className="mt-0.5 text-[11px] text-neutral-500">
                 Every square is a local calendar day; brighter means more completed exercises.
@@ -313,7 +313,7 @@ export function AnalyticsDashboard({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/10 bg-[var(--sunk)] p-4">
               <h3 className="text-sm font-semibold text-neutral-100">Category mastery</h3>
               <div className="mt-3 space-y-2.5">
                 {categoryStats

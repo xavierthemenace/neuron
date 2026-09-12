@@ -69,7 +69,7 @@ function MarkdownPreview({ markdown }: { markdown: string }) {
           return <blockquote key={key} className="border-l-2 border-cyan-300/30 pl-3 italic text-neutral-400">{block.text}</blockquote>;
         }
         if (block.kind === "code") {
-          return <pre key={key} className="overflow-x-auto rounded-lg border border-white/8 bg-black/35 p-3 font-mono text-[11px] text-neutral-300">{block.text}</pre>;
+          return <pre key={key} className="overflow-x-auto rounded-lg border border-white/8 bg-[var(--sunk-strong)] p-3 font-mono text-[11px] text-neutral-300">{block.text}</pre>;
         }
         return <p key={key}>{block.text}</p>;
       })}
@@ -155,7 +155,7 @@ export function MarkdownJournal({
   }
 
   return (
-    <section className="rounded-xl border border-white/10 bg-black/15 p-3">
+    <section className="rounded-xl border border-white/10 bg-[var(--sunk)] p-3">
       <div className="flex items-center gap-2">
         <div>
           <h3 className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">Journal</h3>
@@ -163,7 +163,7 @@ export function MarkdownJournal({
             Local Markdown · autosaved · [[links]] and markers
           </p>
         </div>
-        <div className="ml-auto flex rounded-lg border border-white/8 bg-black/20 p-0.5">
+        <div className="ml-auto flex rounded-lg border border-white/8 bg-[var(--sunk)] p-0.5">
           {(["edit", "preview", "links"] as const).map((item) => (
             <button
               key={item}
@@ -189,16 +189,16 @@ export function MarkdownJournal({
               "# Notes\n\n? a question   ! an insight   ~ a prediction\n[[Another capability]] links to it and creates a backlink there"
             }
             aria-label="Capability journal, Markdown"
-            className="min-h-40 w-full resize-y rounded-lg border border-white/10 bg-black/30 p-3 font-mono text-xs leading-relaxed text-neutral-200 outline-none placeholder:text-neutral-600 focus:border-white/25"
+            className="min-h-40 w-full resize-y rounded-lg border border-white/10 bg-[var(--sunk)] p-3 font-mono text-xs leading-relaxed text-neutral-200 outline-none placeholder:text-neutral-600 focus:border-white/25"
           />
         )}
         {mode === "preview" && (
-          <div className="min-h-40 rounded-lg border border-white/8 bg-black/20 p-3">
+          <div className="min-h-40 rounded-lg border border-white/8 bg-[var(--sunk)] p-3">
             <MarkdownPreview markdown={markdown} />
           </div>
         )}
         {mode === "links" && (
-          <div className="min-h-40 rounded-lg border border-white/8 bg-black/20 p-3">
+          <div className="min-h-40 rounded-lg border border-white/8 bg-[var(--sunk)] p-3">
             <JournalTools
               nodeId={nodeId}
               markdown={markdown}

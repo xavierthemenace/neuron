@@ -71,6 +71,43 @@ export const ESTIMATE_CONFIDENCE_LABEL: Record<EstimateConfidence, string> = {
   high: "High",
 };
 
+/**
+ * Where a competence number came from.
+ *
+ * Confidence already says how *much* evidence there is. This says what *kind*,
+ * which is the distinction that matters when a number is read at a glance: an
+ * untouched node and a node with four scored probes both render as a
+ * percentage, and only one of them is a measurement. Most of the map will sit
+ * at "prior" or "self-reported" for a long time, and it should say so.
+ */
+export type EstimateProvenance = "prior" | "self-reported" | "judged" | "measured";
+
+export const PROVENANCE_LABEL: Record<EstimateProvenance, string> = {
+  prior: "Not measured",
+  "self-reported": "Self-reported",
+  judged: "From your work",
+  measured: "Measured",
+};
+
+export const PROVENANCE_BLURB: Record<EstimateProvenance, string> = {
+  prior:
+    "Nothing has been logged here. This is the starting assumption every capability begins at, not a reading of your ability.",
+  "self-reported":
+    "Every observation here is you ticking that you did the thing. It moves the number, because an honest practice history is not worth nothing, but it is not a measurement.",
+  judged:
+    "Work was produced and can be re-read. Nobody scored it against a criterion, so it is evidence that something happened, not evidence of how well.",
+  measured:
+    "At least one observation was scored against a criterion — a diagnostic, a graded exercise, or a capstone.",
+};
+
+/** True only when something was scored, not merely produced or ticked. */
+export function provenanceOf(observations: CompetenceObservation[]): EstimateProvenance {
+  if (observations.length === 0) return "prior";
+  if (observations.some((o) => o.kind === "scored" || o.kind === "external")) return "measured";
+  if (observations.some((o) => o.kind === "artifact")) return "judged";
+  return "self-reported";
+}
+
 export interface CompetenceObservation {
   kind: EvidenceKind;
   /** 0-1 performance implied by this observation. */
@@ -94,6 +131,8 @@ export interface NodeEstimate {
   /** Competence discounted by retention — the "right now" number. */
   effectiveCompetence: number;
   confidence: EstimateConfidence;
+  /** What kind of evidence the number rests on, for labelling it on screen. */
+  provenance: EstimateProvenance;
   /** Total evidence weight behind the estimate, excluding the prior. */
   evidenceWeight: number;
   /** Count of observations that were more than a self-reported tick. */
@@ -262,6 +301,7 @@ export function estimateNode(input: EstimateInput, now = new Date()): NodeEstima
     retention,
     effectiveCompetence: competence * (0.55 + 0.45 * retention),
     confidence,
+    provenance: provenanceOf(observations),
     evidenceWeight,
     strongObservations,
     observations,

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GROUP_LABEL,
+  GROUP_ORDER,
   buildCommands,
   filterCommands,
   type CommandGroup,
@@ -183,7 +184,14 @@ export function CommandPalette({
 
   const rows = useMemo(
     () => [
-      ...matchedCommands.map((command) => ({ kind: "command" as const, command })),
+      // Sorted by group so the "new group starts here" heading fires once per
+      // group rather than once per row. Stable within a group, so the ranking
+      // the matcher produced is kept.
+      ...[...matchedCommands]
+        .sort(
+          (a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group),
+        )
+        .map((command) => ({ kind: "command" as const, command })),
       ...nodeResults.map((node) => ({ kind: "node" as const, node })),
       ...exerciseResults.map((entry) => ({ kind: "exercise" as const, ...entry })),
     ],
@@ -229,7 +237,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/65 px-3 pt-[10vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[70] flex items-start justify-center bg-[var(--scrim)] px-3 pt-[10vh] backdrop-blur-sm"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) setOpen(false);
@@ -240,7 +248,7 @@ export function CommandPalette({
         role="dialog"
         aria-modal="true"
         aria-label="Neuron command palette"
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[oklch(0.145_0.018_265_/_0.985)] shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[var(--panel)] shadow-2xl"
       >
         <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
           <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-neutral-500" aria-hidden="true">

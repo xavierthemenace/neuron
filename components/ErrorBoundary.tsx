@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
 
     return (
       <div className="grid min-h-dvh place-items-center bg-[var(--surface)] p-6">
-        <div className="w-full max-w-lg space-y-4 rounded-2xl border border-white/12 bg-[oklch(0.14_0.018_265)] p-6 shadow-2xl">
+        <div className="w-full max-w-lg space-y-4 rounded-2xl border border-white/12 bg-[var(--card)] p-6 shadow-2xl">
           <h1 className="text-lg font-semibold text-neutral-50">Neuron hit a rendering error</h1>
           <p className="text-[12px] leading-relaxed text-neutral-400">
             Your practice log, journals and attachments are stored separately from the view
@@ -72,7 +72,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
             anything else — then reload.
           </p>
 
-          <pre className="max-h-32 overflow-auto rounded-lg border border-white/8 bg-black/40 p-3 font-mono text-[10px] leading-relaxed text-rose-200/70">
+          <pre className="max-h-32 overflow-auto rounded-lg border border-white/8 bg-[var(--sunk-strong)] p-3 font-mono text-[10px] leading-relaxed text-rose-200/70">
             {error.message}
           </pre>
 

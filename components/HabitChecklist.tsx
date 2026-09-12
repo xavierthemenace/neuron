@@ -177,7 +177,7 @@ export function HabitChecklist({
                       <path
                         d="M2.5 6.2 4.8 8.5 9.5 3.8"
                         fill="none"
-                        stroke="oklch(0.13 0.02 265)"
+                        stroke="#ffffff"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -214,7 +214,12 @@ export function HabitChecklist({
                     <span title="Your current working difficulty for this task">
                       L{adaptive.level}/5
                       {adaptive.level !== adaptive.anchor && (
-                        <span className="ml-0.5 text-neutral-600">
+                        <span
+                          className="ml-0.5 text-neutral-600"
+                          title={`Adaptive difficulty has moved this ${
+                            adaptive.level > adaptive.anchor ? "up" : "down"
+                          } from the exercise's anchor of ${adaptive.anchor}, from your record on it.`}
+                        >
                           ({adaptive.level > adaptive.anchor ? "+" : ""}
                           {adaptive.level - adaptive.anchor})
                         </span>
@@ -257,6 +262,39 @@ export function HabitChecklist({
 
                   {open && !done && (
                     <div className="mt-3 space-y-2.5 border-t border-white/8 pt-3">
+                      {exercise.rubric && exercise.rubric.length > 0 ? (
+                        <div className="rounded-lg border border-white/10 bg-white/[0.02] p-2.5">
+                          <p className="text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                            A complete answer has
+                          </p>
+                          <ul className="mt-1.5 space-y-1">
+                            {exercise.rubric.map((check) => (
+                              <li
+                                key={check}
+                                className="flex gap-2 text-[11px] leading-relaxed text-neutral-300"
+                              >
+                                <span aria-hidden="true" className="text-neutral-600">
+                                  ·
+                                </span>
+                                <span>{check}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        node.evidence?.measurementMethod && (
+                          <div className="rounded-lg border border-white/8 bg-white/[0.015] p-2.5">
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                              No checklist for this task yet
+                            </p>
+                            <p className="mt-1 text-[11px] leading-relaxed text-neutral-400">
+                              The standard for the capability as a whole:{" "}
+                              {node.evidence.measurementMethod}
+                            </p>
+                          </div>
+                        )
+                      )}
+
                       <label className="block">
                         <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-wider text-neutral-500">
                           {typable ? "Complete the task here" : "Completion evidence / notes"}
@@ -291,7 +329,7 @@ export function HabitChecklist({
                             max={600}
                             value={minutes}
                             onChange={(event) => setMinutes(event.target.value)}
-                            className="w-16 rounded-md border border-white/10 bg-black/35 px-2 py-1 text-xs tabular-nums text-neutral-200 outline-none focus:border-white/25"
+                            className="w-16 rounded-md border border-white/10 bg-[var(--sunk-strong)] px-2 py-1 text-xs tabular-nums text-neutral-200 outline-none focus:border-white/25"
                           />
                         </label>
                         <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-[10px] text-neutral-500">

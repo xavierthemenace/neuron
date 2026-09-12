@@ -199,7 +199,11 @@ export function buildNodes(
       node.label,
       category?.label ?? "faculty",
       tier.name,
-      `${Math.round(competence * 100)} percent estimated competence`,
+      // An untouched node reads out the prior. Saying "estimated competence"
+      // there implies something was estimated from evidence about this person.
+      trained
+        ? `${Math.round(competence * 100)} percent estimated competence`
+        : `${Math.round(competence * 100)} percent, the starting assumption rather than a measurement`,
       trained ? `${Math.round(retention * 100)} percent retention` : "never trained",
     ];
     if (unproven) ariaParts.push("no scored evidence yet");

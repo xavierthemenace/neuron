@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { PROVENANCE_BLURB } from "@/lib/competence";
 import {
   capstonesForNode,
   missionsForNode,
@@ -33,6 +34,7 @@ import {
   Chip,
   ConfidenceChip,
   EstimateChip,
+  ProvenanceChip,
   KindChip,
   Meter,
   Section,
@@ -209,10 +211,11 @@ export function SidePanel({
       aria-hidden={!open}
       aria-label={node ? `${node.label} detail` : undefined}
       className={[
-        "fixed z-40 flex flex-col border-white/12 bg-[oklch(0.145_0.018_265_/_0.955)] shadow-2xl backdrop-blur-2xl",
+        "fixed z-40 flex flex-col border-white/12 bg-[var(--panel)] shadow-2xl backdrop-blur-2xl",
         "transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0",
         "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-2xl border-t",
         "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[440px] md:rounded-none md:border-l md:border-t-0",
+        "xl:w-[496px] 2xl:w-[560px]",
         open
           ? "translate-y-0 md:translate-x-0"
           : "translate-y-full md:translate-y-0 md:translate-x-full",
@@ -223,7 +226,7 @@ export function SidePanel({
           <header
             className="relative shrink-0 border-b border-white/10 p-5"
             style={{
-              background: `linear-gradient(155deg, oklch(0.34 0.1 ${hue} / 0.36), oklch(0.17 0.02 265 / 0.72) 58%, transparent 100%)`,
+              background: `linear-gradient(155deg, oklch(0.80 0.10 ${hue} / 0.42), oklch(0.98 0.008 90 / 0.35) 58%, transparent 100%)`,
             }}
           >
             <button
@@ -246,8 +249,8 @@ export function SidePanel({
               <span
                 className="inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
                 style={{
-                  color: `oklch(0.9 0.12 ${hue})`,
-                  background: `oklch(0.7 0.15 ${hue} / 0.16)`,
+                  color: `oklch(0.42 0.13 ${hue})`,
+                  background: `oklch(0.74 0.12 ${hue} / 0.22)`,
                 }}
               >
                 {category?.label ?? "Personal"}
@@ -275,7 +278,7 @@ export function SidePanel({
                 value={estimate?.competence ?? 0}
                 hue={hue}
                 emphasis
-                caption="Estimated from evidence that could have gone badly."
+                caption={PROVENANCE_BLURB[estimate?.provenance ?? "prior"]}
               />
               <Meter
                 label="Retention"
@@ -286,6 +289,7 @@ export function SidePanel({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              <ProvenanceChip provenance={estimate?.provenance ?? "prior"} />
               <EstimateChip
                 level={estimate?.confidence ?? "none"}
                 observations={estimate?.strongObservations}
@@ -308,19 +312,21 @@ export function SidePanel({
             </Why>
 
             <div className="mt-3 flex items-baseline justify-between gap-3 text-[10px] text-neutral-500">
-              <span style={{ color: `oklch(0.88 0.13 ${hue})` }}>{tier.name}</span>
+              <span style={{ color: `oklch(0.44 0.13 ${hue})` }}>{tier.name}</span>
               <span className="tabular-nums">
-                {next ? `${Math.max(0, next.min - xp)} XP to ${next.name}` : "fully trained"}
+                {next
+                  ? `${Math.max(0, next.min - xp)} XP to ${next.name}`
+                  : "top of the XP scale"}
               </span>
             </div>
             <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/10">
               <div
                 className="h-full rounded-full transition-[width] duration-500"
-                style={{ width: `${Math.round(fill * 100)}%`, background: `oklch(0.7 0.1 ${hue})` }}
+                style={{ width: `${Math.round(fill * 100)}%`, background: `oklch(0.55 0.11 ${hue})` }}
               />
             </div>
 
-            <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+            <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-[var(--sunk)] px-3 py-2">
               <div>
                 <div className="text-[11px] font-medium text-neutral-200">Focus Mode</div>
                 <div className="text-[9px] text-neutral-500">
@@ -352,7 +358,7 @@ export function SidePanel({
             <div
               role="tablist"
               aria-label="Faculty sections"
-              className="mt-4 flex gap-1 rounded-xl border border-white/8 bg-black/20 p-1"
+              className="mt-4 flex gap-1 rounded-xl border border-white/8 bg-[var(--sunk)] p-1"
             >
               {(
                 [
@@ -386,7 +392,7 @@ export function SidePanel({
                   </p>
                   <p
                     className="mt-3 border-l-2 pl-3 text-[13px] italic leading-relaxed text-neutral-400"
-                    style={{ borderColor: `oklch(0.72 0.15 ${hue} / 0.58)` }}
+                    style={{ borderColor: `oklch(0.56 0.13 ${hue} / 0.55)` }}
                   >
                     {node.why}
                   </p>
@@ -600,7 +606,7 @@ export function SidePanel({
                         >
                           <span
                             className="tabular-nums font-medium"
-                            style={{ color: `oklch(0.78 0.13 ${hue})` }}
+                            style={{ color: `oklch(0.44 0.13 ${hue})` }}
                           >
                             +{log.xp}
                           </span>
@@ -761,6 +767,8 @@ function EvidenceTab({
 
       <Section title="Sources" hint={`Reviewed ${evidence.evidenceUpdatedAt}.`}>
         <ul className="space-y-1">
+          {/* A citation nobody can follow is an assertion wearing a citation's
+              clothes. Anything without a link says so on its face. */}
           {evidence.sources.map((source) => (
             <li key={source.title} className="text-[11px] leading-relaxed text-neutral-400">
               {source.url ? (
@@ -773,14 +781,22 @@ function EvidenceTab({
                   {source.title}
                 </a>
               ) : (
-                source.title
+                <>
+                  {source.title}
+                  <span
+                    title="No link on file, so this reference has not been checked from inside the app."
+                    className="ml-1.5 whitespace-nowrap rounded-full border border-amber-300/35 bg-amber-300/[0.12] px-1.5 py-px text-[9px] font-medium uppercase tracking-wider text-amber-100"
+                  >
+                    unchecked
+                  </span>
+                </>
               )}
             </li>
           ))}
         </ul>
       </Section>
 
-      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[var(--sunk)] px-3 py-2.5">
         <div className="min-w-0 pr-3">
           <div className="text-[11px] font-medium text-neutral-200">Research Mode</div>
           <div className="text-[9px] leading-relaxed text-neutral-500">

@@ -2,7 +2,7 @@
  * Neuron's service worker.
  *
  * Generated from this template by scripts/build-sw.mjs, which replaces
- * 52fe51e87b8d with a hash of the build output. Do not edit public/sw.js
+ * 4f36489200e7 with a hash of the build output. Do not edit public/sw.js
  * directly — it is overwritten on every build.
  *
  * Caching strategy, by request kind:
@@ -20,9 +20,16 @@
  * hand-maintained version string meant any release where someone forgot to
  * bump it kept serving the old application shell forever.
  */
-const BUILD = "52fe51e87b8d";
+const BUILD = "4f36489200e7";
 const CACHE = `neuron-${BUILD}`;
-const CORE = ["/", "/manifest.webmanifest", "/favicon.ico", "/neuron-icon.svg"];
+const CORE = [
+  "/",
+  "/manifest.webmanifest",
+  "/favicon.ico",
+  "/neuron-icon.svg",
+  "/apple-touch-icon.png",
+  "/icon-192.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

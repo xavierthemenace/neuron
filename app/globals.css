@@ -1,63 +1,363 @@
 @import "tailwindcss";
 
+/**
+ * Studio palette.
+ *
+ * The app is paper: a warm off-white ground, ink text, deep green for the
+ * thing you are meant to do next and a single orange for the action itself.
+ * The map keeps a dark canvas, because a 139-node network needs a dark ground
+ * to read against and treating it as an inset plate rather than the page is a
+ * deliberate contrast, not an oversight.
+ *
+ * The rest of the app was written against a dark palette expressed in
+ * Tailwind's own scales (`text-neutral-400`, `bg-white/5`, `border-white/12`).
+ * Rather than rewrite several hundred class strings, the scales themselves are
+ * redefined here: low numbers are dark and high numbers are light, `white` is
+ * ink and `black` is card. Every existing class then lands where it should on
+ * paper — a "bright" text colour is the darkest ink, a faint white overlay is a
+ * faint ink tint — and new work uses the semantic tokens below.
+ */
+
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Ground and ink */
+  --paper: #efece6;
+  --paper-sunk: #e7e3da;
+  --card: #ffffff;
+  --ink: #191614;
+  --ink-soft: #5f5952;
+  --ink-faint: #6f6861;
+  --rule: #ddd8cf;
+
+  /* Accents: green is state, orange is action */
+  --green: #1f3d2e;
+  --green-soft: #2f6a4a;
+  --green-wash: #e4ebe4;
+  --pop: #c4471f;
+  --pop-soft: #f0e0d7;
+
+  /* Semantic */
+  --good: #2f6a4a;
+  --warn: #9a6212;
+  --bad: #a33a22;
+
+  /* The map plate stays dark */
   --surface: oklch(0.125 0.018 265);
   --surface-raised: oklch(0.185 0.022 265);
   --foreground: oklch(0.97 0.005 265);
   --muted: oklch(0.69 0.014 265);
   --border: oklch(1 0 0 / 0.13);
-  --focus-ring: oklch(0.82 0.13 230);
+  --focus-ring: #1f3d2e;
+
+  /* Surfaces, named by role so a theme can move them together */
+  --panel: rgb(255 255 255 / 0.96);
+  --panel-solid: #ffffff;
+  --sunk: rgb(25 22 20 / 0.035);
+  --sunk-strong: rgb(25 22 20 / 0.05);
+  --scrim: rgb(25 22 20 / 0.34);
+  --toast: rgb(25 22 20 / 0.92);
+  /* Text that sits on the action colour */
+  --pop-ink: #ffffff;
+  --page-lift: linear-gradient(to bottom, #f5f3ee, transparent 34%);
+
+  /* Reach for these rather than hard-coding insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @theme inline {
-  --color-background: var(--surface);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-geist-mono);
 }
 
-body {
-  background: var(--surface);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  overflow: hidden;
+/**
+ * Scale inversion. `neutral-50` is now the darkest ink and `neutral-900` the
+ * lightest wash, so a class written for light-text-on-dark reads correctly as
+ * dark-text-on-paper without being touched.
+ */
+@theme {
+  --color-white: #191614;
+  --color-black: #ffffff;
+
+  --color-neutral-50: #100e0c;
+  --color-neutral-100: #191614;
+  --color-neutral-200: #26221d;
+  --color-neutral-300: #3a352e;
+  --color-neutral-400: #585249;
+  --color-neutral-500: #5f5952;
+  --color-neutral-600: #706960;
+  --color-neutral-700: #a9a29a;
+  --color-neutral-800: #c9c3b9;
+  --color-neutral-900: #e0dbd2;
+  --color-neutral-950: #efece6;
+
+  /* Primary action: orange on paper */
+  --color-cyan-50: #7a2b12;
+  --color-cyan-100: #92351a;
+  --color-cyan-200: #a83e1c;
+  --color-cyan-300: #c4471f;
+  --color-cyan-400: #dd6b46;
+
+  /* Good / measured */
+  --color-emerald-50: #16301f;
+  --color-emerald-100: #1f3d2e;
+  --color-emerald-200: #26523a;
+  --color-emerald-300: #2f6a4a;
+  --color-emerald-400: #3d8760;
+
+  /* Caution / self-reported */
+  --color-amber-50: #5c3a08;
+  --color-amber-100: #7a4d0d;
+  --color-amber-200: #9a6212;
+  --color-amber-300: #b97a1f;
+  --color-amber-400: #cf9235;
+
+  /* Overdue / weak */
+  --color-rose-50: #6b2412;
+  --color-rose-100: #872e17;
+  --color-rose-200: #a33a22;
+  --color-rose-300: #c04c31;
+  --color-rose-400: #d0674c;
+
+  /* Reference / informational blue */
+  --color-sky-50: #1a2e4d;
+  --color-sky-100: #223c63;
+  --color-sky-200: #2c4a7c;
+  --color-sky-300: #3a5f97;
+  --color-sky-400: #5078b0;
+
+  --color-violet-300: #5b4a86;
+  --color-violet-100: #3a2f57;
 }
 
+/**
+ * Dark.
+ *
+ * The whole app is expressed in two vocabularies: the semantic tokens above,
+ * and Tailwind's own scales, which the light theme inverts so that a class
+ * written for light-text-on-dark lands correctly on paper. Dark mode is
+ * therefore one block of variable overrides — the scales go back to meaning
+ * what their numbers say, and the semantic tokens move together — rather than
+ * a second set of class names anywhere in the app.
+ *
+ * `[data-theme="dark"]` is an explicit choice; the media query is for people
+ * who never make one. The explicit-light selector is what lets someone keep a
+ * light app on a dark system.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper: #14161a;
+    --paper-sunk: #101216;
+    --card: #1c1f25;
+    --ink: #eceef1;
+    --ink-soft: #a9afb8;
+    --ink-faint: #8a919b;
+    --rule: #2c313a;
+
+    --green: #23523b;
+    --green-soft: #58a37e;
+    --green-wash: #1d2b24;
+    --pop: #d95a2c;
+    --pop-soft: #2c1d16;
+    --pop-ink: #17120f;
+    --page-lift: linear-gradient(to bottom, #191c22, transparent 34%);
+
+    --good: #58a37e;
+    --warn: #d8a13f;
+    --bad: #e0705a;
+
+    --focus-ring: #7fc2ac;
+
+    --panel: rgb(28 31 37 / 0.97);
+    --panel-solid: #1c1f25;
+    --sunk: rgb(255 255 255 / 0.05);
+    --sunk-strong: rgb(255 255 255 / 0.08);
+    --scrim: rgb(0 0 0 / 0.62);
+    --toast: rgb(10 12 15 / 0.94);
+
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-neutral-50: #f7f8f9;
+    --color-neutral-100: #eceef1;
+    --color-neutral-200: #dde1e6;
+    --color-neutral-300: #c2c8d0;
+    --color-neutral-400: #98a0aa;
+    --color-neutral-500: #9aa1ab;
+    --color-neutral-600: #868e99;
+    --color-neutral-700: #6e7681;
+    --color-neutral-800: #3a404a;
+    --color-neutral-900: #262b33;
+    --color-neutral-950: #1a1e24;
+
+    --color-cyan-50: #ffe9df;
+    --color-cyan-100: #ffd2c0;
+    --color-cyan-200: #f08a5d;
+    --color-cyan-300: #d95a2c;
+    --color-cyan-400: #c4471f;
+
+    --color-emerald-50: #d8efe1;
+    --color-emerald-100: #b9e2c9;
+    --color-emerald-200: #7ec09c;
+    --color-emerald-300: #58a37e;
+    --color-emerald-400: #3d8760;
+
+    --color-amber-50: #fbecd0;
+    --color-amber-100: #f4dcae;
+    --color-amber-200: #e5bc6d;
+    --color-amber-300: #d8a13f;
+    --color-amber-400: #b97a1f;
+
+    --color-rose-50: #ffe2dc;
+    --color-rose-100: #ffc9bf;
+    --color-rose-200: #ec9382;
+    --color-rose-300: #e0705a;
+    --color-rose-400: #c04c31;
+
+    --color-sky-50: #dceaff;
+    --color-sky-100: #bfd6f6;
+    --color-sky-200: #8fb2e0;
+    --color-sky-300: #6d95cd;
+    --color-sky-400: #3a5f97;
+
+    --color-violet-100: #cfc4ef;
+    --color-violet-300: #9c8ad2;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #14161a;
+  --paper-sunk: #101216;
+  --card: #1c1f25;
+  --ink: #eceef1;
+  --ink-soft: #a9afb8;
+  --ink-faint: #8a919b;
+  --rule: #2c313a;
+
+  --green: #23523b;
+  --green-soft: #58a37e;
+  --green-wash: #1d2b24;
+  --pop: #d95a2c;
+  --pop-soft: #2c1d16;
+  --pop-ink: #17120f;
+
+  --good: #58a37e;
+  --warn: #d8a13f;
+  --bad: #e0705a;
+
+  --focus-ring: #7fc2ac;
+
+  --panel: rgb(28 31 37 / 0.97);
+  --panel-solid: #1c1f25;
+  --sunk: rgb(255 255 255 / 0.05);
+  --sunk-strong: rgb(255 255 255 / 0.08);
+  --scrim: rgb(0 0 0 / 0.62);
+  --toast: rgb(10 12 15 / 0.94);
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-neutral-50: #f7f8f9;
+  --color-neutral-100: #eceef1;
+  --color-neutral-200: #dde1e6;
+  --color-neutral-300: #c2c8d0;
+  --color-neutral-400: #98a0aa;
+  --color-neutral-500: #9aa1ab;
+  --color-neutral-600: #868e99;
+  --color-neutral-700: #6e7681;
+  --color-neutral-800: #3a404a;
+  --color-neutral-900: #262b33;
+  --color-neutral-950: #1a1e24;
+
+  --color-cyan-50: #ffe9df;
+  --color-cyan-100: #ffd2c0;
+  --color-cyan-200: #f08a5d;
+  --color-cyan-300: #d95a2c;
+  --color-cyan-400: #c4471f;
+
+  --color-emerald-50: #d8efe1;
+  --color-emerald-100: #b9e2c9;
+  --color-emerald-200: #7ec09c;
+  --color-emerald-300: #58a37e;
+  --color-emerald-400: #3d8760;
+
+  --color-amber-50: #fbecd0;
+  --color-amber-100: #f4dcae;
+  --color-amber-200: #e5bc6d;
+  --color-amber-300: #d8a13f;
+  --color-amber-400: #b97a1f;
+
+  --color-rose-50: #ffe2dc;
+  --color-rose-100: #ffc9bf;
+  --color-rose-200: #ec9382;
+  --color-rose-300: #e0705a;
+  --color-rose-400: #c04c31;
+
+  --color-sky-50: #dceaff;
+  --color-sky-100: #bfd6f6;
+  --color-sky-200: #8fb2e0;
+  --color-sky-300: #6d95cd;
+  --color-sky-400: #3a5f97;
+
+  --color-violet-100: #cfc4ef;
+  --color-violet-300: #9c8ad2;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* A single lift at the top of the page, not a spotlight. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      oklch(0.33 0.072 278 / 0.38),
-      transparent 31%
-    ),
-    radial-gradient(
-      ellipse 90% 72% at 50% 48%,
-      oklch(0.245 0.042 268 / 0.54),
-      transparent 72%
-    ),
-    linear-gradient(
-      to bottom,
-      oklch(0.16 0.018 265 / 0.35),
-      transparent 22%,
-      transparent 78%,
-      oklch(0.08 0.01 265 / 0.45)
-    );
+  background: var(--page-lift);
+}
+
+.font-display {
+  font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
-  background: oklch(0.72 0.14 230 / 0.35);
-  color: white;
+  background: color-mix(in srgb, var(--pop) 28%, transparent);
+  color: var(--ink);
 }
 
-:where(button, input, textarea, a):focus-visible {
+:where(button, input, textarea, a, select, [tabindex]):focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+/* iOS zooms any input under 16px on focus. */
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
+@media (min-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: inherit;
+  }
 }
 
 @keyframes node-pulse {
@@ -92,9 +392,26 @@ body::before {
   animation: node-focus-ring 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Screens arrive from a visible resting state, never parked invisible. */
+.animate-rise {
+  animation: rise-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-node-pulse,
-  .animate-node-focus {
+  .animate-node-focus,
+  .animate-rise {
     animation: none;
   }
 
@@ -105,19 +422,19 @@ body::before {
   }
 }
 
-/* ---- React Flow surfaces ---- */
+/* ---- React Flow surfaces (the dark map plate) ---- */
 
 .react-flow__controls-button {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border);
-  color: oklch(0.76 0.015 265);
+  border-bottom: 1px solid rgb(0 0 0 / 0.1);
+  color: #3a352e;
   transition: color 150ms ease, background 150ms ease;
 }
 
 .react-flow__controls-button:hover {
-  background: oklch(1 0 0 / 0.09);
-  color: var(--foreground);
+  background: rgb(25 22 20 / 0.07);
+  color: var(--ink);
 }
 
 .react-flow__controls-button svg {
@@ -125,7 +442,7 @@ body::before {
 }
 
 .react-flow__controls {
-  border-radius: 11px;
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 12px 34px oklch(0 0 0 / 0.28);
 }
@@ -157,7 +474,7 @@ body::before {
 }
 
 .react-flow__node:focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: 2px solid #8fd3b6;
   outline-offset: 8px;
   border-radius: 999px;
 }
@@ -172,8 +489,8 @@ body::before {
 
 @media (prefers-contrast: more) {
   :root {
-    --muted: oklch(0.78 0.014 265);
-    --border: oklch(1 0 0 / 0.22);
+    --ink-soft: #4b463f;
+    --rule: #c6c0b6;
   }
 
   .react-flow__edge-path {
@@ -185,7 +502,7 @@ body::before {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(1 0 0 / 0.2) transparent;
+  scrollbar-color: rgb(25 22 20 / 0.22) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -194,12 +511,12 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 0.2);
+  background: rgb(25 22 20 / 0.22);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(1 0 0 / 0.3);
+  background: rgb(25 22 20 / 0.34);
 }
 
 ::-webkit-scrollbar-track {

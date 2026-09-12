@@ -290,7 +290,7 @@ function CalibrationChart({
         y={pad}
         width={size - pad * 2}
         height={size - pad * 2}
-        fill="oklch(0.16 0.02 265 / 0.5)"
+        fill="rgb(25 22 20 / 0.05)"
         stroke="oklch(1 0 0 / 0.1)"
       />
       <line
@@ -312,7 +312,7 @@ function CalibrationChart({
               cy={cy}
               r={radius}
               fill="oklch(0.78 0.16 200 / 0.85)"
-              stroke="oklch(0.2 0.02 265)"
+              stroke="#ddd8cf"
             />
             <title>
               {`${Math.round(bin.stated * 100)}% stated · ${Math.round(bin.actual * 100)}% happened · ${bin.count} prediction${bin.count === 1 ? "" : "s"}`}

@@ -77,6 +77,16 @@ export interface Exercise {
    * Adaptive difficulty walks up and down this list.
    */
   progression?: string[];
+  /**
+   * What a complete answer to this task contains: two to four concrete checks,
+   * shown while the work is being written.
+   *
+   * Without this, a two-line answer and a two-page one are worth exactly the
+   * same to the competence model, and the only standard in the room is how
+   * generous the person is feeling. A rubric does not score anything on its
+   * own — it gives the person something to fail against before they tick.
+   */
+  rubric?: string[];
 }
 
 /** Depth within a cluster: 0 = root faculty, 1 = core skill, 2 = advanced. */
@@ -374,4 +384,12 @@ export interface Progress {
   installedPacks?: string[];
   /** Review-inbox items the user explicitly dismissed, with an ISO date. */
   dismissed?: Record<string, string>;
+  /**
+   * This profile was generated, not lived.
+   *
+   * Set only by the example profile. Every screen that shows a number checks
+   * it, because a demo that is indistinguishable from a record is a demo that
+   * will eventually be quoted as one.
+   */
+  demo?: boolean;
 }

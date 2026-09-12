@@ -5,7 +5,7 @@ import { categoriesById, curriculum } from "@/lib/curriculum";
 import { KIND_GLYPH, KIND_LABEL, kindOf } from "@/lib/evidence";
 import { neighborsOf } from "@/lib/graph";
 import { useProgress } from "../ProgressProvider";
-import { Caveat, Chip, EstimateChip, Section, inputClass } from "../ui";
+import { Caveat, Chip, EstimateChip, ProvenanceChip, Section, inputClass } from "../ui";
 import type { NodeKind } from "@/lib/types";
 
 /**
@@ -189,12 +189,12 @@ export function BrowseTab({
                         {KIND_GLYPH[kindOf(node)]}
                       </span>
                       {node.label}
-                    </button>
+                    </button>{" "}
                     <button
                       type="button"
                       onClick={() => setOpenRow(expanded ? null : node.id)}
                       aria-expanded={expanded}
-                      className="ml-2 rounded text-[10px] text-neutral-600 underline decoration-dotted underline-offset-2 hover:text-neutral-300"
+                      className="ml-2 rounded px-1 text-[10px] text-neutral-600 underline decoration-dotted underline-offset-2 hover:text-neutral-300"
                     >
                       {expanded ? "less" : "more"}
                     </button>
@@ -224,10 +224,11 @@ export function BrowseTab({
                     {Math.round((estimate?.practice ?? 0) * 100)}%
                   </td>
                   <td className="py-2.5 pr-3">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-[11px] tabular-nums text-neutral-200">
                         {Math.round((estimate?.competence ?? 0) * 100)}%
                       </span>
+                      <ProvenanceChip provenance={estimate?.provenance ?? "prior"} />
                       <EstimateChip level={estimate?.confidence ?? "none"} />
                     </div>
                   </td>

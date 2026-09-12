@@ -423,6 +423,9 @@ export function parseProgress(value: unknown): Progress | null {
         : undefined,
     installedPacks: stringArray(progress.installedPacks),
     dismissed,
+    // Survives a reload on purpose: a profile that stops announcing itself as
+    // generated after one refresh is worse than never labelling it.
+    demo: progress.demo === true ? true : undefined,
   };
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useProgress } from "./ProgressProvider";
 import { Sheet } from "./ui";
 import { AnalyticsTab } from "./workbench/AnalyticsTab";
 import { BrowseTab } from "./workbench/BrowseTab";
@@ -69,6 +70,8 @@ export function Workbench({
   // Cross-tab focus lives entirely here. Mirroring it in from a prop would mean
   // an effect writing state on every parent render, which is the render-loop
   // shape this codebase has been bitten by before.
+  const { progress } = useProgress();
+  const demo = progress.demo === true;
   const [internalFocus, setInternalFocus] = useState<{
     kind: "prediction" | "goal" | "experiment";
     id: string;
@@ -80,7 +83,14 @@ export function Workbench({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title={active.label} subtitle={active.subtitle} wide>
+    <Sheet open={open} onClose={onClose} title={active.label} subtitle={active.subtitle} wide asScreen>
+      {demo && (
+        <p className="mb-3 rounded-lg border border-dashed border-amber-300/45 bg-amber-300/[0.10] px-3 py-2 text-[11px] leading-relaxed text-neutral-300">
+          Every figure below comes from the generated example profile, not from anything you
+          did. Clear it from Data when you have seen enough.
+        </p>
+      )}
+
       <div
         role="tablist"
         aria-label="Workbench sections"
@@ -94,7 +104,10 @@ export function Workbench({
             aria-selected={tab === entry.id}
             onClick={() => jump(entry.id)}
             className={[
-              "shrink-0 rounded-lg px-3 py-2 text-xs transition-colors",
+              // 44px on a phone: this strip was the one place in the app
+              // still below the WCAG target-size minimum.
+              "flex shrink-0 items-center rounded-lg px-3 text-xs transition-colors",
+              "min-h-[44px] sm:min-h-0 sm:py-2",
               tab === entry.id
                 ? "bg-white/10 text-white"
                 : "text-neutral-500 hover:bg-white/5 hover:text-neutral-300",

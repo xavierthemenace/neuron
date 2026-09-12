@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { getSetting, putSetting } from "@/lib/db";
 import { nodesById, paths } from "@/lib/curriculum";
+import { buildDemoProgress } from "@/lib/demo";
 import { seedNodesForPhrase, suggestPaths } from "@/lib/goals";
 import { useProgress } from "./ProgressProvider";
-import type { WorkbenchTab } from "./Workbench";
 import {
   Caveat,
   Chip,
@@ -28,14 +28,14 @@ const SETTING_KEY = "onboarding-complete-v2";
  */
 export function Onboarding({
   onSelectNode,
-  onOpenWorkbench,
+  onOpenMap,
   onRunProbe,
 }: {
   onSelectNode: (id: string) => void;
-  onOpenWorkbench: (tab: WorkbenchTab) => void;
+  onOpenMap: () => void;
   onRunProbe: (probeId: string) => void;
 }) {
-  const { progress, hydrated, addGoal } = useProgress();
+  const { progress, hydrated, addGoal, replaceProgress } = useProgress();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [phrase, setPhrase] = useState("");
@@ -82,13 +82,28 @@ export function Onboarding({
       open
       onClose={finish}
       title="Neuron"
+      closeLabel="Close the welcome"
       subtitle="A map of trainable cognitive capability, and an honest record of what you can actually do."
       footer={
         <div className="flex items-center justify-between gap-3">
           <span>Step {step + 1} of 4</span>
-          <button type="button" onClick={finish} className="underline hover:text-neutral-300">
-            Skip setup
-          </button>
+          <div className="flex items-center gap-4">
+            {/* An empty app is the honest first state and a terrible first
+                impression. This is the way out of that without lying. */}
+            <button
+              type="button"
+              onClick={() => {
+                replaceProgress(buildDemoProgress());
+                finish();
+              }}
+              className="underline hover:text-neutral-300"
+            >
+              Show me an example first
+            </button>
+            <button type="button" onClick={finish} className="underline hover:text-neutral-300">
+              Skip setup
+            </button>
+          </div>
         </div>
       }
     >
@@ -101,9 +116,9 @@ export function Onboarding({
               connections, and faded lines mean the evidence for that relationship is weak.
             </p>
             <p className="text-[13px] leading-relaxed text-neutral-300">
-              You do not have to learn the map. Most days you will use the review queue and
-              the session planner, and the map is there for when you want to see how things
-              connect.
+              You do not have to learn the map. Most days you will open Today, which shows
+              one thing to do and what is going stale underneath it. The map is there for
+              when you want to see how things connect.
             </p>
             <Caveat>
               This is not a brain-training app. Practising here trains specific, named skills.
@@ -146,6 +161,7 @@ export function Onboarding({
                       {suggestion.path.label}
                     </span>
                     <span className="mt-0.5 block text-[10px] leading-relaxed text-neutral-500">
+                      <span className="text-neutral-400">Done when: </span>
                       {suggestion.path.outcome}
                     </span>
                   </button>
@@ -299,18 +315,20 @@ export function Onboarding({
             </button>
           ) : (
             <div className="ml-auto flex gap-2">
+              {/* Finishing lands on Today, which has a session in it. The map
+                  is worth seeing but it is not a place to start. */}
               <button
                 type="button"
                 onClick={() => {
-                  onOpenWorkbench("review");
                   finish();
+                  onOpenMap();
                 }}
                 className={buttonClass}
               >
-                Open review queue
+                Look at the map first
               </button>
               <button type="button" onClick={finish} className={primaryButtonClass}>
-                Explore the map
+                Start
               </button>
             </div>
           )}

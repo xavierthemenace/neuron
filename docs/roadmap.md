@@ -9,19 +9,33 @@ What is next, and — more usefully — what is deliberately not.
 These are real and worth fixing before anything new is built.
 
 **188 edges have no recorded mechanism.** They were inherited from curriculum
-1.0.0, are reported by `npm run check:data`, and show as unexplained in Research
-Mode. Writing mechanisms for them is the single most valuable curriculum
-contribution available, and it is tractable in small pieces.
+1.0.0 and show as unexplained in Research Mode. `npm run check:data` now holds
+that count as a budget: the build fails if it rises, and fails asking for the
+budget to be lowered when it falls, so the debt can only move one way. Writing
+mechanisms for them is the single most valuable curriculum contribution
+available, and it is tractable in small pieces. Deleting an edge nobody can
+justify counts.
+
+**151 evidence-producing exercises have no rubric.** The eleven scored ones
+state what a complete answer contains; the artifact ones do not, so the form
+falls back to the capability's measurement method and says it is doing so. Held
+as a budget on the same terms as the edges.
 
 **The graph is not an evidence-derived structure.** Prerequisite edges are a
 curriculum author's judgement with a stated confidence, not an experimental
 result. The UI says so, but the honest long-term answer is to downgrade edges
 that nobody can justify and to be willing to delete them.
 
-**No node has more than one diagnostic.** Eleven probes cover a fraction of 139
-nodes. Most competence estimates will therefore rest on artifacts and
-self-report, which is exactly the state the confidence cap exists to represent —
-but more probes would be better than a better estimator.
+**No node has more than one diagnostic, and 102 have none.** Seventeen probes
+cover 37 of 139 nodes. Most competence estimates therefore rest on artifacts
+and self-report, which is exactly the state the confidence cap and the
+provenance label exist to represent.
+
+A large part of that remainder cannot be closed by adding probes, and saying so
+is more useful than a backlog item: negotiation, trust, compassion, sleep,
+manual craft and the depth of someone's own field are not measurable by a
+five-minute test in a browser. For those the instrument is the work produced
+and what it is graded against, which is what the exercise rubrics are for.
 
 **Transfer is asserted, not measured.** Missions produce transfer *evidence*, in
 the sense that they require several capabilities to interact. Whether completing
@@ -33,17 +47,23 @@ tested.
 
 ---
 
+## Done since this file was last true
+
+Comparison views exist — today against 7, 30, 90 or 180 days ago, rebuilt from
+the log as it stood then. Every citation carries a link, and the six that could
+not be verified were removed. Every competence figure states what kind of
+evidence it rests on. The app opens on Today rather than on the graph. An
+example profile fills the views that need history.
+
 ## Next
 
-**More diagnostic probes**, particularly for the executive and epistemic
-clusters, where competence currently rests almost entirely on artifacts.
+**More diagnostic probes** where one is genuinely defensible. The executive and
+epistemic clusters have just been covered; the remaining candidates are the
+spatial and musical ones, which need audio and canvas item types the runner
+does not have yet.
 
 **Mechanisms for the legacy edges**, ideally with citations, ideally with some
 edges deleted rather than justified.
-
-**Graph comparison views** — current versus 30 days ago, desired path versus
-current capability, one cluster against another. The data supports it; the
-views do not exist yet.
 
 **Better calibration tooling** — imported resolution from public forecasting
 platforms, and per-domain calibration curves, because calibration is

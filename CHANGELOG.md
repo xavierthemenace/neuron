@@ -7,7 +7,162 @@ need to know which one happened.
 
 ## Unreleased
 
-Reliability fixes. No curriculum change.
+### Added
+
+- **A dark theme**, set from the control beside the XP figure: match the
+  system, light, or dark. It is one block of variable overrides rather than a
+  second set of class names — the interface is expressed in a small vocabulary
+  of semantic tokens and Tailwind scales, so re-pointing those moves everything
+  at once. The preference is stored per device rather than in the profile, and
+  applied by an inline script before the first paint, because anything that
+  waits for a bundle has already rendered the wrong background. Contrast is
+  checked by the unit tests in both themes, and the action colour carries its
+  own text colour, since white on a dark-mode orange does not clear 4.5:1.
+
+- **Six more diagnostic probes**, taking measured coverage from 27 capabilities
+  to 37 and the battery from eleven probes to seventeen. A flanker task for
+  interference control, a task-switching run for cognitive flexibility,
+  base-rate items in natural frequencies, expected value and opportunity cost,
+  syllogism validity with the believable-but-invalid items that make it worth
+  running, and a remote-associates bank for convergent thinking. Five generate
+  fresh items per run; the sixth is a curated bank because word items cannot be
+  generated honestly.
+
+  Each one states what it does *not* measure. The flanker and switching probes
+  score accuracy rather than the interference and switch costs those tasks are
+  properly read by, because those need a response time per item rather than one
+  for the run — and the caveats say exactly that rather than implying more.
+
+- **A static build.** `npm run build:static` writes `out/`, a plain folder any
+  static host will serve. Nothing in the app needs a server, so the deployable
+  artefact should not need one either. `next start` still works for the browser
+  suite.
+- **Backup, restore, reset and offline are now tested by doing them.** A browser
+  test exports a real file, resets, re-imports that file from disk and checks
+  the record came back; another goes offline, reloads, and asserts the app still
+  opens from the service worker cache.
+- **Text contrast is checked by the unit tests.** Eleven pairs, read out of
+  `globals.css`, each against the surface it actually sits on. Three colours
+  were below 4.5:1 after the move to paper and have been darkened: muted text,
+  captions, and white on the action colour.
+
+- **An example profile.** Six months of generated history — logs across fifteen
+  capabilities, seven diagnostic runs, twenty-four resolved predictions, a
+  concluded experiment and an underpowered one, a finished mission and an
+  abandoned one. Offered during onboarding and from the Data menu. It is
+  deliberately unflattering: two clusters trained properly, several dropped
+  halfway, a holiday in the middle, and a calibration record that is
+  overconfident by about sixteen points. Every screen that shows one of its
+  figures says where they came from, and the label survives a reload, because a
+  demo indistinguishable from a record will eventually be quoted as one.
+- **"Is it working?" on the front door.** Today now carries the calibration
+  line — Brier score, the direction you are off in, and the reminder that
+  calibration is domain-specific — plus a way to write a new call and the count
+  of predictions past their date.
+
+### Changed
+
+- **The map's bar is one row again.** An `ml-auto` had pushed the appearance
+  control, Data and the keyboard hint to the far right, leaving 400px of empty
+  space in the middle of the row; and the appearance control was a bare icon
+  among bordered pills. Everything is packed left now at a consistent 8px, the
+  control matches its neighbours, and the navigation pill is a fixed width on a
+  laptop so the bar beside it stops moving when the queue badge appears.
+- **The map's controls are paper again, not grey.** When the palette moved to
+  light, the scales were inverted so existing classes would land correctly —
+  but `bg-black/60` on chrome floating over the dark canvas became *white at
+  60%*, which over near-black is grey. Every control on the map was washed out.
+  The map's chrome is now near-solid paper, the review pill is solid when the
+  queue has something in it, and the node labels went back to being dark chips
+  with light text, which is the one place on the app that still wants them.
+- **Recessed blocks inside panels are a faint ink tint.** The same inversion
+  turned `bg-black/20` inside a white panel into white on white, so every
+  sunken block — code samples, probe readouts, journal previews, chart frames —
+  had quietly disappeared.
+- **Desktop uses the display.** The Record screen was capped at 1024px however
+  wide the screen; it now grows to 1408px, which is what the browse table and
+  the analytics charts were short of. The capability rail widens with it, and
+  the minimap and graph navigator move to stay clear of it.
+- **Today uses a desktop screen.** On a laptop the day splits in two: what to
+  do on the left, what is waiting and whether any of it is working on the
+  right. It was a 672px column at every width, which left two thirds of a large
+  screen empty. The phone layout is unchanged.
+- **Destructive actions confirm in the app rather than in a browser alert.**
+  `window.confirm` is suppressed outright by some browsers, which made the Data
+  menu's entries look like dead controls, and it dropped the app's own design
+  at the moment it was asking to be trusted with someone's record.
+- **The map's menus behave like menus.** Filter, Paths and Data were three
+  independent booleans, so two could sit open on top of each other and none
+  closed on Escape or on a click elsewhere — the Filter panel could only be
+  dismissed by pressing Filter again. One opens at a time now, and both
+  dismissals work. The Paths control also shows which path is applied.
+- **Filtering to a cluster moves the camera to it** instead of dimming
+  everything else and leaving you looking at an empty canvas.
+- **Focus Mode stays legible and gives the camera back.** Its framing padding
+  was 0.58, so a wide neighbourhood pushed the zoom past 0.4 and the labels
+  became unreadable; it is 0.24 with a zoom floor, and turning the mode off
+  returns to the selection rather than leaving the camera where it was pushed.
+- **PNG icons for the installed app.** iOS ignores an SVG for a home-screen
+  icon, so an installed copy had no icon at all.
+
+### Fixed
+
+- **Three labels claimed more than they knew.** The Insights headline said you
+  were "already working on" capabilities you had only named in a goal; a goal's
+  progress bar credited you for the untrained prior before you had logged
+  anything; and the XP tier caption read "fully trained" directly beneath a
+  competence figure of 37%.
+- **The command palette repeated its group headings**, one per row rather than
+  one per group, because the matched commands were never sorted by group.
+- **Loading the example profile could destroy work without a backup.** The
+  guard counted practice logs and predictions only, so anyone who had set a
+  goal or added a personal capability before logging their first rep tripped
+  the unprotected path and lost it silently — and it could never have seen
+  journals, which live in their own store. It now exports a backup first,
+  always, exactly as Reset does, and says plainly that it replaces everything.
+- **The map showed the example profile's figures with no label.** Today and the
+  ten Record tabs carried the banner; the map header, which is where the
+  profile's XP total appears, carried nothing. It now carries the label too.
+- **`viewport-fit=cover` was missing**, so `env(safe-area-inset-*)` resolved to
+  zero on iOS and the three components reading those variables were spacing
+  themselves against nothing.
+- **The Record tab strip was below the 44px target-size minimum** on a phone.
+- **The hidden map was still in the tab order.** With Today open, the graph
+  behind it kept 139 focusable nodes, so reaching the navigation bar by keyboard
+  meant tabbing through all of them. The canvas layer is now `inert` whenever it
+  is not the screen you are on.
+- **Onboarding ended by offering the map and an empty review queue.** It now
+  finishes on Today, which has a session in it, with the map as the secondary
+  choice.
+
+### Curriculum 2.1.0
+
+- **Every citation now has a link, and six did not survive the check.** All 129
+  distinct sources were looked up. 123 were confirmed against a DOI, publisher
+  page or ISBN and now carry that link. Six could not be confirmed and were
+  removed from the 15 nodes that carried them: a title belonging to a different
+  paper than its stated authors (Kellman & Garrigan), an author list that never
+  wrote the named paper (Hall, Andrzejewski & Yopchick), two conflations of two
+  real papers into one non-existent one (Fiorella & Mayer, Berkowitz & Ansari),
+  a co-author added to a sole-authored paper (Metcalfe & Finn), and a chapter
+  attributed to Gentner that Hofstadter wrote. No node dropped below one
+  source. `npm run check:data` now fails on a citation with no link, because a
+  reference nobody can open is decoration rather than evidence.
+- **Rubrics on the eleven scored exercises.** Two to four concrete checks each,
+  shown while the work is being written. The 151 artifact exercises still have
+  none; the validator holds that number as a budget it can only go down from.
+
+### Added
+
+- **Provenance on every competence estimate.** Confidence already said how much
+  evidence there was; provenance says what kind — not measured, self-reported,
+  from your work, or measured. Most of the map sits at the first two for a long
+  time and now says so, on Today, in the panel, in the browse table, and in
+  what a screen reader reads off an untouched node.
+- **A ratchet on the unexplained edges.** 188 edges inherited from curriculum
+  1.0.0 state no mechanism. The build now fails if that number goes up, and
+  fails asking for the budget to be lowered when it goes down, so the debt can
+  only travel one way. Deleting an edge nobody can justify counts.
 
 ### Fixed
 
