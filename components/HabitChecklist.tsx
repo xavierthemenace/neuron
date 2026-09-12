@@ -257,6 +257,39 @@ export function HabitChecklist({
 
                   {open && !done && (
                     <div className="mt-3 space-y-2.5 border-t border-white/8 pt-3">
+                      {exercise.rubric && exercise.rubric.length > 0 ? (
+                        <div className="rounded-lg border border-white/10 bg-white/[0.02] p-2.5">
+                          <p className="text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                            A complete answer has
+                          </p>
+                          <ul className="mt-1.5 space-y-1">
+                            {exercise.rubric.map((check) => (
+                              <li
+                                key={check}
+                                className="flex gap-2 text-[11px] leading-relaxed text-neutral-300"
+                              >
+                                <span aria-hidden="true" className="text-neutral-600">
+                                  ·
+                                </span>
+                                <span>{check}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        node.evidence?.measurementMethod && (
+                          <div className="rounded-lg border border-white/8 bg-white/[0.015] p-2.5">
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                              No checklist for this task yet
+                            </p>
+                            <p className="mt-1 text-[11px] leading-relaxed text-neutral-400">
+                              The standard for the capability as a whole:{" "}
+                              {node.evidence.measurementMethod}
+                            </p>
+                          </div>
+                        )
+                      )}
+
                       <label className="block">
                         <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-wider text-neutral-500">
                           {typable ? "Complete the task here" : "Completion evidence / notes"}

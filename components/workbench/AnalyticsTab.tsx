@@ -55,6 +55,12 @@ export function AnalyticsTab({ onSelectNode }: { onSelectNode: (id: string) => v
     return values.reduce((sum, value) => sum + value, 0) / Math.max(1, values.length);
   }, [model]);
 
+  const measuredCount = useMemo(
+    () =>
+      model.nodes.filter((node) => model.estimates[node.id]?.provenance === "measured").length,
+    [model],
+  );
+
   const byCategory = useMemo(() => {
     const totals = new Map<string, { sum: number; count: number }>();
     for (const node of curriculum.nodes) {
@@ -175,7 +181,7 @@ export function AnalyticsTab({ onSelectNode }: { onSelectNode: (id: string) => v
           <Meter
             label="Mean competence across the graph"
             value={meanCompetence}
-            caption="Averaged over every node including untouched ones, so this number stays low by construction. Its trend matters, its value does not."
+            caption={`Averaged over every node including untouched ones, so this number stays low by construction. Its trend matters, its value does not. ${measuredCount} of ${model.nodes.length} capabilities rest on anything that was scored.`}
           />
         </div>
       </Section>

@@ -9,7 +9,13 @@ import {
   KIND_GLYPH,
   KIND_LABEL,
 } from "@/lib/evidence";
-import { ESTIMATE_CONFIDENCE_LABEL, type EstimateConfidence } from "@/lib/competence";
+import {
+  ESTIMATE_CONFIDENCE_LABEL,
+  PROVENANCE_BLURB,
+  PROVENANCE_LABEL,
+  type EstimateConfidence,
+  type EstimateProvenance,
+} from "@/lib/competence";
 import type { EvidenceConfidence, NodeKind } from "@/lib/types";
 import { useDismissable } from "./useDismissable";
 
@@ -139,6 +145,32 @@ export function EstimateChip({
       {observations !== undefined && observations > 0 && (
         <span className="opacity-60">· {observations} obs</span>
       )}
+    </span>
+  );
+}
+
+/**
+ * What kind of evidence a number rests on.
+ *
+ * Deliberately the loudest chip on the screen when the answer is "none". A
+ * percentage reads as a measurement whether or not it is one, and for most of
+ * this map, for a long time, it is not one.
+ */
+export function ProvenanceChip({ provenance }: { provenance: EstimateProvenance }) {
+  const tone =
+    provenance === "measured"
+      ? "border-emerald-300/35 bg-emerald-300/[0.12] text-emerald-100"
+      : provenance === "judged"
+        ? "border-sky-300/35 bg-sky-300/[0.10] text-sky-100"
+        : provenance === "self-reported"
+          ? "border-amber-300/35 bg-amber-300/[0.12] text-amber-100"
+          : "border-neutral-600/40 bg-neutral-800/[0.10] text-neutral-400";
+  return (
+    <span
+      title={PROVENANCE_BLURB[provenance]}
+      className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider ${tone}`}
+    >
+      {PROVENANCE_LABEL[provenance]}
     </span>
   );
 }

@@ -7,7 +7,34 @@ need to know which one happened.
 
 ## Unreleased
 
-Reliability fixes. No curriculum change.
+### Curriculum 2.1.0
+
+- **Every citation now has a link, and six did not survive the check.** All 129
+  distinct sources were looked up. 123 were confirmed against a DOI, publisher
+  page or ISBN and now carry that link. Six could not be confirmed and were
+  removed from the 15 nodes that carried them: a title belonging to a different
+  paper than its stated authors (Kellman & Garrigan), an author list that never
+  wrote the named paper (Hall, Andrzejewski & Yopchick), two conflations of two
+  real papers into one non-existent one (Fiorella & Mayer, Berkowitz & Ansari),
+  a co-author added to a sole-authored paper (Metcalfe & Finn), and a chapter
+  attributed to Gentner that Hofstadter wrote. No node dropped below one
+  source. `npm run check:data` now fails on a citation with no link, because a
+  reference nobody can open is decoration rather than evidence.
+- **Rubrics on the eleven scored exercises.** Two to four concrete checks each,
+  shown while the work is being written. The 151 artifact exercises still have
+  none; the validator holds that number as a budget it can only go down from.
+
+### Added
+
+- **Provenance on every competence estimate.** Confidence already said how much
+  evidence there was; provenance says what kind — not measured, self-reported,
+  from your work, or measured. Most of the map sits at the first two for a long
+  time and now says so, on Today, in the panel, in the browse table, and in
+  what a screen reader reads off an untouched node.
+- **A ratchet on the unexplained edges.** 188 edges inherited from curriculum
+  1.0.0 state no mechanism. The build now fails if that number goes up, and
+  fails asking for the budget to be lowered when it goes down, so the debt can
+  only travel one way. Deleting an edge nobody can justify counts.
 
 ### Fixed
 

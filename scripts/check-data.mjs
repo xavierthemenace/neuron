@@ -151,6 +151,8 @@ for (const category of data.categories) {
 // ── Nodes ─────────────────────────────────────────────────────────────────
 const nodeIds = new Set();
 const exerciseIds = new Set();
+const missingRubric = [];
+let producedEvidenceCount = 0;
 const nodesById = new Map();
 
 for (const node of data.nodes) {
@@ -216,6 +218,23 @@ for (const node of data.nodes) {
       err(`${where}: evidence.sources needs at least one reference`);
     } else {
       checkResources(evidence.sources, `${where} evidence.sources`);
+      /**
+       * Every citation has to be followable.
+       *
+       * A title and a year is an assertion that a paper exists saying what the
+       * node claims, and for six entries in curriculum 2.0.0 that assertion
+       * was wrong — conflated titles, invented author lists, a chapter
+       * attributed to the wrong person. Those were removed. Requiring a link
+       * is what stops the next one going in: a reference nobody can open is
+       * not evidence, it is decoration.
+       */
+      for (const source of evidence.sources) {
+        if (!source?.url) {
+          err(
+            `${where} evidence.sources: "${source?.title}" has no url — a citation nobody can follow is not a citation`,
+          );
+        }
+      }
     }
     // The overall band must not outrun what supports it.
     const cap = Math.min(
@@ -257,7 +276,49 @@ for (const node of data.nodes) {
         err(`${exWhere}: progression contains an empty step`);
       }
     }
+
+    if (exercise.rubric !== undefined) {
+      if (!Array.isArray(exercise.rubric) || exercise.rubric.length < 2) {
+        err(`${exWhere}: rubric must be an array of at least two checks when present`);
+      } else if (exercise.rubric.some((check) => !check?.trim())) {
+        err(`${exWhere}: rubric contains an empty check`);
+      } else if (exercise.rubric.length > 4) {
+        err(`${exWhere}: rubric has ${exercise.rubric.length} checks; four is the ceiling`);
+      }
+    }
+
+    // Only evidence-producing work needs a standard. A self-reported tick is
+    // already labelled as barely evidence and a checklist would not change it.
+    const producesEvidence =
+      exercise.evidence === "artifact" || exercise.evidence === "scored";
+    if (producesEvidence) {
+      producedEvidenceCount += 1;
+      if (!exercise.rubric) missingRubric.push(exercise.id);
+    }
   }
+}
+
+/**
+ * Exercises that produce evidence but state no standard for it.
+ *
+ * A long answer and a two-line answer weigh the same to the competence model,
+ * so without a checklist the only standard is how generous the person is
+ * feeling. Tracked as a budget for the same reason the edges are.
+ */
+const RUBRIC_DEBT_BUDGET = 151;
+
+if (missingRubric.length > RUBRIC_DEBT_BUDGET) {
+  err(
+    `${missingRubric.length} evidence-producing exercises have no rubric, over the budget of ${RUBRIC_DEBT_BUDGET}. A new artifact or scored exercise has to say what a complete answer contains.`,
+  );
+} else if (missingRubric.length < RUBRIC_DEBT_BUDGET) {
+  err(
+    `${missingRubric.length} evidence-producing exercises have no rubric, under the budget of ${RUBRIC_DEBT_BUDGET}. Lower RUBRIC_DEBT_BUDGET in scripts/check-data.mjs to ${missingRubric.length}.`,
+  );
+} else if (missingRubric.length > 0) {
+  warn(
+    `${missingRubric.length} of ${producedEvidenceCount} evidence-producing exercises have no rubric; work logged against them is judged against nothing.`,
+  );
 }
 
 // ── Links ─────────────────────────────────────────────────────────────────
@@ -348,9 +409,35 @@ for (const link of data.links) {
   }
 }
 
-if (missingMechanism.length > 0) {
+/**
+ * The unexplained-edge ratchet.
+ *
+ * 188 edges inherited from curriculum 1.0.0 have no recorded mechanism. A
+ * warning alone let that number sit still for as long as anyone cared to
+ * ignore it, and nothing stopped it growing. The budget below is the debt as
+ * it stood when this check was written: the build fails if the count goes up,
+ * and the budget has to be lowered by hand whenever it goes down, so the
+ * number can only travel in one direction.
+ *
+ * Lowering it by deleting an edge nobody can justify counts. Deleting is
+ * usually the more honest of the two options.
+ */
+const UNEXPLAINED_EDGE_BUDGET = 188;
+
+if (missingMechanism.length > UNEXPLAINED_EDGE_BUDGET) {
+  err(
+    `${missingMechanism.length} edges have no recorded mechanism, over the budget of ${UNEXPLAINED_EDGE_BUDGET}. A new edge has to state why it exists. New: ${missingMechanism
+      .slice(UNEXPLAINED_EDGE_BUDGET)
+      .slice(0, 3)
+      .join(", ")}`,
+  );
+} else if (missingMechanism.length < UNEXPLAINED_EDGE_BUDGET) {
+  err(
+    `${missingMechanism.length} edges have no recorded mechanism, under the budget of ${UNEXPLAINED_EDGE_BUDGET}. Lower UNEXPLAINED_EDGE_BUDGET in scripts/check-data.mjs to ${missingMechanism.length} so the debt cannot creep back.`,
+  );
+} else if (missingMechanism.length > 0) {
   warn(
-    `${missingMechanism.length} edge(s) have no recorded mechanism — Research Mode shows these as unexplained. First: ${missingMechanism.slice(0, 3).join(", ")}`,
+    `${missingMechanism.length} edge(s) have no recorded mechanism and are shown as unexplained. First: ${missingMechanism.slice(0, 3).join(", ")}`,
   );
 }
 

@@ -113,7 +113,7 @@ export function TopBar({
   };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4">
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[20.5rem] md:pl-[20.5rem]">
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
         <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-black/60 px-3 py-2 shadow-lg backdrop-blur-xl">
           <span className="text-sm font-semibold tracking-tight text-white">Neuron</span>
@@ -382,7 +382,9 @@ export function TopBar({
           )}
         </div>
 
-        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-black/35 px-2.5 py-2 text-[9px] text-neutral-500 shadow-lg backdrop-blur-xl lg:flex">
+        {/* The keyboard hint is the first thing to give up its space: the row
+            now starts clear of the navigation pill. */}
+        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-black/70 px-2.5 py-2 text-[9px] text-neutral-400 shadow-lg backdrop-blur-xl xl:flex">
           <kbd className="font-mono">⌘/Ctrl K</kbd>
           <span>commands</span>
         </div>

@@ -345,6 +345,37 @@ describe("curriculum data contract", () => {
     }
   });
 
+  it("gives every citation a link somebody could follow", () => {
+    // Six entries in curriculum 2.0.0 named papers that do not exist under
+    // those authors. A required link is what makes that catchable at all: an
+    // unfollowable citation is an assertion dressed as evidence.
+    for (const node of curriculum.nodes) {
+      const sources = node.evidence?.sources ?? [];
+      assert.ok(sources.length > 0, `${node.id} cites nothing`);
+      for (const source of sources) {
+        assert.ok(
+          typeof source.url === "string" && source.url.startsWith("https://"),
+          `${node.id} cites "${source.title}" with no https link`,
+        );
+      }
+    }
+  });
+
+  it("states what a complete answer contains wherever a rubric exists", () => {
+    for (const node of curriculum.nodes) {
+      for (const exercise of node.exercises) {
+        if (!exercise.rubric) continue;
+        assert.ok(
+          exercise.rubric.length >= 2 && exercise.rubric.length <= 4,
+          `${exercise.id} has ${exercise.rubric.length} rubric checks`,
+        );
+        for (const check of exercise.rubric) {
+          assert.ok(check.trim().length > 0, `${exercise.id} has an empty rubric check`);
+        }
+      }
+    }
+  });
+
   it("parses the duration out of every task that states one", () => {
     // Guards the plural-minutes regression: these labels must not silently
     // fall back to an XP-derived guess.
