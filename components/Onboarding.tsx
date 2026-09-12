@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getSetting, putSetting } from "@/lib/db";
 import { nodesById, paths } from "@/lib/curriculum";
+import { buildDemoProgress } from "@/lib/demo";
 import { seedNodesForPhrase, suggestPaths } from "@/lib/goals";
 import { useProgress } from "./ProgressProvider";
 import type { WorkbenchTab } from "./Workbench";
@@ -35,7 +36,7 @@ export function Onboarding({
   onOpenWorkbench: (tab: WorkbenchTab) => void;
   onRunProbe: (probeId: string) => void;
 }) {
-  const { progress, hydrated, addGoal } = useProgress();
+  const { progress, hydrated, addGoal, replaceProgress } = useProgress();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [phrase, setPhrase] = useState("");
@@ -86,9 +87,23 @@ export function Onboarding({
       footer={
         <div className="flex items-center justify-between gap-3">
           <span>Step {step + 1} of 4</span>
-          <button type="button" onClick={finish} className="underline hover:text-neutral-300">
-            Skip setup
-          </button>
+          <div className="flex items-center gap-4">
+            {/* An empty app is the honest first state and a terrible first
+                impression. This is the way out of that without lying. */}
+            <button
+              type="button"
+              onClick={() => {
+                replaceProgress(buildDemoProgress());
+                finish();
+              }}
+              className="underline hover:text-neutral-300"
+            >
+              Show me an example first
+            </button>
+            <button type="button" onClick={finish} className="underline hover:text-neutral-300">
+              Skip setup
+            </button>
+          </div>
         </div>
       }
     >

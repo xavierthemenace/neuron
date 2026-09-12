@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useProgress } from "./ProgressProvider";
 import { Sheet } from "./ui";
 import { AnalyticsTab } from "./workbench/AnalyticsTab";
 import { BrowseTab } from "./workbench/BrowseTab";
@@ -69,6 +70,8 @@ export function Workbench({
   // Cross-tab focus lives entirely here. Mirroring it in from a prop would mean
   // an effect writing state on every parent render, which is the render-loop
   // shape this codebase has been bitten by before.
+  const { progress } = useProgress();
+  const demo = progress.demo === true;
   const [internalFocus, setInternalFocus] = useState<{
     kind: "prediction" | "goal" | "experiment";
     id: string;
@@ -81,6 +84,13 @@ export function Workbench({
 
   return (
     <Sheet open={open} onClose={onClose} title={active.label} subtitle={active.subtitle} wide asScreen>
+      {demo && (
+        <p className="mb-3 rounded-lg border border-dashed border-amber-300/45 bg-amber-300/[0.10] px-3 py-2 text-[11px] leading-relaxed text-neutral-300">
+          Every figure below comes from the generated example profile, not from anything you
+          did. Clear it from Data when you have seen enough.
+        </p>
+      )}
+
       <div
         role="tablist"
         aria-label="Workbench sections"

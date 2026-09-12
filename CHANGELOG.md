@@ -7,6 +7,22 @@ need to know which one happened.
 
 ## Unreleased
 
+### Added
+
+- **An example profile.** Six months of generated history — logs across fifteen
+  capabilities, seven diagnostic runs, twenty-four resolved predictions, a
+  concluded experiment and an underpowered one, a finished mission and an
+  abandoned one. Offered during onboarding and from the Data menu. It is
+  deliberately unflattering: two clusters trained properly, several dropped
+  halfway, a holiday in the middle, and a calibration record that is
+  overconfident by about sixteen points. Every screen that shows one of its
+  figures says where they came from, and the label survives a reload, because a
+  demo indistinguishable from a record will eventually be quoted as one.
+- **"Is it working?" on the front door.** Today now carries the calibration
+  line — Brier score, the direction you are off in, and the reminder that
+  calibration is domain-specific — plus a way to write a new call and the count
+  of predictions past their date.
+
 ### Curriculum 2.1.0
 
 - **Every citation now has a link, and six did not survive the check.** All 129

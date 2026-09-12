@@ -2,10 +2,12 @@
 
 import { useMemo } from "react";
 import { ESTIMATE_CONFIDENCE_LABEL, PROVENANCE_LABEL } from "@/lib/competence";
+import { calibrationSummary } from "@/lib/predictions";
 import { buildInbox, type InboxItem } from "@/lib/inbox";
 import { DEFAULT_CONSTRAINTS, planSession, type WorkoutItem } from "@/lib/workout";
 import type { IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
+import type { WorkbenchTab } from "./Workbench";
 import { Why } from "./ui";
 
 /**
@@ -40,7 +42,7 @@ export function Today({
   data,
   onSelectNode,
   onOpenPlanner,
-  onOpenReview,
+  onOpenTab,
   onRunProbe,
   onOpenMission,
   onOpenMap,
@@ -48,7 +50,7 @@ export function Today({
   data: IntelligenceData;
   onSelectNode: (nodeId: string) => void;
   onOpenPlanner: () => void;
-  onOpenReview: () => void;
+  onOpenTab: (tab: WorkbenchTab) => void;
   onRunProbe: (probeId: string) => void;
   onOpenMission: (missionId: string) => void;
   onOpenMap: () => void;
@@ -64,6 +66,11 @@ export function Today({
     [model],
   );
 
+  const calibration = useMemo(
+    () => calibrationSummary(model.progress.predictions),
+    [model.progress.predictions],
+  );
+
   const now = new Date();
   const lead = plan.items[0];
   const rest = plan.items.slice(1, 3);
@@ -75,11 +82,19 @@ export function Today({
     if (item.probeId) return onRunProbe(item.probeId);
     if (item.missionId) return onOpenMission(item.missionId);
     if (item.nodeId) return onSelectNode(item.nodeId);
-    return onOpenReview();
+    return onOpenTab("review");
   };
 
   return (
     <div className="animate-rise mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pb-6 pt-4 sm:px-6 sm:pt-7">
+      {model.progress.demo && (
+        <p className="rounded-xl border border-dashed border-[var(--pop)]/45 bg-[var(--pop-soft)] px-3.5 py-2.5 text-[12px] leading-relaxed text-[var(--ink)]">
+          <strong className="font-semibold">This is an example profile.</strong> Six months of
+          generated history, so the queue, the comparisons and the calibration record have
+          something in them. None of it is yours. Clear it from Data when you have seen enough.
+        </p>
+      )}
+
       <header className="flex items-baseline justify-between gap-4">
         <div>
           <h1 className="font-display text-[30px] leading-none text-[var(--ink)] sm:text-[38px]">
@@ -294,6 +309,30 @@ export function Today({
         </p>
       )}
 
+      <section className="flex flex-col gap-2">
+        <h3 className="text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--ink-faint)]">
+          Is it working?
+        </h3>
+        <button
+          type="button"
+          onClick={() => onOpenTab("predictions")}
+          className="rounded-2xl bg-[var(--card)] p-3.5 text-left ring-1 ring-[var(--rule)] transition-shadow duration-150 hover:shadow-[0_6px_18px_rgb(25_22_20_/_0.08)]"
+        >
+          <span className="block text-[13px] leading-snug text-[var(--ink)]">
+            {calibration.headline}
+          </span>
+          <span className="mt-1.5 block text-[11px] leading-relaxed text-[var(--ink-faint)]">
+            {calibration.caveat}
+          </span>
+          {calibration.overdue > 0 && (
+            <span className="mt-2 inline-block rounded-full bg-[var(--pop-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--ink)]">
+              {calibration.overdue} past{" "}
+              {calibration.overdue === 1 ? "its date" : "their dates"} — resolve them
+            </span>
+          )}
+        </button>
+      </section>
+
       <footer className="flex flex-wrap items-center gap-2 pt-1">
         <button
           type="button"
@@ -302,10 +341,17 @@ export function Today({
         >
           Plan a longer session
         </button>
+        <button
+          type="button"
+          onClick={() => onOpenTab("predictions")}
+          className="min-h-[44px] rounded-full bg-[var(--card)] px-4 text-[12.5px] font-medium text-[var(--ink)] ring-1 ring-[var(--rule)]"
+        >
+          Make a call
+        </button>
         {inbox.length > 0 && (
           <button
             type="button"
-            onClick={onOpenReview}
+            onClick={() => onOpenTab("review")}
             className="min-h-[44px] rounded-full bg-[var(--card)] px-4 text-[12.5px] font-medium text-[var(--ink)] ring-1 ring-[var(--rule)]"
           >
             Review queue ({inbox.length})

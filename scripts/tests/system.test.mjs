@@ -31,7 +31,10 @@ import {
   compareModels,
   progressAsOf,
 } from "../../lib/learner.ts";
-import { capstones, curriculum, missions, paths } from "../../lib/curriculum.ts";
+import { capstones, curriculum, missions, nodesById, paths } from "../../lib/curriculum.ts";
+import { buildDemoProgress } from "../../lib/demo.ts";
+import { emptyProgress, parseProgress } from "../../lib/storage.ts";
+import { calibrationSummary } from "../../lib/predictions.ts";
 import { matchingNodeIdsFor, search } from "../../lib/search.ts";
 import {
   TEMPLATES,
@@ -891,5 +894,65 @@ describe("concept search", () => {
     );
     const dimmed = matchingNodeIdsFor("procrastination");
     assert.deepEqual([...dimmed].sort(), [...listed].sort());
+  });
+});
+
+describe("the example profile", () => {
+  const now = new Date("2026-09-11T12:00:00.000Z");
+  const demo = buildDemoProgress(now);
+
+  it("is marked as generated, so nothing can quote it as a record", () => {
+    assert.equal(demo.demo, true);
+  });
+
+  it("is deterministic", () => {
+    const again = buildDemoProgress(now);
+    assert.equal(JSON.stringify(demo), JSON.stringify(again));
+  });
+
+  it("only references capabilities and exercises that exist", () => {
+    const exerciseIds = new Set(
+      curriculum.nodes.flatMap((node) => node.exercises.map((exercise) => exercise.id)),
+    );
+    for (const log of demo.logs) {
+      assert.ok(nodesById.has(log.nodeId), `log points at missing node ${log.nodeId}`);
+      assert.ok(exerciseIds.has(log.exerciseId), `log points at missing exercise ${log.exerciseId}`);
+    }
+  });
+
+  it("carries enough history for the views that need it", () => {
+    assert.ok(demo.logs.length > 150, `only ${demo.logs.length} logs`);
+    assert.ok(demo.diagnostics.length >= 5);
+    assert.ok(demo.predictions.filter((p) => p.outcome).length >= 20);
+    assert.ok(demo.predictions.some((p) => !p.outcome && new Date(p.resolveBy) < now));
+    assert.ok(demo.experiments.some((e) => e.status === "running"));
+  });
+
+  it("leaves most of the map untouched, the way a real six months would", () => {
+    const touched = new Set(demo.logs.map((log) => log.nodeId));
+    assert.ok(touched.size < curriculum.nodes.length / 4, `${touched.size} nodes touched`);
+  });
+
+  it("is not a tidy upward march: some capabilities were abandoned", () => {
+    const last = new Map();
+    for (const log of demo.logs) {
+      const at = new Date(log.at).getTime();
+      if (!last.has(log.nodeId) || at > last.get(log.nodeId)) last.set(log.nodeId, at);
+    }
+    const stale = [...last.values()].filter((at) => now.getTime() - at > 45 * 86_400_000);
+    assert.ok(stale.length >= 2, "at least two capabilities should have gone stale");
+  });
+
+  it("keeps saying it is generated after a save and load", () => {
+    const parsed = parseProgress(JSON.parse(JSON.stringify(demo)));
+    assert.equal(parsed.demo, true);
+    assert.equal(parseProgress(JSON.parse(JSON.stringify(emptyProgress()))).demo, undefined);
+  });
+
+  it("produces a calibration record that says something", () => {
+    const summary = calibrationSummary(demo.predictions, now);
+    assert.ok(summary.count >= 20);
+    assert.ok(summary.brier !== null);
+    assert.ok(summary.overconfidence !== null && summary.overconfidence > 0.02, "should read as overconfident");
   });
 });

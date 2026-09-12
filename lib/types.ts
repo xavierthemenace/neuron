@@ -384,4 +384,12 @@ export interface Progress {
   installedPacks?: string[];
   /** Review-inbox items the user explicitly dismissed, with an ISO date. */
   dismissed?: Record<string, string>;
+  /**
+   * This profile was generated, not lived.
+   *
+   * Set only by the example profile. Every screen that shows a number checks
+   * it, because a demo that is indistinguishable from a record is a demo that
+   * will eventually be quoted as one.
+   */
+  demo?: boolean;
 }
