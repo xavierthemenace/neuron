@@ -26,15 +26,15 @@
   --paper-sunk: #e7e3da;
   --card: #ffffff;
   --ink: #191614;
-  --ink-soft: #6d675f;
-  --ink-faint: #8a837a;
+  --ink-soft: #5f5952;
+  --ink-faint: #6f6861;
   --rule: #ddd8cf;
 
   /* Accents: green is state, orange is action */
   --green: #1f3d2e;
   --green-soft: #2f6a4a;
   --green-wash: #e4ebe4;
-  --pop: #d4552e;
+  --pop: #c4471f;
   --pop-soft: #f0e0d7;
 
   /* Semantic */
@@ -77,8 +77,8 @@
   --color-neutral-200: #26221d;
   --color-neutral-300: #3a352e;
   --color-neutral-400: #585249;
-  --color-neutral-500: #6d675f;
-  --color-neutral-600: #8a837a;
+  --color-neutral-500: #5f5952;
+  --color-neutral-600: #706960;
   --color-neutral-700: #a9a29a;
   --color-neutral-800: #c9c3b9;
   --color-neutral-900: #e0dbd2;
@@ -87,8 +87,8 @@
   /* Primary action: orange on paper */
   --color-cyan-50: #7a2b12;
   --color-cyan-100: #92351a;
-  --color-cyan-200: #b24421;
-  --color-cyan-300: #d4552e;
+  --color-cyan-200: #a83e1c;
+  --color-cyan-300: #c4471f;
   --color-cyan-400: #dd6b46;
 
   /* Good / measured */
@@ -148,7 +148,7 @@ body::before {
 }
 
 ::selection {
-  background: rgb(212 85 46 / 0.22);
+  background: rgb(196 71 31 / 0.22);
   color: var(--ink);
 }
 

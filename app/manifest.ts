@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 
+// The manifest has no dynamic inputs, and a static export needs to be told so
+// before it will write it out as a file.
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Neuron — Intelligence Map",

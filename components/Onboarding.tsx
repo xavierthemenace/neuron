@@ -6,7 +6,6 @@ import { nodesById, paths } from "@/lib/curriculum";
 import { buildDemoProgress } from "@/lib/demo";
 import { seedNodesForPhrase, suggestPaths } from "@/lib/goals";
 import { useProgress } from "./ProgressProvider";
-import type { WorkbenchTab } from "./Workbench";
 import {
   Caveat,
   Chip,
@@ -29,11 +28,11 @@ const SETTING_KEY = "onboarding-complete-v2";
  */
 export function Onboarding({
   onSelectNode,
-  onOpenWorkbench,
+  onOpenMap,
   onRunProbe,
 }: {
   onSelectNode: (id: string) => void;
-  onOpenWorkbench: (tab: WorkbenchTab) => void;
+  onOpenMap: () => void;
   onRunProbe: (probeId: string) => void;
 }) {
   const { progress, hydrated, addGoal, replaceProgress } = useProgress();
@@ -116,9 +115,9 @@ export function Onboarding({
               connections, and faded lines mean the evidence for that relationship is weak.
             </p>
             <p className="text-[13px] leading-relaxed text-neutral-300">
-              You do not have to learn the map. Most days you will use the review queue and
-              the session planner, and the map is there for when you want to see how things
-              connect.
+              You do not have to learn the map. Most days you will open Today, which shows
+              one thing to do and what is going stale underneath it. The map is there for
+              when you want to see how things connect.
             </p>
             <Caveat>
               This is not a brain-training app. Practising here trains specific, named skills.
@@ -314,18 +313,20 @@ export function Onboarding({
             </button>
           ) : (
             <div className="ml-auto flex gap-2">
+              {/* Finishing lands on Today, which has a session in it. The map
+                  is worth seeing but it is not a place to start. */}
               <button
                 type="button"
                 onClick={() => {
-                  onOpenWorkbench("review");
                   finish();
+                  onOpenMap();
                 }}
                 className={buttonClass}
               >
-                Open review queue
+                Look at the map first
               </button>
               <button type="button" onClick={finish} className={primaryButtonClass}>
-                Explore the map
+                Start
               </button>
             </div>
           )}

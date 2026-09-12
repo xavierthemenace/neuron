@@ -331,65 +331,72 @@ function Graph() {
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[var(--surface)]">
-      <ReactFlow<ConceptFlowNode>
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodeClick={onNodeClick}
-        onPaneClick={clearSelection}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        nodesFocusable
-        edgesFocusable={false}
-        disableKeyboardA11y={false}
-        autoPanOnNodeFocus
-        elementsSelectable
-        minZoom={0.08}
-        maxZoom={2.6}
-        fitView
-        fitViewOptions={{ padding: 0.13 }}
-        proOptions={{ hideAttribution: false }}
-        ariaLabelConfig={{
-          // Both keys, deliberately. React Flow selects the "keyboardDisabled"
-          // string when keyboard accessibility is *enabled*, and its defaults
-          // describe dragging and deleting nodes — neither of which this map
-          // supports.
-          "node.a11yDescription.default": GRAPH_DESCRIPTION,
-          "node.a11yDescription.keyboardDisabled": GRAPH_DESCRIPTION,
-          "minimap.ariaLabel": "Neuron cognitive map overview",
-          "controls.ariaLabel": "Graph zoom and fit controls",
-        }}
-        className={hydrated ? "opacity-100" : "opacity-0"}
-        style={{ transition: "opacity 400ms ease" }}
-      >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={31}
-          size={1.2}
-          color="oklch(0.42 0.035 265)"
-        />
-        <ClusterBackdrop data={data} />
-        <Controls
-          showInteractive={false}
-          className="!bottom-[72px] !left-3 !border !border-white/12 !bg-black/80 !backdrop-blur-xl md:!bottom-4 md:!left-4"
-        />
-        <MiniMap
-          pannable
-          zoomable
-          style={MINIMAP_STYLE}
-          maskColor="oklch(0.08 0.01 265 / 0.7)"
-          nodeStrokeWidth={3}
-          nodeColor={(node) => {
-            const nodeData = node.data as ConceptNodeData;
-            return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
+      {/* The canvas stays mounted so React Flow keeps its measurements, but a
+          139-node graph behind an opaque screen is 139 tab stops a keyboard user
+          has to walk through to reach anything. `inert` takes the whole layer out
+          of the tab order, and out of the accessibility tree, while it is not the
+          screen you are on. */}
+      <div className="absolute inset-0" inert={screen !== "map"}>
+        <ReactFlow<ConceptFlowNode>
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodeClick={onNodeClick}
+          onPaneClick={clearSelection}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          nodesFocusable
+          edgesFocusable={false}
+          disableKeyboardA11y={false}
+          autoPanOnNodeFocus
+          elementsSelectable
+          minZoom={0.08}
+          maxZoom={2.6}
+          fitView
+          fitViewOptions={{ padding: 0.13 }}
+          proOptions={{ hideAttribution: false }}
+          ariaLabelConfig={{
+            // Both keys, deliberately. React Flow selects the "keyboardDisabled"
+            // string when keyboard accessibility is *enabled*, and its defaults
+            // describe dragging and deleting nodes — neither of which this map
+            // supports.
+            "node.a11yDescription.default": GRAPH_DESCRIPTION,
+            "node.a11yDescription.keyboardDisabled": GRAPH_DESCRIPTION,
+            "minimap.ariaLabel": "Neuron cognitive map overview",
+            "controls.ariaLabel": "Graph zoom and fit controls",
           }}
-          className={[
-            "!bottom-[72px] !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
-            selectedNode ? "md:!right-[456px]" : "md:!right-4",
-          ].join(" ")}
-        />
-      </ReactFlow>
+          className={hydrated ? "opacity-100" : "opacity-0"}
+          style={{ transition: "opacity 400ms ease" }}
+        >
+          <Background
+            variant={BackgroundVariant.Dots}
+            gap={31}
+            size={1.2}
+            color="oklch(0.42 0.035 265)"
+          />
+          <ClusterBackdrop data={data} />
+          <Controls
+            showInteractive={false}
+            className="!bottom-[72px] !left-3 !border !border-white/12 !bg-black/80 !backdrop-blur-xl md:!bottom-4 md:!left-4"
+          />
+          <MiniMap
+            pannable
+            zoomable
+            style={MINIMAP_STYLE}
+            maskColor="oklch(0.08 0.01 265 / 0.7)"
+            nodeStrokeWidth={3}
+            nodeColor={(node) => {
+              const nodeData = node.data as ConceptNodeData;
+              return `oklch(${nodeData.lightness} ${nodeData.chroma} ${nodeData.hue})`;
+            }}
+            className={[
+              "!bottom-[72px] !right-3 !h-24 !w-36 transition-[right] duration-300 md:!bottom-4 md:!h-[116px] md:!w-[176px]",
+              selectedNode ? "md:!right-[456px]" : "md:!right-4",
+            ].join(" ")}
+          />
+        </ReactFlow>
+      </div>
 
       {(screen === "map" || (screen === "data" && returnScreen === "map")) && (
         <>
@@ -522,7 +529,7 @@ function Graph() {
 
       <Onboarding
         onSelectNode={focusNode}
-        onOpenWorkbench={openWorkbench}
+        onOpenMap={() => setScreen("map")}
         onRunProbe={setProbeId}
       />
       <MigrationNotice />
