@@ -419,7 +419,7 @@ function Graph() {
           <ClusterBackdrop data={data} />
           <Controls
             showInteractive={false}
-            className="!bottom-[72px] !left-3 !border !border-white/12 !bg-[rgb(255_255_255_/_0.94)] !backdrop-blur-xl md:!bottom-4 md:!left-4"
+            className="!bottom-[72px] !left-3 !border !border-white/12 !bg-[var(--panel)] !backdrop-blur-xl md:!bottom-4 md:!left-4"
           />
           <MiniMap
             pannable

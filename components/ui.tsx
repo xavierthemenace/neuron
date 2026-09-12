@@ -217,7 +217,7 @@ export function Why({
       {open && (
         <div
           id={id}
-          className="mt-1.5 rounded-lg border border-white/8 bg-[rgb(25_22_20_/_0.035)] p-2.5 text-[10px] leading-relaxed text-neutral-400"
+          className="mt-1.5 rounded-lg border border-white/8 bg-[var(--sunk)] p-2.5 text-[10px] leading-relaxed text-neutral-400"
         >
           {children}
         </div>
@@ -268,8 +268,8 @@ export function Sheet({
         // modal rises from the bottom edge.
         asScreen ? "items-start" : "items-end",
         asScreen
-          ? "bg-[var(--paper)] sm:bg-[rgb(25_22_20_/_0.28)] sm:backdrop-blur-sm"
-          : "bg-[rgb(25_22_20_/_0.34)] backdrop-blur-sm",
+          ? "bg-[var(--paper)] sm:bg-[var(--scrim)] sm:backdrop-blur-sm"
+          : "bg-[var(--scrim)] backdrop-blur-sm",
       ].join(" ")}
       role="presentation"
       onMouseDown={(event) => {
@@ -282,7 +282,7 @@ export function Sheet({
         aria-modal="true"
         aria-label={title}
         className={[
-          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[rgb(255_255_255_/_0.985)] shadow-2xl",
+          "flex max-h-[92dvh] w-full flex-col overflow-hidden border-white/12 bg-[var(--panel)] shadow-2xl",
           "rounded-t-2xl border-t sm:rounded-2xl sm:border",
           asScreen
             ? "max-h-none h-[calc(100dvh-68px-var(--safe-bottom))] rounded-t-none border-t-0 sm:h-auto sm:max-h-[92dvh] sm:rounded-2xl sm:border"
@@ -454,7 +454,7 @@ export function Field({
 }
 
 export const inputClass =
-  "w-full rounded-lg border border-white/10 bg-[rgb(25_22_20_/_0.05)] px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-[rgb(25_22_20_/_0.05)]";
+  "w-full rounded-lg border border-white/10 bg-[var(--sunk-strong)] px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-[var(--sunk-strong)]";
 
 export const buttonClass =
   "rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 text-xs text-neutral-200 transition-colors hover:border-white/28 hover:bg-white/[0.09] hover:text-white disabled:cursor-not-allowed disabled:opacity-40";

@@ -237,7 +237,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-start justify-center bg-[rgb(25_22_20_/_0.34)] px-3 pt-[10vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[70] flex items-start justify-center bg-[var(--scrim)] px-3 pt-[10vh] backdrop-blur-sm"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) setOpen(false);
@@ -248,7 +248,7 @@ export function CommandPalette({
         role="dialog"
         aria-modal="true"
         aria-label="Neuron command palette"
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[rgb(255_255_255_/_0.985)] shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/15 bg-[var(--panel)] shadow-2xl"
       >
         <div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
           <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-neutral-500" aria-hidden="true">

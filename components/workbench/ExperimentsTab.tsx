@@ -238,7 +238,7 @@ function ExperimentCard({
             ["B", armB],
           ] as const
         ).map(([label, arm_]) => (
-          <div key={label} className="rounded-lg border border-white/8 bg-[rgb(25_22_20_/_0.035)] px-2.5 py-2">
+          <div key={label} className="rounded-lg border border-white/8 bg-[var(--sunk)] px-2.5 py-2">
             <div className="text-[9px] uppercase tracking-wider text-neutral-600">Arm {label}</div>
             <div className="tabular-nums text-sm text-neutral-200">
               {arm_.n > 0 ? arm_.mean.toFixed(1) : "—"}
