@@ -209,21 +209,36 @@ function Graph() {
     void fitView({ padding: 0.14, duration: cameraDuration(520), maxZoom: 1.1 });
   }, [fitView]);
 
+  /**
+   * Focus Mode framing.
+   *
+   * The old padding of 0.58 meant more than half the frame was margin, so a
+   * wide depth-2 neighbourhood pushed the camera out past 0.4 and the labels —
+   * the whole point of isolating a network — became unreadable. A floor on the
+   * zoom is the honest trade: show the neighbourhood as far as it fits, and
+   * keep it legible rather than complete. Turning the mode off used to leave
+   * the camera wherever it had been pushed; it now comes back to the selection.
+   */
   const setFocusModeAndFrame = useCallback(
     (enabled: boolean) => {
       setFocusMode(enabled);
-      if (!enabled || !selectedId) return;
+      if (!selectedId) return;
+      if (!enabled) {
+        focusNode(selectedId);
+        return;
+      }
       const ids = Array.from(neighborsWithinDepth(data, selectedId, 2));
       requestAnimationFrame(() => {
         void fitView({
           nodes: ids.map((id) => ({ id })),
-          padding: 0.58,
+          padding: 0.24,
           duration: cameraDuration(560),
+          minZoom: 0.62,
           maxZoom: 1.5,
         });
       });
     },
-    [fitView, selectedId],
+    [fitView, focusNode, selectedId],
   );
 
   const showPath = useCallback(
@@ -299,14 +314,40 @@ function Graph() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [focusNode, selectedId]);
 
-  const toggleCategory = useCallback((id: string) => {
-    setActiveCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
+  const frameCategories = useCallback(
+    (categories: Set<string>) => {
+      if (categories.size === 0) {
+        fitAll();
+        return;
+      }
+      const ids = data.nodes
+        .filter((node) => categories.has(node.categoryId))
+        .map((node) => ({ id: node.id }));
+      if (ids.length === 0) return;
+      requestAnimationFrame(() => {
+        void fitView({
+          nodes: ids,
+          padding: 0.3,
+          duration: cameraDuration(560),
+          maxZoom: 1.2,
+        });
+      });
+    },
+    [fitAll, fitView],
+  );
+
+  const toggleCategory = useCallback(
+    (id: string) => {
+      setActiveCategories((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        frameCategories(next);
+        return next;
+      });
+    },
+    [frameCategories],
+  );
 
   const openWorkbench = useCallback((tab: WorkbenchTab | null) => {
     setWorkbench(tab);
@@ -408,7 +449,10 @@ function Graph() {
         onOpenWorkbench={openWorkbench}
         activeCategories={activeCategories}
         onToggleCategory={toggleCategory}
-        onClearFilters={() => setActiveCategories(new Set())}
+        onClearFilters={() => {
+          setActiveCategories(new Set());
+          fitAll();
+        }}
         activePathId={activePathId}
         onShowPath={showPath}
         onClearPath={() => setActivePathId(null)}

@@ -17,17 +17,14 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "any",
     categories: ["education", "productivity", "health"],
     icons: [
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
       {
         src: "/neuron-icon.svg",
         sizes: "any",
         type: "image/svg+xml",
         purpose: "any",
-      },
-      {
-        src: "/neuron-icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "maskable",
       },
       {
         src: "/favicon.ico",

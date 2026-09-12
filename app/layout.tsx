@@ -36,7 +36,12 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.ico" },
       { url: "/neuron-icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
     ],
+    // iOS ignores an SVG for the home-screen icon and falls back to a
+    // screenshot of the page, which is how an installed PWA ends up with no
+    // icon at all.
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
 };
 

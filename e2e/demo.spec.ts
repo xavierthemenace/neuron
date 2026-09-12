@@ -60,7 +60,6 @@ test.describe("example profile", () => {
     await page.getByRole("button", { name: "Skip setup" }).click();
     await expect(page.getByTestId("today-screen")).toBeVisible();
 
-    page.on("dialog", (dialog) => dialog.accept());
     await openMap(page);
 
     // A goal set before the first rep used to be destroyed with no backup at
@@ -69,6 +68,7 @@ test.describe("example profile", () => {
     await page.getByRole("button", { name: "Data" }).click();
     await page.getByRole("button", { name: /Load an example profile/ }).click();
     await expect(await download).toBeTruthy();
+    await page.getByRole("button", { name: "Load the example", exact: true }).click();
 
     await page.getByRole("button", { name: "Today", exact: true }).click();
     await expect(page.getByText("This is an example profile.")).toBeVisible();
@@ -79,10 +79,10 @@ test.describe("example profile", () => {
     await page.getByRole("button", { name: "Show me an example first" }).click();
     await expect(page.getByText("This is an example profile.")).toBeVisible();
 
-    page.on("dialog", (dialog) => dialog.accept());
     await openMap(page);
     await page.getByRole("button", { name: "Data" }).click();
     await page.getByRole("button", { name: /Clear the example profile/ }).click();
+    await page.getByRole("button", { name: "Clear it" }).click();
 
     await page.getByRole("button", { name: "Today", exact: true }).click();
     await expect(page.getByText("This is an example profile.")).toBeHidden();

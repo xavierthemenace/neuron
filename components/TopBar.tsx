@@ -10,7 +10,8 @@ import { TIERS, tierForXp } from "@/lib/mastery";
 import type { Category, IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
 import type { WorkbenchTab } from "./Workbench";
-import { Chip } from "./ui";
+import { Chip, ConfirmDialog } from "./ui";
+import { useDismissable } from "./useDismissable";
 
 export function TopBar({
   data,
@@ -45,9 +46,42 @@ export function TopBar({
   const searchInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [legendOpen, setLegendOpen] = useState(false);
-  const [dataOpen, setDataOpen] = useState(false);
-  const [pathsOpen, setPathsOpen] = useState(false);
+  /**
+   * One menu at a time, closed by Escape or by clicking away.
+   *
+   * These were three independent booleans, so Filter and Paths could sit open
+   * on top of each other, and neither closed on Escape or on an outside click —
+   * the Filter panel could only be dismissed by pressing Filter again.
+   */
+  const [menu, setMenu] = useState<null | "legend" | "data" | "paths">(null);
+  const bar = useRef<HTMLDivElement>(null);
+  const legendOpen = menu === "legend";
+  const dataOpen = menu === "data";
+  const pathsOpen = menu === "paths";
+  const setLegendOpen = (open: boolean) => setMenu(open ? "legend" : null);
+  const setDataOpen = (open: boolean) => setMenu(open ? "data" : null);
+  const setPathsOpen = (open: boolean) => setMenu(open ? "paths" : null);
+
+  useDismissable({ open: menu !== null, onClose: () => setMenu(null) });
+
+  const [pending, setPending] = useState<null | {
+    title: string;
+    body: string;
+    confirmLabel: string;
+    destructive?: boolean;
+    run: () => void;
+  }>(null);
+
+  useEffect(() => {
+    if (menu === null) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!bar.current?.contains(event.target as Node)) setMenu(null);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, [menu]);
+
+  const activePath = activePathId ? paths.find((path) => path.id === activePathId) : null;
 
   const tierCounts = useMemo(() => {
     const counts = new Array(TIERS.length).fill(0);
@@ -114,7 +148,11 @@ export function TopBar({
   };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[20.5rem] md:pl-[20.5rem]">
+    <>
+    <div
+      ref={bar}
+      className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[20.5rem] md:pl-[20.5rem]"
+    >
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
         <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-black/60 px-3 py-2 shadow-lg backdrop-blur-xl">
           <span className="text-sm font-semibold tracking-tight text-white">Neuron</span>
@@ -237,7 +275,7 @@ export function TopBar({
         <div className="relative">
           <button
             type="button"
-            onClick={() => setPathsOpen((value) => !value)}
+            onClick={() => setPathsOpen(!pathsOpen)}
             aria-expanded={pathsOpen}
             className={[
               "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
@@ -246,7 +284,17 @@ export function TopBar({
                 : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
             ].join(" ")}
           >
-            Paths
+            {activePath ? (
+              <span className="flex items-center gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-[var(--pop)]"
+                />
+                <span className="max-w-[9rem] truncate">{activePath.label}</span>
+              </span>
+            ) : (
+              "Paths"
+            )}
           </button>
           {pathsOpen && (
             <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.98)] p-1.5 shadow-2xl backdrop-blur-2xl">
@@ -287,7 +335,7 @@ export function TopBar({
 
         <button
           type="button"
-          onClick={() => setLegendOpen((value) => !value)}
+          onClick={() => setLegendOpen(!legendOpen)}
           aria-expanded={legendOpen}
           className={[
             "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
@@ -302,7 +350,7 @@ export function TopBar({
         <div className="relative sm:ml-auto">
           <button
             type="button"
-            onClick={() => setDataOpen((value) => !value)}
+            onClick={() => setDataOpen(!dataOpen)}
             aria-expanded={dataOpen}
             className="min-h-[40px] rounded-xl border border-white/12 bg-black/60 px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
           >
@@ -348,13 +396,12 @@ export function TopBar({
                 <button
                   type="button"
                   onClick={() => {
-                    if (
-                      window.confirm(
-                        "Clear the example profile and start from an empty one? Nothing of yours is in it.",
-                      )
-                    ) {
-                      resetProgress();
-                    }
+                    setPending({
+                      title: "Clear the example profile",
+                      body: "This leaves you with an empty profile. Nothing of yours is in the example, so nothing of yours is lost.",
+                      confirmLabel: "Clear it",
+                      run: () => resetProgress(),
+                    });
                     setDataOpen(false);
                   }}
                   className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
@@ -376,15 +423,14 @@ export function TopBar({
                     // have seen journals, which live in their own store. Anyone
                     // who set up a goal before logging a rep lost it silently.
                     // There is no version of this worth getting clever about.
-                    void exportBackup(progress).then(() => {
-                      if (
-                        window.confirm(
-                          "A backup has been downloaded. Replace everything you have with six months of generated example data?",
-                        )
-                      ) {
-                        replaceProgress(buildDemoProgress());
-                      }
-                    });
+                    void exportBackup(progress).then(() =>
+                      setPending({
+                        title: "Load the example profile",
+                        body: "A backup of everything you have has been downloaded. Loading the example replaces your profile with six months of generated data. Import that backup from this menu to get your own record back.",
+                        confirmLabel: "Load the example",
+                        run: () => replaceProgress(buildDemoProgress()),
+                      }),
+                    );
                     setDataOpen(false);
                   }}
                   className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
@@ -421,15 +467,15 @@ export function TopBar({
                 onClick={() => {
                   // Export first, always. A reset dialog without a backup step
                   // is how people lose years of records to one misread prompt.
-                  void exportBackup(progress).then(() => {
-                    if (
-                      window.confirm(
-                        "A backup has been downloaded. Erase all local progress, journals and settings?",
-                      )
-                    ) {
-                      resetProgress();
-                    }
-                  });
+                  void exportBackup(progress).then(() =>
+                    setPending({
+                      title: "Erase everything",
+                      body: "A backup has been downloaded. This erases all local progress, journals and settings. Importing that file from this menu is the only way back.",
+                      confirmLabel: "Erase everything",
+                      destructive: true,
+                      run: () => resetProgress(),
+                    }),
+                  );
                   setDataOpen(false);
                 }}
                 className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-red-300/60 hover:bg-red-400/[0.07] hover:text-red-200"
@@ -544,5 +590,19 @@ export function TopBar({
         </div>
       )}
     </div>
+
+    <ConfirmDialog
+      open={pending !== null}
+      title={pending?.title ?? ""}
+      body={pending?.body ?? ""}
+      confirmLabel={pending?.confirmLabel ?? "Confirm"}
+      destructive={pending?.destructive}
+      onCancel={() => setPending(null)}
+      onConfirm={() => {
+        pending?.run();
+        setPending(null);
+      }}
+    />
+    </>
   );
 }

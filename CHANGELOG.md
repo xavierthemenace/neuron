@@ -36,8 +36,39 @@ need to know which one happened.
   calibration is domain-specific — plus a way to write a new call and the count
   of predictions past their date.
 
+### Changed
+
+- **Today uses a desktop screen.** On a laptop the day splits in two: what to
+  do on the left, what is waiting and whether any of it is working on the
+  right. It was a 672px column at every width, which left two thirds of a large
+  screen empty. The phone layout is unchanged.
+- **Destructive actions confirm in the app rather than in a browser alert.**
+  `window.confirm` is suppressed outright by some browsers, which made the Data
+  menu's entries look like dead controls, and it dropped the app's own design
+  at the moment it was asking to be trusted with someone's record.
+- **The map's menus behave like menus.** Filter, Paths and Data were three
+  independent booleans, so two could sit open on top of each other and none
+  closed on Escape or on a click elsewhere — the Filter panel could only be
+  dismissed by pressing Filter again. One opens at a time now, and both
+  dismissals work. The Paths control also shows which path is applied.
+- **Filtering to a cluster moves the camera to it** instead of dimming
+  everything else and leaving you looking at an empty canvas.
+- **Focus Mode stays legible and gives the camera back.** Its framing padding
+  was 0.58, so a wide neighbourhood pushed the zoom past 0.4 and the labels
+  became unreadable; it is 0.24 with a zoom floor, and turning the mode off
+  returns to the selection rather than leaving the camera where it was pushed.
+- **PNG icons for the installed app.** iOS ignores an SVG for a home-screen
+  icon, so an installed copy had no icon at all.
+
 ### Fixed
 
+- **Three labels claimed more than they knew.** The Insights headline said you
+  were "already working on" capabilities you had only named in a goal; a goal's
+  progress bar credited you for the untrained prior before you had logged
+  anything; and the XP tier caption read "fully trained" directly beneath a
+  competence figure of 37%.
+- **The command palette repeated its group headings**, one per row rather than
+  one per group, because the matched commands were never sorted by group.
 - **Loading the example profile could destroy work without a backup.** The
   guard counted practice logs and predictions only, so anyone who had set a
   goal or added a personal capability before logging their first rep tripped

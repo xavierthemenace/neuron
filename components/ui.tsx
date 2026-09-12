@@ -236,11 +236,14 @@ export function Sheet({
   footer,
   wide = false,
   asScreen = false,
+  closeLabel,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   subtitle?: string;
+  /** Overrides "Close {title}" where that reads as "quit the app". */
+  closeLabel?: string;
   children: ReactNode;
   footer?: ReactNode;
   wide?: boolean;
@@ -297,7 +300,7 @@ export function Sheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label={`Close ${title}`}
+            aria-label={closeLabel ?? `Close ${title}`}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-neutral-500 transition-colors hover:bg-white/7 hover:text-white"
           >
             <svg viewBox="0 0 14 14" className="h-3.5 w-3.5" aria-hidden="true">
@@ -320,6 +323,55 @@ export function Sheet({
         )}
       </section>
     </div>
+  );
+}
+
+/**
+ * A confirm step in the app's own language.
+ *
+ * The destructive Data actions gated on `window.confirm`, which some browsers
+ * suppress outright — the buttons then read as dead controls — and which drops
+ * the paper-and-ink design for an OS alert at exactly the moment the user is
+ * being asked to trust the app with their record.
+ */
+export function ConfirmDialog({
+  open,
+  title,
+  body,
+  confirmLabel,
+  destructive = false,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  body: string;
+  confirmLabel: string;
+  destructive?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <Sheet open={open} onClose={onCancel} title={title}>
+      <p className="text-[13px] leading-relaxed text-neutral-300">{body}</p>
+      <div className="mt-5 flex justify-end gap-2">
+        <button type="button" onClick={onCancel} className={buttonClass}>
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={onConfirm}
+          autoFocus
+          className={
+            destructive
+              ? "rounded-lg border border-rose-300/40 bg-rose-300/[0.12] px-3 py-2 text-xs font-medium text-rose-100 transition-colors hover:bg-rose-300/20"
+              : primaryButtonClass
+          }
+        >
+          {confirmLabel}
+        </button>
+      </div>
+    </Sheet>
   );
 }
 

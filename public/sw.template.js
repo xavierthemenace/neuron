@@ -22,7 +22,14 @@
  */
 const BUILD = "__BUILD_ID__";
 const CACHE = `neuron-${BUILD}`;
-const CORE = ["/", "/manifest.webmanifest", "/favicon.ico", "/neuron-icon.svg"];
+const CORE = [
+  "/",
+  "/manifest.webmanifest",
+  "/favicon.ico",
+  "/neuron-icon.svg",
+  "/apple-touch-icon.png",
+  "/icon-192.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

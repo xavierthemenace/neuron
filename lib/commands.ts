@@ -41,6 +41,16 @@ export const GROUP_LABEL: Record<CommandGroup, string> = {
   data: "Data",
 };
 
+/** Display order for the palette's group headings. */
+export const GROUP_ORDER: CommandGroup[] = [
+  "navigate",
+  "train",
+  "measure",
+  "record",
+  "view",
+  "data",
+];
+
 /** Handlers the palette needs in order to run a command. */
 export interface CommandHandlers {
   openWorkbench: (tab: WorkbenchTabId) => void;

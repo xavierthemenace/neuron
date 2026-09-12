@@ -313,7 +313,9 @@ export function SidePanel({
             <div className="mt-3 flex items-baseline justify-between gap-3 text-[10px] text-neutral-500">
               <span style={{ color: `oklch(0.44 0.13 ${hue})` }}>{tier.name}</span>
               <span className="tabular-nums">
-                {next ? `${Math.max(0, next.min - xp)} XP to ${next.name}` : "fully trained"}
+                {next
+                  ? `${Math.max(0, next.min - xp)} XP to ${next.name}`
+                  : "top of the XP scale"}
               </span>
             </div>
             <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/10">
