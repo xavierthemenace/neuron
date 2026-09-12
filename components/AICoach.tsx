@@ -399,7 +399,7 @@ export function AICoach({
         </header>
 
         {settingsOpen && (
-          <div className="grid gap-3 border-b border-white/8 bg-black/15 p-4 sm:grid-cols-2">
+          <div className="grid gap-3 border-b border-white/8 bg-[rgb(25_22_20_/_0.035)] p-4 sm:grid-cols-2">
             <Field label="Provider">
               <select
                 value={settings.provider}
@@ -605,7 +605,7 @@ export function AICoach({
               {showPayload ? "Hide" : "Show"} the exact text that will be sent
             </button>
             {showPayload && (
-              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap rounded-lg border border-white/8 bg-black/40 p-3 font-mono text-[10px] leading-relaxed text-neutral-400">
+              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap rounded-lg border border-white/8 bg-[rgb(25_22_20_/_0.05)] p-3 font-mono text-[10px] leading-relaxed text-neutral-400">
                 {prompt}
               </pre>
             )}
@@ -650,7 +650,7 @@ export function AICoach({
 
           {answer && (
             <div className="space-y-3">
-              <div className="whitespace-pre-wrap rounded-xl border border-white/10 bg-black/20 p-4 text-[13px] leading-relaxed text-neutral-300">
+              <div className="whitespace-pre-wrap rounded-xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] p-4 text-[13px] leading-relaxed text-neutral-300">
                 {answer}
               </div>
               <div className="flex flex-wrap items-center gap-2">

@@ -215,6 +215,7 @@ export function SidePanel({
         "transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0",
         "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-2xl border-t",
         "md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[440px] md:rounded-none md:border-l md:border-t-0",
+        "xl:w-[496px] 2xl:w-[560px]",
         open
           ? "translate-y-0 md:translate-x-0"
           : "translate-y-full md:translate-y-0 md:translate-x-full",
@@ -325,7 +326,7 @@ export function SidePanel({
               />
             </div>
 
-            <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+            <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] px-3 py-2">
               <div>
                 <div className="text-[11px] font-medium text-neutral-200">Focus Mode</div>
                 <div className="text-[9px] text-neutral-500">
@@ -357,7 +358,7 @@ export function SidePanel({
             <div
               role="tablist"
               aria-label="Faculty sections"
-              className="mt-4 flex gap-1 rounded-xl border border-white/8 bg-black/20 p-1"
+              className="mt-4 flex gap-1 rounded-xl border border-white/8 bg-[rgb(25_22_20_/_0.035)] p-1"
             >
               {(
                 [
@@ -795,7 +796,7 @@ function EvidenceTab({
         </ul>
       </Section>
 
-      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] px-3 py-2.5">
         <div className="min-w-0 pr-3">
           <div className="text-[11px] font-medium text-neutral-200">Research Mode</div>
           <div className="text-[9px] leading-relaxed text-neutral-500">

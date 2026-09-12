@@ -38,6 +38,21 @@ need to know which one happened.
 
 ### Changed
 
+- **The map's controls are paper again, not grey.** When the palette moved to
+  light, the scales were inverted so existing classes would land correctly —
+  but `bg-black/60` on chrome floating over the dark canvas became *white at
+  60%*, which over near-black is grey. Every control on the map was washed out.
+  The map's chrome is now near-solid paper, the review pill is solid when the
+  queue has something in it, and the node labels went back to being dark chips
+  with light text, which is the one place on the app that still wants them.
+- **Recessed blocks inside panels are a faint ink tint.** The same inversion
+  turned `bg-black/20` inside a white panel into white on white, so every
+  sunken block — code samples, probe readouts, journal previews, chart frames —
+  had quietly disappeared.
+- **Desktop uses the display.** The Record screen was capped at 1024px however
+  wide the screen; it now grows to 1408px, which is what the browse table and
+  the analytics charts were short of. The capability rail widens with it, and
+  the minimap and graph navigator move to stay clear of it.
 - **Today uses a desktop screen.** On a laptop the day splits in two: what to
   do on the left, what is waiting and whether any of it is working on the
   right. It was a 672px column at every width, which left two thirds of a large

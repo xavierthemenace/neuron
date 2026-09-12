@@ -154,7 +154,7 @@ export function TopBar({
       className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-col gap-2 p-3 md:p-4 sm:pl-[20.5rem] md:pl-[20.5rem]"
     >
       <div className="pointer-events-auto flex flex-wrap items-center gap-2">
-        <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-black/60 px-3 py-2 shadow-lg backdrop-blur-xl">
+        <div className="flex min-h-[40px] items-center gap-2.5 rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.94)] px-3 py-2 shadow-lg backdrop-blur-xl">
           <span className="text-sm font-semibold tracking-tight text-white">Neuron</span>
           <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
           <span className="tabular-nums text-xs text-neutral-300">
@@ -191,7 +191,7 @@ export function TopBar({
               }}
               placeholder="Search capabilities…"
               aria-label="Search capabilities"
-              className="min-h-[40px] w-full rounded-xl border border-white/12 bg-black/60 px-3 py-2 pr-9 text-xs text-neutral-100 shadow-lg outline-none backdrop-blur-xl transition-[border-color,background-color] placeholder:text-neutral-500 focus:border-white/30 focus:bg-black/75 sm:w-64"
+              className="min-h-[40px] w-full rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.94)] px-3 py-2 pr-9 text-xs text-neutral-100 shadow-lg outline-none backdrop-blur-xl transition-[border-color,background-color] placeholder:text-neutral-500 focus:border-white/30 focus:bg-[rgb(255_255_255_/_1)] sm:w-64"
             />
             {search ? (
               <button
@@ -261,14 +261,16 @@ export function TopBar({
           onClick={() => onOpenWorkbench("review")}
           className={[
             "relative min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
+            // A tinted pill over a dark canvas reads as muddy. When there is
+            // something in the queue this is the one solid colour on the map.
             inboxCount > 0
-              ? "border-cyan-300/30 bg-cyan-300/10 text-cyan-50"
-              : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+              ? "border-transparent bg-[var(--pop)] text-[#fff]"
+              : "border-white/12 bg-[rgb(255_255_255_/_0.94)] text-neutral-300 hover:border-white/25 hover:text-white",
           ].join(" ")}
         >
           Review
           {inboxCount > 0 && (
-            <span className="ml-1.5 tabular-nums text-cyan-200/80">{inboxCount}</span>
+            <span className="ml-1.5 tabular-nums opacity-80">{inboxCount}</span>
           )}
         </button>
 
@@ -281,7 +283,7 @@ export function TopBar({
               "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
               activePathId
                 ? "border-white/30 bg-white/12 text-white"
-                : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+                : "border-white/12 bg-[rgb(255_255_255_/_0.94)] text-neutral-300 hover:border-white/25 hover:text-white",
             ].join(" ")}
           >
             {activePath ? (
@@ -341,7 +343,7 @@ export function TopBar({
             "min-h-[40px] rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl transition-colors",
             activeCategories.size > 0
               ? "border-white/30 bg-white/12 text-white"
-              : "border-white/12 bg-black/60 text-neutral-300 hover:border-white/25 hover:text-white",
+              : "border-white/12 bg-[rgb(255_255_255_/_0.94)] text-neutral-300 hover:border-white/25 hover:text-white",
           ].join(" ")}
         >
           Filter{activeCategories.size > 0 && ` (${activeCategories.size})`}
@@ -352,7 +354,7 @@ export function TopBar({
             type="button"
             onClick={() => setDataOpen(!dataOpen)}
             aria-expanded={dataOpen}
-            className="min-h-[40px] rounded-xl border border-white/12 bg-black/60 px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
+            className="min-h-[40px] rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.94)] px-3 py-2 text-xs text-neutral-400 shadow-lg backdrop-blur-xl transition-colors hover:border-white/25 hover:text-white"
           >
             Data
           </button>
@@ -491,7 +493,7 @@ export function TopBar({
 
         {/* The keyboard hint is the first thing to give up its space: the row
             now starts clear of the navigation pill. */}
-        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-black/70 px-2.5 py-2 text-[9px] text-neutral-400 shadow-lg backdrop-blur-xl xl:flex">
+        <div className="hidden items-center gap-1 rounded-xl border border-white/8 bg-[rgb(255_255_255_/_0.94)] px-2.5 py-2 text-[9px] text-neutral-400 shadow-lg backdrop-blur-xl xl:flex">
           <kbd className="font-mono">⌘/Ctrl K</kbd>
           <span>commands</span>
         </div>
@@ -524,7 +526,7 @@ export function TopBar({
       )}
 
       {legendOpen && (
-        <div className="pointer-events-auto w-full max-w-3xl rounded-xl border border-white/12 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
+        <div className="pointer-events-auto w-full max-w-3xl rounded-xl border border-white/12 bg-[rgb(255_255_255_/_0.94)] p-3 shadow-2xl backdrop-blur-xl">
           <div className="flex flex-wrap gap-1.5">
             {data.categories.map((category: Category) => {
               const active = activeCategories.has(category.id);

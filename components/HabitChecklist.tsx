@@ -329,7 +329,7 @@ export function HabitChecklist({
                             max={600}
                             value={minutes}
                             onChange={(event) => setMinutes(event.target.value)}
-                            className="w-16 rounded-md border border-white/10 bg-black/35 px-2 py-1 text-xs tabular-nums text-neutral-200 outline-none focus:border-white/25"
+                            className="w-16 rounded-md border border-white/10 bg-[rgb(25_22_20_/_0.05)] px-2 py-1 text-xs tabular-nums text-neutral-200 outline-none focus:border-white/25"
                           />
                         </label>
                         <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-[10px] text-neutral-500">
