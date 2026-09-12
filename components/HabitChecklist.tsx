@@ -214,7 +214,12 @@ export function HabitChecklist({
                     <span title="Your current working difficulty for this task">
                       L{adaptive.level}/5
                       {adaptive.level !== adaptive.anchor && (
-                        <span className="ml-0.5 text-neutral-600">
+                        <span
+                          className="ml-0.5 text-neutral-600"
+                          title={`Adaptive difficulty has moved this ${
+                            adaptive.level > adaptive.anchor ? "up" : "down"
+                          } from the exercise's anchor of ${adaptive.anchor}, from your record on it.`}
+                        >
                           ({adaptive.level > adaptive.anchor ? "+" : ""}
                           {adaptive.level - adaptive.anchor})
                         </span>

@@ -96,6 +96,7 @@ export function GoalsTab({
                         {suggestion.path.label}
                       </div>
                       <p className="mt-0.5 text-[10px] leading-relaxed text-neutral-500">
+                        <span className="text-neutral-400">Done when: </span>
                         {suggestion.path.outcome}
                       </p>
                       <Why summary="Why this path?">
@@ -200,6 +201,19 @@ function GoalCard({
 }) {
   const model = useProgress();
   const plan = useMemo(() => buildGoalPlan(goal, model), [goal, model]);
+
+  /**
+   * Whether anything on this goal has been observed at all.
+   *
+   * Progress is competence against a target, and an untouched capability sits
+   * at the untrained prior rather than at zero — so a goal set five minutes ago
+   * reads about 22%. Every other number in the app says when it is resting on
+   * the prior; this one was quietly crediting the user for nothing.
+   */
+  const restsOnPrior = useMemo(
+    () => goal.nodeIds.every((id) => (model.estimates[id]?.provenance ?? "prior") === "prior"),
+    [goal.nodeIds, model.estimates],
+  );
   const path = goal.pathId ? pathsById.get(goal.pathId) : undefined;
 
   return (
@@ -214,8 +228,12 @@ function GoalCard({
           <div className="mt-2">
             <Meter
               label="Toward the target competence"
-              value={plan.progress}
-              caption={`${plan.steps.length} steps · roughly ${plan.weeks} weeks at ${plan.weeklyMinutes} min/week`}
+              value={restsOnPrior ? 0 : plan.progress}
+              caption={
+                restsOnPrior
+                  ? `Nothing on this goal has been logged yet, so there is no progress to show. ${plan.steps.length} steps · roughly ${plan.weeks} weeks at ${plan.weeklyMinutes} min/week`
+                  : `${plan.steps.length} steps · roughly ${plan.weeks} weeks at ${plan.weeklyMinutes} min/week`
+              }
             />
           </div>
         </button>

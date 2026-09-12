@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GROUP_LABEL,
+  GROUP_ORDER,
   buildCommands,
   filterCommands,
   type CommandGroup,
@@ -183,7 +184,14 @@ export function CommandPalette({
 
   const rows = useMemo(
     () => [
-      ...matchedCommands.map((command) => ({ kind: "command" as const, command })),
+      // Sorted by group so the "new group starts here" heading fires once per
+      // group rather than once per row. Stable within a group, so the ranking
+      // the matcher produced is kept.
+      ...[...matchedCommands]
+        .sort(
+          (a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group),
+        )
+        .map((command) => ({ kind: "command" as const, command })),
       ...nodeResults.map((node) => ({ kind: "node" as const, node })),
       ...exerciseResults.map((entry) => ({ kind: "exercise" as const, ...entry })),
     ],

@@ -189,12 +189,12 @@ export function BrowseTab({
                         {KIND_GLYPH[kindOf(node)]}
                       </span>
                       {node.label}
-                    </button>
+                    </button>{" "}
                     <button
                       type="button"
                       onClick={() => setOpenRow(expanded ? null : node.id)}
                       aria-expanded={expanded}
-                      className="ml-2 rounded text-[10px] text-neutral-600 underline decoration-dotted underline-offset-2 hover:text-neutral-300"
+                      className="ml-2 rounded px-1 text-[10px] text-neutral-600 underline decoration-dotted underline-offset-2 hover:text-neutral-300"
                     >
                       {expanded ? "less" : "more"}
                     </button>

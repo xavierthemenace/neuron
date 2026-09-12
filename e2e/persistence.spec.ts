@@ -78,10 +78,12 @@ test.describe("persistence", () => {
 
     // Wipe, then restore from the file we just wrote.
     await page.getByRole("button", { name: "Data" }).click();
-    page.once("dialog", (dialog) => dialog.accept());
     const resetDownload = page.waitForEvent("download");
     await page.getByRole("button", { name: /Reset progress/ }).click();
     await resetDownload;
+    // The destructive actions confirm in the app's own dialog now, not in a
+    // native one the browser is free to suppress.
+    await page.getByRole("button", { name: "Erase everything", exact: true }).click();
 
     await expect.poll(async () => page.getByText(/^\d+/).first().textContent()).toBeTruthy();
 
@@ -99,10 +101,13 @@ test.describe("persistence", () => {
     await expect(page.getByText("Exports a backup first")).toBeVisible();
 
     const download = page.waitForEvent("download");
-    page.once("dialog", (dialog) => dialog.dismiss());
     await page.getByRole("button", { name: /Reset progress/ }).click();
     const file = await download;
     expect(file.suggestedFilename()).toMatch(/^neuron-backup-/);
+
+    // Backing out of the confirm must leave the record alone.
+    await page.getByRole("button", { name: "Cancel" }).click();
+    await expect(page.getByRole("dialog", { name: "Erase everything" })).toBeHidden();
   });
 });
 

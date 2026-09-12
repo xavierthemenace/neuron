@@ -25,7 +25,6 @@ test.describe("data durability", () => {
     const xpBefore = xpText.match(/[\d,]+/)![0];
     expect(Number(xpBefore.replace(/,/g, ""))).toBeGreaterThan(1000);
 
-    page.on("dialog", (dialog) => dialog.accept());
     await openMap(page);
 
     // 1. Export.
@@ -44,6 +43,7 @@ test.describe("data durability", () => {
     await page.getByRole("button", { name: "Data" }).click();
     await page.getByRole("button", { name: /Reset progress/ }).click();
     await resetDownload;
+    await page.getByRole("button", { name: "Erase everything", exact: true }).click();
 
     await page.getByRole("button", { name: "Today", exact: true }).click();
     await expect(page.getByText("This is an example profile.")).toBeHidden();

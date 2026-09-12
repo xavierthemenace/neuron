@@ -86,7 +86,7 @@ export function Today({
   };
 
   return (
-    <div className="animate-rise mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pb-6 pt-4 sm:px-6 sm:pt-7">
+    <div className="animate-rise mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pb-6 pt-4 sm:px-6 sm:pt-7 lg:max-w-5xl lg:gap-6">
       {model.progress.demo && (
         <p className="rounded-xl border border-dashed border-[var(--pop)]/45 bg-[var(--pop-soft)] px-3.5 py-2.5 text-[12px] leading-relaxed text-[var(--ink)]">
           <strong className="font-semibold">This is an example profile.</strong> Six months of
@@ -97,7 +97,7 @@ export function Today({
 
       <header className="flex items-baseline justify-between gap-4">
         <div>
-          <h1 className="font-display text-[30px] leading-none text-[var(--ink)] sm:text-[38px]">
+          <h1 className="font-display text-[30px] leading-none text-[var(--ink)] sm:text-[38px] lg:text-[46px]">
             {now.toLocaleDateString(undefined, DATE_FORMAT)}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
@@ -110,6 +110,11 @@ export function Today({
         </p>
       </header>
 
+      {/* On a laptop the day splits in two: what to do on the left, what is
+          waiting and whether any of it is working on the right. On a phone it
+          stays one column in that same order. */}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-start lg:gap-8">
+        <div className="flex flex-col gap-5">
       {/* ── The one thing ─────────────────────────────────────────────── */}
       {lead ? (
         <section
@@ -119,7 +124,7 @@ export function Today({
           <span className="text-[10px] font-medium uppercase tracking-[0.2em] opacity-70">
             Do this next
           </span>
-          <h2 className="font-display text-[26px] leading-[1.12] text-balance sm:text-[31px]">
+          <h2 className="font-display text-[26px] leading-[1.12] text-balance sm:text-[31px] lg:text-[35px]">
             {lead.exercise.label}
           </h2>
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] opacity-80">
@@ -151,7 +156,7 @@ export function Today({
           <span className="text-[10px] font-medium uppercase tracking-[0.2em] opacity-70">
             Nothing planned
           </span>
-          <h2 className="font-display mt-3 text-[25px] leading-[1.14]">
+          <h2 className="font-display mt-3 text-[25px] leading-[1.14] lg:text-[30px]">
             Everything eligible is inside its reset window.
           </h2>
           <p className="mt-2 text-[12px] leading-relaxed opacity-80">
@@ -247,6 +252,9 @@ export function Today({
         </Why>
       )}
 
+        </div>
+
+        <div className="flex flex-col gap-5">
       {/* ── Then, if there's time ──────────────────────────────────────── */}
       {(rest.length > 0 || queue.length > 0) && (
         <section className="flex flex-col gap-2">
@@ -358,6 +366,8 @@ export function Today({
           </button>
         )}
       </footer>
+        </div>
+      </div>
 
       <p className="text-[11px] leading-relaxed text-[var(--ink-faint)]">
         The ranking is a weighted judgement, not a measured effect size. It is good at

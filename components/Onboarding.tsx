@@ -82,6 +82,7 @@ export function Onboarding({
       open
       onClose={finish}
       title="Neuron"
+      closeLabel="Close the welcome"
       subtitle="A map of trainable cognitive capability, and an honest record of what you can actually do."
       footer={
         <div className="flex items-center justify-between gap-3">
@@ -160,6 +161,7 @@ export function Onboarding({
                       {suggestion.path.label}
                     </span>
                     <span className="mt-0.5 block text-[10px] leading-relaxed text-neutral-500">
+                      <span className="text-neutral-400">Done when: </span>
                       {suggestion.path.outcome}
                     </span>
                   </button>

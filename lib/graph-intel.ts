@@ -190,11 +190,16 @@ function findBottlenecks(context: AnalysisContext): GraphFinding[] {
     findings.push({
       kind: "bottleneck",
       nodeIds: [node.id, ...engaged.slice(0, 6)],
-      headline: `${node.label} is holding up ${engaged.length} capabilit${engaged.length === 1 ? "y" : "ies"} you are already working on`,
+      // "engaged" counts a node the user named in a goal as well as one they
+      // have actually practised, so the headline cannot claim training.
+      headline:
+        goalRelevant.length === engaged.length
+          ? `${node.label} is holding up ${engaged.length} capabilit${engaged.length === 1 ? "y" : "ies"} on your goals`
+          : `${node.label} is holding up ${engaged.length} capabilit${engaged.length === 1 ? "y" : "ies"} you have taken an interest in`,
       detail:
         goalRelevant.length > 0
           ? `Improving ${node.label} is likely to help ${goalRelevant.length} goal-relevant capabilit${goalRelevant.length === 1 ? "y" : "ies"} downstream of it. Prerequisite edges are the curriculum author's judgement, not an experimental result, so read this as a strong hint rather than a proof.`
-          : `${node.label} gates ${engaged.length} capabilities you have started training. Working on them without it is likely to be slower than working on it first.`,
+          : `${node.label} gates ${engaged.length} capabilities you have either practised or named in a goal. Working on them without it is likely to be slower than working on it first.`,
       priority,
       evidence: `Competence ${Math.round(own * 100)}% · ${reach.length} downstream nodes, ${engaged.length} of them active${goalRelevant.length ? `, ${goalRelevant.length} goal-relevant` : ""}.`,
     });
