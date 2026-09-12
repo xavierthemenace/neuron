@@ -108,7 +108,15 @@ function ItemView({
         </div>
       )}
 
-      <p className="text-[13px] leading-relaxed text-neutral-200">{item.prompt}</p>
+      {item.display === "figure" ? (
+        // Tight enough that a row of arrows reads as one group, which is what
+        // makes the neighbours interfere at all.
+        <p className="py-2 text-center font-mono text-3xl tracking-[0.08em] text-neutral-100">
+          {item.prompt}
+        </p>
+      ) : (
+        <p className="text-[13px] leading-relaxed text-neutral-200">{item.prompt}</p>
+      )}
 
       {item.kind === "choice" && item.options && (
         <div className="grid gap-1.5">

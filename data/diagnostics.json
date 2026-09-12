@@ -2,7 +2,10 @@
   "probes": [
     {
       "id": "probe-estimation",
-      "nodeIds": ["log-estimation", "gc-quantitative-literacy"],
+      "nodeIds": [
+        "log-estimation",
+        "gc-quantitative-literacy"
+      ],
       "items": [
         {
           "id": "est-seconds-year",
@@ -36,7 +39,7 @@
           "id": "est-avogadro",
           "kind": "numeric",
           "prompt": "How many particles are in one mole of a substance?",
-          "answer": 6.02214076e23,
+          "answer": 6.02214076e+23,
           "explanation": "Avogadro's number, 6.022 × 10²³, now a defined constant."
         },
         {
@@ -71,7 +74,7 @@
           "id": "est-air-mass",
           "kind": "numeric",
           "prompt": "What is the mass of the Earth's atmosphere, in kilograms?",
-          "answer": 5.15e18,
+          "answer": 5150000000000000000,
           "explanation": "About 5.15 × 10¹⁸ kg — derivable from surface area × sea-level pressure ÷ g."
         },
         {
@@ -92,7 +95,10 @@
     },
     {
       "id": "probe-calibration",
-      "nodeIds": ["dec-calibration", "log-probability"],
+      "nodeIds": [
+        "dec-calibration",
+        "log-probability"
+      ],
       "items": [
         {
           "id": "cal-wikipedia",
@@ -182,7 +188,10 @@
     },
     {
       "id": "probe-reading",
-      "nodeIds": ["ling-reading", "epi-evidence-eval"],
+      "nodeIds": [
+        "ling-reading",
+        "epi-evidence-eval"
+      ],
       "items": [
         {
           "id": "read-transit",
@@ -266,7 +275,10 @@
     },
     {
       "id": "probe-source",
-      "nodeIds": ["epi-source-reliability", "aug-search"],
+      "nodeIds": [
+        "epi-source-reliability",
+        "aug-search"
+      ],
       "items": [
         {
           "id": "src-lateral",
@@ -350,13 +362,22 @@
     },
     {
       "id": "probe-evidence",
-      "nodeIds": ["epi-evidence-eval", "epi-causal-inference", "gc-quantitative-literacy"],
+      "nodeIds": [
+        "epi-evidence-eval",
+        "epi-causal-inference",
+        "gc-quantitative-literacy"
+      ],
       "items": [
         {
           "id": "ev-basenrate",
           "kind": "choice",
           "prompt": "A test for a condition affecting 1 in 1,000 people has a 5% false-positive rate and catches essentially every true case. Someone tests positive. Roughly what is the chance they have it?",
-          "options": ["About 2%", "About 50%", "About 95%", "About 80%"],
+          "options": [
+            "About 2%",
+            "About 50%",
+            "About 95%",
+            "About 80%"
+          ],
           "answer": 0,
           "explanation": "Out of 10,000 people: 10 true cases, and about 500 false positives. 10 / 510 ≈ 2%. The base rate dominates."
         },
@@ -377,7 +398,12 @@
           "id": "ev-relative",
           "kind": "choice",
           "prompt": "A treatment cuts the risk of an outcome by 50%. The outcome occurs in 2 people per 10,000 without treatment. How many people must be treated to prevent one case?",
-          "options": ["About 10,000", "About 50", "About 200", "About 2"],
+          "options": [
+            "About 10,000",
+            "About 50",
+            "About 200",
+            "About 2"
+          ],
           "answer": 0,
           "explanation": "Absolute risk falls from 2 to 1 per 10,000, so preventing one case requires treating about 10,000 people. Relative risk reductions hide this completely."
         },
@@ -419,6 +445,123 @@
           ],
           "answer": 0,
           "explanation": "Twenty tests at α = 0.05 yield one false positive on average. Without correction or preregistration of the outcome, the finding carries essentially no information."
+        }
+      ]
+    },
+    {
+      "id": "probe-remote-associates",
+      "items": [
+        {
+          "id": "rat-0",
+          "kind": "recall",
+          "prompt": "cottage · swiss · cake",
+          "answer": "cheese",
+          "explanation": "\"cheese\" makes a phrase or compound with each of cottage, swiss and cake."
+        },
+        {
+          "id": "rat-1",
+          "kind": "recall",
+          "prompt": "cream · skate · water",
+          "answer": "ice",
+          "explanation": "\"ice\" makes a phrase or compound with each of cream, skate and water."
+        },
+        {
+          "id": "rat-2",
+          "kind": "recall",
+          "prompt": "night · wrist · stop",
+          "answer": "watch",
+          "explanation": "\"watch\" makes a phrase or compound with each of night, wrist and stop."
+        },
+        {
+          "id": "rat-3",
+          "kind": "recall",
+          "prompt": "fish · mine · rush",
+          "answer": "gold",
+          "explanation": "\"gold\" makes a phrase or compound with each of fish, mine and rush."
+        },
+        {
+          "id": "rat-4",
+          "kind": "recall",
+          "prompt": "dust · cereal · fish",
+          "answer": "bowl",
+          "explanation": "\"bowl\" makes a phrase or compound with each of dust, cereal and fish."
+        },
+        {
+          "id": "rat-5",
+          "kind": "recall",
+          "prompt": "sleeping · bean · trash",
+          "answer": "bag",
+          "explanation": "\"bag\" makes a phrase or compound with each of sleeping, bean and trash."
+        },
+        {
+          "id": "rat-6",
+          "kind": "recall",
+          "prompt": "river · note · account",
+          "answer": "bank",
+          "explanation": "\"bank\" makes a phrase or compound with each of river, note and account."
+        },
+        {
+          "id": "rat-7",
+          "kind": "recall",
+          "prompt": "print · berry · bird",
+          "answer": "blue",
+          "explanation": "\"blue\" makes a phrase or compound with each of print, berry and bird."
+        },
+        {
+          "id": "rat-8",
+          "kind": "recall",
+          "prompt": "cracker · fly · fighter",
+          "answer": "fire",
+          "explanation": "\"fire\" makes a phrase or compound with each of cracker, fly and fighter."
+        },
+        {
+          "id": "rat-9",
+          "kind": "recall",
+          "prompt": "safety · cushion · point",
+          "answer": "pin",
+          "explanation": "\"pin\" makes a phrase or compound with each of safety, cushion and point."
+        },
+        {
+          "id": "rat-10",
+          "kind": "recall",
+          "prompt": "shopping · washer · picture",
+          "answer": "window",
+          "explanation": "\"window\" makes a phrase or compound with each of shopping, washer and picture."
+        },
+        {
+          "id": "rat-11",
+          "kind": "recall",
+          "prompt": "cane · daddy · plum",
+          "answer": "sugar",
+          "explanation": "\"sugar\" makes a phrase or compound with each of cane, daddy and plum."
+        },
+        {
+          "id": "rat-12",
+          "kind": "recall",
+          "prompt": "light · birthday · stick",
+          "answer": "candle",
+          "explanation": "\"candle\" makes a phrase or compound with each of light, birthday and stick."
+        },
+        {
+          "id": "rat-13",
+          "kind": "recall",
+          "prompt": "measure · worm · video",
+          "answer": "tape",
+          "explanation": "\"tape\" makes a phrase or compound with each of measure, worm and video."
+        },
+        {
+          "id": "rat-14",
+          "kind": "recall",
+          "prompt": "flake · mobile · cone",
+          "answer": "snow",
+          "explanation": "\"snow\" makes a phrase or compound with each of flake, mobile and cone."
+        },
+        {
+          "id": "rat-15",
+          "kind": "recall",
+          "prompt": "sandwich · house · golf",
+          "answer": "club",
+          "explanation": "\"club\" makes a phrase or compound with each of sandwich, house and golf."
         }
       ]
     }

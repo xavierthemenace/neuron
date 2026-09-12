@@ -9,6 +9,20 @@ need to know which one happened.
 
 ### Added
 
+- **Six more diagnostic probes**, taking measured coverage from 27 capabilities
+  to 37 and the battery from eleven probes to seventeen. A flanker task for
+  interference control, a task-switching run for cognitive flexibility,
+  base-rate items in natural frequencies, expected value and opportunity cost,
+  syllogism validity with the believable-but-invalid items that make it worth
+  running, and a remote-associates bank for convergent thinking. Five generate
+  fresh items per run; the sixth is a curated bank because word items cannot be
+  generated honestly.
+
+  Each one states what it does *not* measure. The flanker and switching probes
+  score accuracy rather than the interference and switch costs those tasks are
+  properly read by, because those need a response time per item rather than one
+  for the run — and the caveats say exactly that rather than implying more.
+
 - **A static build.** `npm run build:static` writes `out/`, a plain folder any
   static host will serve. Nothing in the app needs a server, so the deployable
   artefact should not need one either. `next start` still works for the browser
