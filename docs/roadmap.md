@@ -9,9 +9,17 @@ What is next, and — more usefully — what is deliberately not.
 These are real and worth fixing before anything new is built.
 
 **188 edges have no recorded mechanism.** They were inherited from curriculum
-1.0.0, are reported by `npm run check:data`, and show as unexplained in Research
-Mode. Writing mechanisms for them is the single most valuable curriculum
-contribution available, and it is tractable in small pieces.
+1.0.0 and show as unexplained in Research Mode. `npm run check:data` now holds
+that count as a budget: the build fails if it rises, and fails asking for the
+budget to be lowered when it falls, so the debt can only move one way. Writing
+mechanisms for them is the single most valuable curriculum contribution
+available, and it is tractable in small pieces. Deleting an edge nobody can
+justify counts.
+
+**151 evidence-producing exercises have no rubric.** The eleven scored ones
+state what a complete answer contains; the artifact ones do not, so the form
+falls back to the capability's measurement method and says it is doing so. Held
+as a budget on the same terms as the edges.
 
 **The graph is not an evidence-derived structure.** Prerequisite edges are a
 curriculum author's judgement with a stated confidence, not an experimental
@@ -33,6 +41,14 @@ tested.
 
 ---
 
+## Done since this file was last true
+
+Comparison views exist — today against 7, 30, 90 or 180 days ago, rebuilt from
+the log as it stood then. Every citation carries a link, and the six that could
+not be verified were removed. Every competence figure states what kind of
+evidence it rests on. The app opens on Today rather than on the graph. An
+example profile fills the views that need history.
+
 ## Next
 
 **More diagnostic probes**, particularly for the executive and epistemic
@@ -40,10 +56,6 @@ clusters, where competence currently rests almost entirely on artifacts.
 
 **Mechanisms for the legacy edges**, ideally with citations, ideally with some
 edges deleted rather than justified.
-
-**Graph comparison views** — current versus 30 days ago, desired path versus
-current capability, one cluster against another. The data supports it; the
-views do not exist yet.
 
 **Better calibration tooling** — imported resolution from public forecasting
 platforms, and per-domain calibration curves, because calibration is

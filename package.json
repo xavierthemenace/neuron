@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "prebuild:static": "node scripts/check-data.mjs",
+    "build:static": "STATIC_EXPORT=1 next build",
+    "postbuild:static": "node scripts/build-sw.mjs && cp public/sw.js out/sw.js",
     "start": "next start",
     "lint": "eslint",
     "check:data": "node scripts/check-data.mjs",

@@ -21,8 +21,13 @@ it. The displayed score is the sum of the displayed factors; there is a test
 that says so.
 
 **Is any of this working?** — Eleven diagnostic probes and a calibration record
-with Brier scoring. Results are compared only to your own history, and only when
-the change clears the noise floor for that item count.
+with Brier scoring, shown on the front door rather than buried. Results are
+compared only to your own history, and only when the change clears the noise
+floor for that item count.
+
+If you want to see any of that before earning it, the welcome screen offers an
+example profile: six months of generated history, deliberately unflattering,
+labelled as generated on every screen that shows one of its figures.
 
 ---
 
@@ -56,11 +61,14 @@ something to an AI endpoint you configured.
 ```bash
 npm run lint
 npx tsc --noEmit
-npm run check:data     # curriculum schema, integrity, prerequisite cycles
-npm test               # 159 pure-logic unit tests
+npm run check:data     # curriculum schema, integrity, citations, debt budgets
+npm test               # 207 pure-logic unit tests, including text contrast
 npm run build
-npx playwright test    # 79 browser tests (npx playwright install chromium first)
+npx playwright test    # 80 browser tests (npx playwright install chromium first)
 ```
+
+`npm run build:static` produces a plain folder of files in `out/` that any
+static host will serve. There is no server component to run.
 
 ---
 
@@ -71,8 +79,13 @@ npx playwright test    # 79 browser tests (npx playwright install chromium first
 `data/intelligenceData.json` holds 139 nodes across 23 categories with 280
 edges. `npm run check:data` rejects an incomplete node, an invalid vocabulary, a
 dangling edge, a prerequisite cycle, a semantic edge with no stated mechanism,
-an evidence band stronger than its pillars allow, or growth past the 140-node
-ceiling.
+a citation with no link, an evidence band stronger than its pillars allow, or
+growth past the 140-node ceiling.
+
+Two known debts are held as budgets rather than warnings: the edges with no
+recorded mechanism, and the evidence-producing exercises with no rubric. The
+build fails if either number rises, and fails asking for the budget to be
+lowered when either falls, so both can only move one way.
 
 Every node declares:
 
@@ -86,7 +99,10 @@ Every node declares:
   Conflating these is how brain training is sold.
 - **How it would be measured**, including where it cannot be.
 - **What training it will not do.** Never empty.
-- **Real citations**, several of which are the negative result for that node.
+- **Real citations, every one with a link.** Several are the negative result
+  for that node. Six references in curriculum 2.0.0 turned out not to exist as
+  described and were removed rather than repaired; the link requirement is what
+  makes the next one catchable.
 
 ### The learner model
 
@@ -105,6 +121,19 @@ Node test runner.
 | `goals.ts` | Plain language to curated paths, topological plan ordering. |
 | `inbox.ts` | What is actually going stale, ranked, capped per kind. |
 | `migrations.ts` | Renames, merges and splits as declared data. Never deletes a log. |
+| `demo.ts` | The example profile. Deterministic, and shaped like a real six months rather than a tidy upward march. |
+
+### The screens
+
+Three destinations, on a bar that sits at the bottom of a phone and top-left on
+a laptop.
+
+**Today** is the front door: one thing to do now, the numbers behind it, the
+ranking factors that chose it, whatever is going stale underneath, and the
+calibration line. **Map** is the 139-node graph, on a dark canvas, one tap away
+rather than the thing that greets you. **Record** is everything else — review
+queue, goals, insights, predictions, experiments, evidence, analytics,
+comparisons, personal nodes and a browsable table.
 
 ### The product loop
 
@@ -143,7 +172,9 @@ These are constraints, not preferences. `CONTRIBUTING.md` has the full version.
 
 1. **Practice is not competence.** XP is a progression signal and is labelled as
    one.
-2. **Uncertainty is visible.** "Confidence: Low — 2 observations" is a feature.
+2. **Uncertainty is visible.** "Confidence: Low — 2 observations" is a feature,
+   and every competence figure also says what kind of evidence it rests on:
+   not measured, self-reported, from your work, or measured.
 3. **Everything explains itself.** Explanations are generated from the same
    values that made the decision.
 4. **Nothing overclaims.** *"This trains X."* *"Performance improved on Y."*
@@ -157,6 +188,22 @@ These are constraints, not preferences. `CONTRIBUTING.md` has the full version.
    operable from the keyboard alone.
 
 ---
+
+## Putting it somewhere
+
+```bash
+npm run build:static     # writes out/
+```
+
+`out/` is a plain folder of files. Any static host serves it: Cloudflare Pages,
+Netlify, GitHub Pages, Vercel, or `python3 -m http.server` from inside the
+folder. There is no server component, no database and no environment variable
+to set, because there is nothing for a server to do — the app reads and writes
+IndexedDB in the browser and talks to no one.
+
+Two things a host has to get right: serve `/sw.js` from the site root so the
+service worker can claim the whole scope, and serve `index.html` for unknown
+paths so a refresh does not 404.
 
 ## Documentation
 

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { gotoApp, openNode, panelOf } from "./helpers";
+import { gotoApp, gotoToday, openNode, panelOf } from "./helpers";
 
 /**
  * Accessibility, targeting WCAG 2.2 AA.
@@ -84,6 +84,55 @@ test.describe("semantics", () => {
     // one says it is an estimate. Both have to be spoken, neither bare.
     expect(label).toMatch(/percent estimated competence|percent, the starting assumption/);
     expect(label).toMatch(/never trained|percent retention/);
+  });
+
+  test("operates the front door and the bar from the keyboard alone", async ({ page }) => {
+    await gotoToday(page);
+
+    // Tab until the navigation is reached, rather than asserting a fixed
+    // number of stops: the header's content changes with the profile.
+    let reached = false;
+    for (let index = 0; index < 12 && !reached; index += 1) {
+      await page.keyboard.press("Tab");
+      reached = await page.evaluate(
+        () => document.activeElement?.closest('nav[aria-label="Main"]') !== null,
+      );
+    }
+    expect(reached).toBe(true);
+
+    const outline = await page.evaluate(() => {
+      const active = document.activeElement;
+      if (!active) return { width: "0px", style: "none" };
+      const style = getComputedStyle(active);
+      return { width: style.outlineWidth, style: style.outlineStyle };
+    });
+    expect(outline.style).not.toBe("none");
+    expect(Number.parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+
+    // The bar says which screen you are on, not just which button looks active.
+    const current = page.locator('nav[aria-label="Main"] [aria-current="page"]');
+    await expect(current).toHaveText(/Today/);
+
+    await page.getByRole("button", { name: "Map", exact: true }).press("Enter");
+    await expect(page.locator(".react-flow__node").first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('nav[aria-label="Main"] [aria-current="page"]')).toHaveText(
+      /Map/,
+    );
+  });
+
+  test("puts the front door's headings in order", async ({ page }) => {
+    await gotoToday(page);
+    const levels = await page
+      .getByTestId("today-screen")
+      .evaluate((screen) =>
+        [...screen.querySelectorAll("h1,h2,h3")].map((heading) =>
+          Number(heading.tagName.slice(1)),
+        ),
+      );
+    expect(levels[0]).toBe(1);
+    for (let index = 1; index < levels.length; index += 1) {
+      expect(levels[index] - levels[index - 1]).toBeLessThanOrEqual(1);
+    }
   });
 
   test("gives the graph an accessible description pointing at the list view", async ({

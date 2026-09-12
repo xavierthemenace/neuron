@@ -9,6 +9,19 @@ need to know which one happened.
 
 ### Added
 
+- **A static build.** `npm run build:static` writes `out/`, a plain folder any
+  static host will serve. Nothing in the app needs a server, so the deployable
+  artefact should not need one either. `next start` still works for the browser
+  suite.
+- **Backup, restore, reset and offline are now tested by doing them.** A browser
+  test exports a real file, resets, re-imports that file from disk and checks
+  the record came back; another goes offline, reloads, and asserts the app still
+  opens from the service worker cache.
+- **Text contrast is checked by the unit tests.** Eleven pairs, read out of
+  `globals.css`, each against the surface it actually sits on. Three colours
+  were below 4.5:1 after the move to paper and have been darkened: muted text,
+  captions, and white on the action colour.
+
 - **An example profile.** Six months of generated history — logs across fifteen
   capabilities, seven diagnostic runs, twenty-four resolved predictions, a
   concluded experiment and an underpowered one, a finished mission and an
@@ -22,6 +35,16 @@ need to know which one happened.
   line — Brier score, the direction you are off in, and the reminder that
   calibration is domain-specific — plus a way to write a new call and the count
   of predictions past their date.
+
+### Fixed
+
+- **The hidden map was still in the tab order.** With Today open, the graph
+  behind it kept 139 focusable nodes, so reaching the navigation bar by keyboard
+  meant tabbing through all of them. The canvas layer is now `inert` whenever it
+  is not the screen you are on.
+- **Onboarding ended by offering the map and an empty review queue.** It now
+  finishes on Today, which has a session in it, with the map as the secondary
+  choice.
 
 ### Curriculum 2.1.0
 
