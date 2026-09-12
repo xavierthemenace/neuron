@@ -62,9 +62,9 @@ something to an AI endpoint you configured.
 npm run lint
 npx tsc --noEmit
 npm run check:data     # curriculum schema, integrity, citations, debt budgets
-npm test               # 213 pure-logic unit tests, including text contrast
+npm test               # 220 pure-logic unit tests, including text contrast in both themes
 npm run build
-npx playwright test    # 80 browser tests (npx playwright install chromium first)
+npx playwright test    # 85 browser tests (npx playwright install chromium first)
 ```
 
 `npm run build:static` produces a plain folder of files in `out/` that any
@@ -163,6 +163,12 @@ The app is paper — a warm off-white ground, ink text, deep green for what to d
 next and one orange for the action itself. The map keeps a dark canvas, because
 a 139-node network needs a dark ground to read against; treating it as an inset
 plate rather than as the page is the one deliberate contrast in the design.
+
+There is a dark theme, set from the control beside the XP figure: match the
+system, light, or dark. It is one block of variable overrides rather than a
+second set of class names, because the whole interface is expressed in the same
+small vocabulary of tokens and scales. The choice is stored per device and
+applied before the first paint, so nothing flashes white on the way in.
 
 ---
 

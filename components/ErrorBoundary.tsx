@@ -72,7 +72,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
             anything else — then reload.
           </p>
 
-          <pre className="max-h-32 overflow-auto rounded-lg border border-white/8 bg-[rgb(25_22_20_/_0.05)] p-3 font-mono text-[10px] leading-relaxed text-rose-200/70">
+          <pre className="max-h-32 overflow-auto rounded-lg border border-white/8 bg-[var(--sunk-strong)] p-3 font-mono text-[10px] leading-relaxed text-rose-200/70">
             {error.message}
           </pre>
 

@@ -63,7 +63,7 @@ export function AppNav({
       className={[
         "fixed z-30 flex",
         // Phone: a real bottom bar, clear of the home indicator.
-        "inset-x-0 bottom-0 border-t border-[var(--rule)] bg-[rgb(255_255_255_/_0.94)] backdrop-blur-xl",
+        "inset-x-0 bottom-0 border-t border-[var(--rule)] bg-[var(--panel)] backdrop-blur-xl",
         "pb-[var(--safe-bottom)]",
         // Laptop: a small pill, out of the way of the map.
         "sm:inset-x-auto sm:bottom-auto sm:left-4 sm:top-4 sm:gap-1 sm:rounded-full sm:border sm:p-1 sm:shadow-[0_6px_20px_rgb(25_22_20_/_0.10)]",
@@ -93,7 +93,7 @@ export function AppNav({
               <span
                 aria-label={`${badge} waiting`}
                 className={[
-                  "grid h-[15px] min-w-[15px] place-items-center rounded-full px-[3px] text-[9px] font-bold text-[#fff]",
+                  "grid h-[15px] min-w-[15px] place-items-center rounded-full px-[3px] text-[9px] font-bold text-[var(--pop-ink)]",
                   // Over the icon on a phone, where the label sits underneath;
                   // beside the label on a laptop, where it would cover it.
                   "absolute left-[calc(50%+7px)] top-[11px]",

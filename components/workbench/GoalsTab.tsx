@@ -241,7 +241,7 @@ function GoalCard({
           <select
             value={goal.status}
             onChange={(event) => onUpdate({ status: event.target.value as Goal["status"] })}
-            className="rounded-lg border border-white/10 bg-[rgb(25_22_20_/_0.05)] px-2 py-1.5 text-[10px] text-neutral-300 outline-none"
+            className="rounded-lg border border-white/10 bg-[var(--sunk-strong)] px-2 py-1.5 text-[10px] text-neutral-300 outline-none"
             aria-label={`Status of ${goal.label}`}
           >
             <option value="active">Active</option>

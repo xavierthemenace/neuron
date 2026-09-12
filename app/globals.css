@@ -50,6 +50,17 @@
   --border: oklch(1 0 0 / 0.13);
   --focus-ring: #1f3d2e;
 
+  /* Surfaces, named by role so a theme can move them together */
+  --panel: rgb(255 255 255 / 0.96);
+  --panel-solid: #ffffff;
+  --sunk: rgb(25 22 20 / 0.035);
+  --sunk-strong: rgb(25 22 20 / 0.05);
+  --scrim: rgb(25 22 20 / 0.34);
+  --toast: rgb(25 22 20 / 0.92);
+  /* Text that sits on the action colour */
+  --pop-ink: #ffffff;
+  --page-lift: linear-gradient(to bottom, #f5f3ee, transparent 34%);
+
   /* Reach for these rather than hard-coding insets */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -123,6 +134,183 @@
   --color-violet-100: #3a2f57;
 }
 
+/**
+ * Dark.
+ *
+ * The whole app is expressed in two vocabularies: the semantic tokens above,
+ * and Tailwind's own scales, which the light theme inverts so that a class
+ * written for light-text-on-dark lands correctly on paper. Dark mode is
+ * therefore one block of variable overrides — the scales go back to meaning
+ * what their numbers say, and the semantic tokens move together — rather than
+ * a second set of class names anywhere in the app.
+ *
+ * `[data-theme="dark"]` is an explicit choice; the media query is for people
+ * who never make one. The explicit-light selector is what lets someone keep a
+ * light app on a dark system.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper: #14161a;
+    --paper-sunk: #101216;
+    --card: #1c1f25;
+    --ink: #eceef1;
+    --ink-soft: #a9afb8;
+    --ink-faint: #8a919b;
+    --rule: #2c313a;
+
+    --green: #23523b;
+    --green-soft: #58a37e;
+    --green-wash: #1d2b24;
+    --pop: #d95a2c;
+    --pop-soft: #2c1d16;
+    --pop-ink: #17120f;
+    --page-lift: linear-gradient(to bottom, #191c22, transparent 34%);
+
+    --good: #58a37e;
+    --warn: #d8a13f;
+    --bad: #e0705a;
+
+    --focus-ring: #7fc2ac;
+
+    --panel: rgb(28 31 37 / 0.97);
+    --panel-solid: #1c1f25;
+    --sunk: rgb(255 255 255 / 0.05);
+    --sunk-strong: rgb(255 255 255 / 0.08);
+    --scrim: rgb(0 0 0 / 0.62);
+    --toast: rgb(10 12 15 / 0.94);
+
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-neutral-50: #f7f8f9;
+    --color-neutral-100: #eceef1;
+    --color-neutral-200: #dde1e6;
+    --color-neutral-300: #c2c8d0;
+    --color-neutral-400: #98a0aa;
+    --color-neutral-500: #9aa1ab;
+    --color-neutral-600: #868e99;
+    --color-neutral-700: #6e7681;
+    --color-neutral-800: #3a404a;
+    --color-neutral-900: #262b33;
+    --color-neutral-950: #1a1e24;
+
+    --color-cyan-50: #ffe9df;
+    --color-cyan-100: #ffd2c0;
+    --color-cyan-200: #f08a5d;
+    --color-cyan-300: #d95a2c;
+    --color-cyan-400: #c4471f;
+
+    --color-emerald-50: #d8efe1;
+    --color-emerald-100: #b9e2c9;
+    --color-emerald-200: #7ec09c;
+    --color-emerald-300: #58a37e;
+    --color-emerald-400: #3d8760;
+
+    --color-amber-50: #fbecd0;
+    --color-amber-100: #f4dcae;
+    --color-amber-200: #e5bc6d;
+    --color-amber-300: #d8a13f;
+    --color-amber-400: #b97a1f;
+
+    --color-rose-50: #ffe2dc;
+    --color-rose-100: #ffc9bf;
+    --color-rose-200: #ec9382;
+    --color-rose-300: #e0705a;
+    --color-rose-400: #c04c31;
+
+    --color-sky-50: #dceaff;
+    --color-sky-100: #bfd6f6;
+    --color-sky-200: #8fb2e0;
+    --color-sky-300: #6d95cd;
+    --color-sky-400: #3a5f97;
+
+    --color-violet-100: #cfc4ef;
+    --color-violet-300: #9c8ad2;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #14161a;
+  --paper-sunk: #101216;
+  --card: #1c1f25;
+  --ink: #eceef1;
+  --ink-soft: #a9afb8;
+  --ink-faint: #8a919b;
+  --rule: #2c313a;
+
+  --green: #23523b;
+  --green-soft: #58a37e;
+  --green-wash: #1d2b24;
+  --pop: #d95a2c;
+  --pop-soft: #2c1d16;
+  --pop-ink: #17120f;
+
+  --good: #58a37e;
+  --warn: #d8a13f;
+  --bad: #e0705a;
+
+  --focus-ring: #7fc2ac;
+
+  --panel: rgb(28 31 37 / 0.97);
+  --panel-solid: #1c1f25;
+  --sunk: rgb(255 255 255 / 0.05);
+  --sunk-strong: rgb(255 255 255 / 0.08);
+  --scrim: rgb(0 0 0 / 0.62);
+  --toast: rgb(10 12 15 / 0.94);
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-neutral-50: #f7f8f9;
+  --color-neutral-100: #eceef1;
+  --color-neutral-200: #dde1e6;
+  --color-neutral-300: #c2c8d0;
+  --color-neutral-400: #98a0aa;
+  --color-neutral-500: #9aa1ab;
+  --color-neutral-600: #868e99;
+  --color-neutral-700: #6e7681;
+  --color-neutral-800: #3a404a;
+  --color-neutral-900: #262b33;
+  --color-neutral-950: #1a1e24;
+
+  --color-cyan-50: #ffe9df;
+  --color-cyan-100: #ffd2c0;
+  --color-cyan-200: #f08a5d;
+  --color-cyan-300: #d95a2c;
+  --color-cyan-400: #c4471f;
+
+  --color-emerald-50: #d8efe1;
+  --color-emerald-100: #b9e2c9;
+  --color-emerald-200: #7ec09c;
+  --color-emerald-300: #58a37e;
+  --color-emerald-400: #3d8760;
+
+  --color-amber-50: #fbecd0;
+  --color-amber-100: #f4dcae;
+  --color-amber-200: #e5bc6d;
+  --color-amber-300: #d8a13f;
+  --color-amber-400: #b97a1f;
+
+  --color-rose-50: #ffe2dc;
+  --color-rose-100: #ffc9bf;
+  --color-rose-200: #ec9382;
+  --color-rose-300: #e0705a;
+  --color-rose-400: #c04c31;
+
+  --color-sky-50: #dceaff;
+  --color-sky-100: #bfd6f6;
+  --color-sky-200: #8fb2e0;
+  --color-sky-300: #6d95cd;
+  --color-sky-400: #3a5f97;
+
+  --color-violet-100: #cfc4ef;
+  --color-violet-300: #9c8ad2;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);
@@ -131,14 +319,14 @@ body {
   overscroll-behavior: none;
 }
 
-/* A single warm lift at the top of the page, not a spotlight. */
+/* A single lift at the top of the page, not a spotlight. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background: linear-gradient(to bottom, #f5f3ee, transparent 34%);
+  background: var(--page-lift);
 }
 
 .font-display {
@@ -148,7 +336,7 @@ body::before {
 }
 
 ::selection {
-  background: rgb(196 71 31 / 0.22);
+  background: color-mix(in srgb, var(--pop) 28%, transparent);
   color: var(--ink);
 }
 

@@ -9,6 +9,16 @@ need to know which one happened.
 
 ### Added
 
+- **A dark theme**, set from the control beside the XP figure: match the
+  system, light, or dark. It is one block of variable overrides rather than a
+  second set of class names — the interface is expressed in a small vocabulary
+  of semantic tokens and Tailwind scales, so re-pointing those moves everything
+  at once. The preference is stored per device rather than in the profile, and
+  applied by an inline script before the first paint, because anything that
+  waits for a bundle has already rendered the wrong background. Contrast is
+  checked by the unit tests in both themes, and the action colour carries its
+  own text colour, since white on a dark-mode orange does not clear 4.5:1.
+
 - **Six more diagnostic probes**, taking measured coverage from 27 capabilities
   to 37 and the battery from eleven probes to seventeen. A flanker task for
   interference control, a task-switching run for cognitive flexibility,

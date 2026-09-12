@@ -7,6 +7,7 @@ import { buildInbox, type InboxItem } from "@/lib/inbox";
 import { DEFAULT_CONSTRAINTS, planSession, type WorkoutItem } from "@/lib/workout";
 import type { IntelligenceData } from "@/lib/types";
 import { useProgress } from "./ProgressProvider";
+import { ThemeToggle } from "./ThemeToggle";
 import type { WorkbenchTab } from "./Workbench";
 import { Why } from "./ui";
 
@@ -104,10 +105,13 @@ export function Today({
             {now.toLocaleDateString(undefined, LONG_DATE)}
           </p>
         </div>
-        <p className="text-right text-[11px] leading-snug text-[var(--ink-soft)]">
-          {model.totalXp.toLocaleString()} XP
-          <span className="block text-[var(--ink-faint)]">practice, not ability</span>
-        </p>
+        <div className="flex items-start gap-1">
+          <p className="text-right text-[11px] leading-snug text-[var(--ink-soft)]">
+            {model.totalXp.toLocaleString()} XP
+            <span className="block text-[var(--ink-faint)]">practice, not ability</span>
+          </p>
+          <ThemeToggle className="-mt-1.5" />
+        </div>
       </header>
 
       {/* On a laptop the day splits in two: what to do on the left, what is
@@ -142,7 +146,7 @@ export function Today({
           <button
             type="button"
             onClick={() => onSelectNode(lead.nodeId)}
-            className="min-h-[48px] rounded-full px-6 text-[15px] font-bold text-[#fff] transition-transform duration-150 active:scale-[0.985]"
+            className="min-h-[48px] rounded-full px-6 text-[15px] font-bold text-[var(--pop-ink)] transition-transform duration-150 active:scale-[0.985]"
             style={{ background: "var(--pop)" }}
           >
             Start
@@ -174,7 +178,7 @@ export function Today({
             <button
               type="button"
               onClick={onOpenMap}
-              className="min-h-[44px] rounded-full px-5 text-[13px] font-medium text-[#fff]"
+              className="min-h-[44px] rounded-full px-5 text-[13px] font-medium text-[var(--pop-ink)]"
               style={{ background: "var(--pop)" }}
             >
               Browse the map

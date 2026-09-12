@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { DM_Sans, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { PwaStatus } from "@/components/PwaStatus";
+import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -67,6 +68,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${dmSans.variable} ${instrumentSerif.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        {/* Before anything else renders: a saved dark preference has to be on
+            the element the stylesheet keys off, or the first frame is white. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         {children}
         <PwaStatus />
       </body>

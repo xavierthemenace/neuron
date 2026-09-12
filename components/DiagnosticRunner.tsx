@@ -84,7 +84,7 @@ function ItemView({
   return (
     <div className="space-y-3">
       {rotation && (
-        <div className="flex items-center justify-center gap-6 rounded-xl border border-white/8 bg-[rgb(25_22_20_/_0.035)] p-4">
+        <div className="flex items-center justify-center gap-6 rounded-xl border border-white/8 bg-[var(--sunk)] p-4">
           <RotationShape cells={rotation.cells} />
           <span className="text-neutral-600" aria-hidden="true">
             vs
@@ -95,7 +95,7 @@ function ItemView({
 
       {item.stimulus && !rotation && (
         <div
-          className="rounded-xl border border-white/8 bg-[rgb(25_22_20_/_0.035)] p-4 text-center font-mono text-lg tracking-[0.35em] text-neutral-100"
+          className="rounded-xl border border-white/8 bg-[var(--sunk)] p-4 text-center font-mono text-lg tracking-[0.35em] text-neutral-100"
           aria-live="polite"
         >
           {hidden ? (
