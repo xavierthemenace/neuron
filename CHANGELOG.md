@@ -38,6 +38,19 @@ need to know which one happened.
 
 ### Fixed
 
+- **Loading the example profile could destroy work without a backup.** The
+  guard counted practice logs and predictions only, so anyone who had set a
+  goal or added a personal capability before logging their first rep tripped
+  the unprotected path and lost it silently — and it could never have seen
+  journals, which live in their own store. It now exports a backup first,
+  always, exactly as Reset does, and says plainly that it replaces everything.
+- **The map showed the example profile's figures with no label.** Today and the
+  ten Record tabs carried the banner; the map header, which is where the
+  profile's XP total appears, carried nothing. It now carries the label too.
+- **`viewport-fit=cover` was missing**, so `env(safe-area-inset-*)` resolved to
+  zero on iOS and the three components reading those variables were spacing
+  themselves against nothing.
+- **The Record tab strip was below the 44px target-size minimum** on a phone.
 - **The hidden map was still in the tab order.** With Today open, the graph
   behind it kept 139 focusable nodes, so reaching the navigation bar by keyboard
   meant tabbing through all of them. The canvas layer is now `inert` whenever it

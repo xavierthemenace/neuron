@@ -43,6 +43,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#efece6",
   colorScheme: "light",
+  // Without this, env(safe-area-inset-*) resolves to zero on iOS and the
+  // bottom bar sits under the home indicator in the installed app. The CSS
+  // that reads those variables has been there since the bar was built.
+  viewportFit: "cover",
 };
 
 // Typed explicitly rather than with the generated `LayoutProps<"/">` global:
