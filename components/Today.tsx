@@ -86,7 +86,7 @@ export function Today({
   };
 
   return (
-    <div className="animate-rise mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pb-6 pt-4 sm:px-6 sm:pt-7 lg:max-w-5xl lg:gap-6">
+    <div className="animate-rise mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 pb-6 pt-4 sm:px-6 sm:pt-7 lg:max-w-5xl lg:gap-6 2xl:max-w-6xl">
       {model.progress.demo && (
         <p className="rounded-xl border border-dashed border-[var(--pop)]/45 bg-[var(--pop-soft)] px-3.5 py-2.5 text-[12px] leading-relaxed text-[var(--ink)]">
           <strong className="font-semibold">This is an example profile.</strong> Six months of

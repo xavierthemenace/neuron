@@ -108,7 +108,7 @@ export function PwaStatus() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-3 left-1/2 z-[90] -translate-x-1/2 rounded-full border border-white/12 bg-black/80 px-3 py-1.5 text-[10px] text-neutral-300 shadow-xl backdrop-blur-xl"
+      className="fixed bottom-3 left-1/2 z-[90] -translate-x-1/2 rounded-full border border-white/12 bg-[rgb(25_22_20_/_0.92)] px-3 py-1.5 text-[10px] text-neutral-300 shadow-xl backdrop-blur-xl"
     >
       {online ? (
         <button

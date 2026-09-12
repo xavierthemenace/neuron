@@ -148,7 +148,7 @@ export function AnalyticsDashboard({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-md md:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(25_22_20_/_0.34)] p-3 backdrop-blur-md md:p-6"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -178,7 +178,7 @@ export function AnalyticsDashboard({
         </header>
 
         <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-          <div className="rounded-2xl border border-white/10 bg-black/20 p-3 md:p-5">
+          <div className="rounded-2xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] p-3 md:p-5">
             <div className="mb-2 flex items-end justify-between gap-3">
               <div>
                 <h3 className="text-sm font-semibold text-neutral-100">Cognitive radar</h3>
@@ -279,7 +279,7 @@ export function AnalyticsDashboard({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] p-4">
               <h3 className="text-sm font-semibold text-neutral-100">365-day activity</h3>
               <p className="mt-0.5 text-[11px] text-neutral-500">
                 Every square is a local calendar day; brighter means more completed exercises.
@@ -313,7 +313,7 @@ export function AnalyticsDashboard({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/10 bg-[rgb(25_22_20_/_0.035)] p-4">
               <h3 className="text-sm font-semibold text-neutral-100">Category mastery</h3>
               <div className="mt-3 space-y-2.5">
                 {categoryStats

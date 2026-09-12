@@ -237,7 +237,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/65 px-3 pt-[10vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[70] flex items-start justify-center bg-[rgb(25_22_20_/_0.34)] px-3 pt-[10vh] backdrop-blur-sm"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) setOpen(false);

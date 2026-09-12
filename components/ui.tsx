@@ -217,7 +217,7 @@ export function Why({
       {open && (
         <div
           id={id}
-          className="mt-1.5 rounded-lg border border-white/8 bg-black/25 p-2.5 text-[10px] leading-relaxed text-neutral-400"
+          className="mt-1.5 rounded-lg border border-white/8 bg-[rgb(25_22_20_/_0.035)] p-2.5 text-[10px] leading-relaxed text-neutral-400"
         >
           {children}
         </div>
@@ -287,7 +287,7 @@ export function Sheet({
           asScreen
             ? "max-h-none h-[calc(100dvh-68px-var(--safe-bottom))] rounded-t-none border-t-0 sm:h-auto sm:max-h-[92dvh] sm:rounded-2xl sm:border"
             : "",
-          wide ? "sm:max-w-5xl" : "sm:max-w-2xl",
+          wide ? "sm:max-w-5xl xl:max-w-6xl 2xl:max-w-[88rem]" : "sm:max-w-2xl lg:max-w-3xl",
         ].join(" ")}
       >
         <header className="flex shrink-0 items-start gap-3 border-b border-white/10 px-5 py-4">
@@ -454,7 +454,7 @@ export function Field({
 }
 
 export const inputClass =
-  "w-full rounded-lg border border-white/10 bg-black/35 px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-black/50";
+  "w-full rounded-lg border border-white/10 bg-[rgb(25_22_20_/_0.05)] px-3 py-2 text-xs text-neutral-100 outline-none transition-colors placeholder:text-neutral-600 focus:border-white/30 focus:bg-[rgb(25_22_20_/_0.05)]";
 
 export const buttonClass =
   "rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 text-xs text-neutral-200 transition-colors hover:border-white/28 hover:bg-white/[0.09] hover:text-white disabled:cursor-not-allowed disabled:opacity-40";
