@@ -85,20 +85,25 @@ export function AppNav({
                 : "text-[var(--ink-faint)] hover:text-[var(--ink)]",
             ].join(" ")}
           >
-            <span className="relative">
-              <svg viewBox="0 0 22 22" className="h-[21px] w-[21px] sm:h-4 sm:w-4" aria-hidden="true">
-                {item.icon}
-              </svg>
-              {item.id === "data" && badge !== undefined && badge > 0 && (
-                <span
-                  className="absolute -right-2 -top-1 grid h-[15px] min-w-[15px] place-items-center rounded-full px-[3px] text-[9px] font-bold text-[#fff]"
-                  style={{ background: "var(--pop)" }}
-                >
-                  {badge > 9 ? "9+" : badge}
-                </span>
-              )}
-            </span>
+            <svg viewBox="0 0 22 22" className="h-[21px] w-[21px] sm:h-4 sm:w-4" aria-hidden="true">
+              {item.icon}
+            </svg>
             {item.label}
+            {item.id === "data" && badge !== undefined && badge > 0 && (
+              <span
+                aria-label={`${badge} waiting`}
+                className={[
+                  "grid h-[15px] min-w-[15px] place-items-center rounded-full px-[3px] text-[9px] font-bold text-[#fff]",
+                  // Over the icon on a phone, where the label sits underneath;
+                  // beside the label on a laptop, where it would cover it.
+                  "absolute left-[calc(50%+7px)] top-[11px]",
+                  "sm:static sm:ml-0.5",
+                ].join(" ")}
+                style={{ background: "var(--pop)" }}
+              >
+                {badge > 9 ? "9+" : badge}
+              </span>
+            )}
             {active && (
               <span
                 aria-hidden="true"

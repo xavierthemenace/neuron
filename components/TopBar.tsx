@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { paths } from "@/lib/curriculum";
 import { exportAnkiCsv, exportObsidianVault } from "@/lib/knowledge-export";
 import { exportBackup, importBackup } from "@/lib/backup";
+import { buildDemoProgress } from "@/lib/demo";
 import { search as conceptSearch } from "@/lib/search";
 import { TIERS, tierForXp } from "@/lib/mastery";
 import type { Category, IntelligenceData } from "@/lib/types";
@@ -334,6 +335,52 @@ export function TopBar({
               >
                 Export Obsidian ZIP
               </button>
+              <div className="my-1 h-px bg-white/8" />
+              {progress.demo ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        "Clear the example profile and start from an empty one? Nothing of yours is in it.",
+                      )
+                    ) {
+                      resetProgress();
+                    }
+                    setDataOpen(false);
+                  }}
+                  className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+                >
+                  Clear the example profile
+                  <span className="mt-0.5 block text-[9px] text-neutral-600">
+                    Leaves you with an empty one
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Loading over real work would be the single worst thing
+                    // this menu could do, so it cannot happen quietly.
+                    const hasWork = progress.logs.length > 0 || progress.predictions.length > 0;
+                    const go = () =>
+                      window.confirm(
+                        hasWork
+                          ? "A backup has been downloaded. Replace your record with six months of generated example data?"
+                          : "Load six months of generated example data, so the review queue, comparisons and calibration have something in them?",
+                      ) && replaceProgress(buildDemoProgress());
+                    if (hasWork) void exportBackup(progress).then(go);
+                    else go();
+                    setDataOpen(false);
+                  }}
+                  className="w-full rounded-lg px-2.5 py-2 text-left text-xs text-neutral-300 hover:bg-white/[0.07] hover:text-white"
+                >
+                  Load an example profile
+                  <span className="mt-0.5 block text-[9px] text-neutral-600">
+                    Six months of generated history, clearly labelled
+                  </span>
+                </button>
+              )}
               <div className="my-1 h-px bg-white/8" />
               <button
                 type="button"

@@ -442,7 +442,7 @@ function Graph() {
             data={data}
             onSelectNode={focusNode}
             onOpenPlanner={() => setPlannerOpen(true)}
-            onOpenReview={() => openWorkbench("review")}
+            onOpenTab={openWorkbench}
             onRunProbe={setProbeId}
             onOpenMission={setMissionId}
             onOpenMap={() => setScreen("map")}
