@@ -42,7 +42,14 @@ const ICON: Record<ThemePreference, React.ReactNode> = {
  * nobody has to set. The other two exist because a machine set to dark at
  * night is not the same as a person who wants this app dark.
  */
-export function ThemeToggle({ className = "" }: { className?: string }) {
+export function ThemeToggle({
+  className = "",
+  variant = "bare",
+}: {
+  className?: string;
+  /** "pill" matches the bordered controls on the map's bar. */
+  variant?: "bare" | "pill";
+}) {
   // The preference lives in localStorage and on the document element, so it is
   // read as an external store. The server renders "system", which is also what
   // the first client render sees — the inline boot script has already put the
@@ -57,7 +64,13 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={change}
       title={`Appearance: ${THEME_LABEL[theme]}. Click for ${THEME_LABEL[nextTheme(theme)].toLowerCase()}.`}
       aria-label={`Appearance: ${THEME_LABEL[theme]}. Change it.`}
-      className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg text-neutral-500 transition-colors hover:bg-white/[0.07] hover:text-neutral-100 ${className}`}
+      className={[
+        "grid shrink-0 place-items-center text-neutral-500 transition-colors hover:text-neutral-100",
+        variant === "pill"
+          ? "min-h-[40px] w-10 rounded-xl border border-white/12 bg-[var(--panel)] shadow-lg backdrop-blur-xl hover:border-white/25"
+          : "h-9 w-9 rounded-lg hover:bg-white/[0.07]",
+        className,
+      ].join(" ")}
     >
       <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" aria-hidden="true">
         {ICON[theme]}
